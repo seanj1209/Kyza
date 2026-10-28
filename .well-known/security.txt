@@ -1,4 +1,0 @@
-Contact: mailto:security@kyza.co.uk
-Expires: 2027-10-28T00:00:00.000Z
-Preferred-Languages: en
-Canonical: https://kyza.co.uk/.well-known/security.txt
