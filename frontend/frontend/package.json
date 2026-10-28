@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/duplicate-app-entry.mjs",
     "preview": "vite preview",
     "test": "npm run verify",
     "test:constraints": "node -e \"require('fs').mkdirSync('.tmp-tests',{recursive:true}); require('fs').writeFileSync('.tmp-tests/package.json','{\\\"type\\\":\\\"commonjs\\\"}')\" && tsc -p tsconfig.tests.json && node .tmp-tests/tests/flowwrap-constraints.test.js && node .tmp-tests/tests/kseal-validation.test.js && node .tmp-tests/tests/plain-web-validation.test.js && node .tmp-tests/tests/paper-strip-validation.test.js",
