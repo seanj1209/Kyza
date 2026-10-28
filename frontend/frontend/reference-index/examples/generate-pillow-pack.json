@@ -1,0 +1,34 @@
+{
+  "request": {
+    "requestId": "req-generate-pillow-001",
+    "engine": "pack-generator",
+    "action": "generate-pack",
+    "projectId": "project-demo-002",
+    "payload": {
+      "packType": "pillow-pack",
+      "spec": {
+        "width": 440,
+        "height": 200,
+        "seal": 15
+      }
+    }
+  },
+  "response": {
+    "success": true,
+    "engine": "pack-generator",
+    "action": "generate-pack",
+    "requestId": "req-generate-pillow-001",
+    "updatedState": {
+      "packType": "pillow-pack"
+    },
+    "output": {
+      "packType": "pillow-pack"
+    },
+    "warnings": [],
+    "errors": [],
+    "validationReport": {
+      "valid": true,
+      "messages": []
+    }
+  }
+}

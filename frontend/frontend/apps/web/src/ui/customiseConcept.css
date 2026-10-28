@@ -1,0 +1,47 @@
+/* Claude's supplied drawer concept, scoped to Cutter Studio and Klyro tokens. */
+:root body #customisation-panel:not(.is-file-mode) { width: min(380px, calc(100vw - 120px)); min-width: 0; max-width: min(380px, calc(100vw - 120px)); border-radius: 18px; }
+:root body #customisation-panel:not(.is-file-mode) > .right-rail-tab-shell { padding: 0; }
+:root body #customisation-panel .studio-vertical-tabs { grid-template-columns: 48px minmax(0, 1fr); gap: 0; }
+:root body #customisation-panel .studio-vertical-navigation { padding: 8px 5px; gap: 8px; background: var(--klyro-panel-soft); border-right: 1px solid var(--klyro-border); }
+:root body #customisation-panel .studio-vertical-tablist { gap: 8px; padding: 0; }
+:root body #customisation-panel .studio-vertical-tab { height: 84px; min-height: 84px; border-radius: 12px; font-size: 12px; padding: 0; }
+:root body #customisation-panel.is-open .studio-vertical-tab.is-active { box-shadow: 0 0 0 3px color-mix(in srgb, var(--klyro-brand) 10%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--klyro-accent-text) 40%, transparent); }
+:root body #customisation-panel .studio-vertical-content { padding: 0; overflow: hidden; }
+:root body #customisation-panel .customise-category:not([hidden]) { display: flex; height: 100%; min-height: 0; overflow: hidden; gap: 0; }
+:root body #customisation-panel .customise-targets { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px 4px; flex: 0 0 auto; max-height: 40%; overflow-y: auto; scrollbar-width: thin; }
+:root body #customisation-panel .customise-target { border: 1px solid var(--klyro-border-strong); border-radius: 999px; padding: 5px 9px; background: transparent; color: var(--klyro-text-muted); font-size: 12px; font-weight: 600; }
+:root body #customisation-panel .customise-target[aria-checked="true"] { color: var(--klyro-text); border-color: var(--klyro-accent-text); background: color-mix(in srgb, var(--klyro-brand) 10%, var(--klyro-panel)); }
+:root body #customisation-panel .customise-target-content { min-height: 0; overflow-y: auto; padding: 8px 12px 12px; display: flex; flex-direction: column; gap: 10px; scrollbar-width: thin; }
+:root body #customisation-panel .customisation-section { display: flex; flex-direction: column; gap: 10px; border: 0; background: none; box-shadow: none; padding: 0; margin: 0; }
+:root body #customisation-panel .customisation-section.is-hidden { display: none; }
+:root body #customisation-panel :is(.customise-card, .customise-summary) { border: 1px solid var(--klyro-border); border-radius: 14px; background: var(--klyro-panel-raised); box-shadow: inset 0 1px 0 var(--klyro-highlight), 0 3px 8px #00000008; padding: 10px 12px; display: grid; gap: 10px; }
+:root body #customisation-panel .customise-card h3 { margin: 0; font-size: 13px; font-weight: 650; }
+:root body #customisation-panel .customise-summary { grid-template-columns: 58px minmax(0, 1fr); align-items: center; }
+:root body #customisation-panel .customise-summary strong { display: block; font-size: 13px; }
+:root body #customisation-panel .customise-thumb { height: 48px; border: 1px solid var(--klyro-border); border-radius: 10px; background: var(--klyro-panel-soft); display: grid; place-items: center; }
+:root body #customisation-panel .customise-thumb svg { width: 38px; height: 38px; }
+:root body #customisation-panel .customise-editable { display: inline-flex; margin-top: 8px; padding: 3px 9px; border-radius: 999px; background: var(--klyro-panel-soft); color: var(--klyro-text-muted); font-size: 11px; border: 1px solid var(--klyro-border); }
+:root body #customisation-panel .customisation-row { grid-template-columns: 64px minmax(0, 1fr); gap: 10px; margin: 0; font-size: 13px; color: var(--klyro-text-muted); }
+:root body #customisation-panel .customisation-row:has(> .customise-unit) { grid-template-columns: 64px minmax(0, 1fr) auto; }
+:root body #customisation-panel :is(.customisation-number,.customisation-color-text,.customisation-select,.customisation-opacity-value) { min-height: 32px; width: 100%; padding: 6px 10px; border-radius: 9px; font-size: 13px; background: var(--klyro-panel-soft); color: var(--klyro-text); border: 1px solid var(--klyro-border-strong); }
+:root body #customisation-panel .customisation-opacity-wrap { display: flex; align-items: center; gap: 8px; min-width: 0; }
+:root body #customisation-panel .customisation-opacity-wrap :is(.customisation-number,.customisation-opacity-value) { width: 62px; min-width: 0; flex: 0 0 62px; }
+:root body #customisation-panel .customisation-opacity-range { flex: 1; min-width: 0; width: 100%; appearance: none; height: 6px; border: 0; border-radius: 6px; background: linear-gradient(90deg, var(--klyro-accent-text) var(--fill,100%), var(--klyro-border-strong) var(--fill,100%)); }
+:root body #customisation-panel .customisation-opacity-range::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border: 3px solid var(--klyro-panel-raised); border-radius: 50%; background: var(--klyro-accent-text); box-shadow: 0 2px 8px #00000035; cursor: pointer; }
+:root body #customisation-panel .customisation-color-wrap { display: grid; grid-template-columns: minmax(0,1fr) 36px; align-items: center; gap: 8px; }
+:root body #customisation-panel :is(.customisation-color-button,.customise-colour-picker) { width: 36px; height: 36px; border-radius: 50%; padding: 2px; border: 1px solid var(--klyro-border-strong); cursor: pointer; }
+:root body #customisation-panel .customisation-color-button img { width: 26px; height: 26px; }
+:root body #customisation-panel .customise-unit { color: var(--klyro-text-subtle); font-size: 12px; width: auto; }
+:root body #customisation-panel .customise-palettes { display: grid; gap: 10px; }
+:root body #customisation-panel .customisation-row > .customise-palettes { grid-column: 1 / -1; }
+:root body #customisation-panel .customise-measure-link { flex: 0 0 auto; padding: 12px 16px; border-top: 1px solid var(--klyro-border); }
+:root body #customisation-panel .customise-swatch-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--klyro-text-subtle); }
+:root body #customisation-panel .customise-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+:root body #customisation-panel .customise-swatch { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--klyro-border-strong); padding: 0; }
+:root body #customisation-panel .customise-swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--klyro-panel), 0 0 0 4px var(--klyro-accent-text); }
+:root body #customisation-panel .customise-segment { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: var(--klyro-panel-soft); border: 1px solid var(--klyro-border); border-radius: 11px; }
+:root body #customisation-panel .customise-segment button { flex: 1; padding: 7px 6px; border: 0; border-radius: 8px; background: transparent; font-size: 11px; color: var(--klyro-text-muted); }
+:root body #customisation-panel .customise-segment button[aria-pressed="true"] { background: var(--klyro-brand); color: #fff; box-shadow: var(--klyro-control-shadow); }
+:root body #customisation-panel .customise-reset { align-self: flex-end; font-size: 12px; color: var(--klyro-text-muted); background: transparent; border: 1px solid var(--klyro-border-strong); border-radius: 10px; padding: 8px 12px; }
+:root body #customisation-panel :is(button,input,select):focus-visible { outline: 2px solid var(--klyro-accent-text); outline-offset: 2px; }
+@media (max-width: 600px) { :root body #customisation-panel .studio-vertical-tabs { grid-template-columns: 44px minmax(0,1fr); } :root body #customisation-panel .studio-vertical-navigation { padding: 8px 4px; } :root body #customisation-panel :is(.customise-target-content,.customise-targets) { padding-left: 10px; padding-right: 10px; } :root body #customisation-panel .customisation-row { grid-template-columns: 1fr; gap: 6px; } :root body #customisation-panel .customisation-row:has(> .customise-unit) { grid-template-columns: minmax(0,1fr) auto; } :root body #customisation-panel .customisation-row:has(> .customise-unit) > span:first-child { grid-column: 1 / -1; } :root body #customisation-panel .customise-summary { grid-template-columns: 64px minmax(0,1fr); } }

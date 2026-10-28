@@ -1,0 +1,93 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 0,
+        "width": 460,
+        "x": 0,
+        "y": 160
+      },
+      "left": {
+        "height": 160,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 160,
+        "width": 0,
+        "x": 460,
+        "y": 0
+      },
+      "top": {
+        "height": 0,
+        "width": 460,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    }
+  },
+  "layout": {
+    "cutterRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "guideLines": [],
+    "hangerSlots": [],
+    "liveRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [],
+    "bleed": 3,
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 160,
+    "plainWeb": {
+      "guideLines": []
+    },
+    "safeZones": [],
+    "seal": 0,
+    "sealClearance": 0,
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    },
+    "width": 460,
+    "windows": []
+  },
+  "packId": "plain-web",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

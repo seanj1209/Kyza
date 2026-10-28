@@ -1,0 +1,125 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 0,
+        "width": 460,
+        "x": 0,
+        "y": 160
+      },
+      "left": {
+        "height": 160,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 160,
+        "width": 0,
+        "x": 460,
+        "y": 0
+      },
+      "top": {
+        "height": 0,
+        "width": 460,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    }
+  },
+  "layout": {
+    "cutterRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "guideLines": [
+      {
+        "id": "slit-left",
+        "kind": "slit",
+        "orientation": "vertical",
+        "x1": 110,
+        "x2": 110,
+        "y1": 0,
+        "y2": 160
+      },
+      {
+        "id": "slit-right",
+        "kind": "slit",
+        "orientation": "vertical",
+        "x1": 350,
+        "x2": 350,
+        "y1": 0,
+        "y2": 160
+      }
+    ],
+    "hangerSlots": [],
+    "liveRect": {
+      "height": 160,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [],
+    "bleed": 3,
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 160,
+    "plainWeb": {
+      "guideLines": [
+        {
+          "id": "slit-left",
+          "kind": "slit",
+          "offset": 110,
+          "orientation": "vertical"
+        },
+        {
+          "id": "slit-right",
+          "kind": "slit",
+          "offset": 350,
+          "orientation": "vertical"
+        }
+      ]
+    },
+    "safeZones": [],
+    "seal": 0,
+    "sealClearance": 0,
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    },
+    "width": 460,
+    "windows": []
+  },
+  "packId": "plain-web",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

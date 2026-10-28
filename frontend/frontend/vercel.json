@@ -1,0 +1,9 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/ai-studio", "destination": "/ai-studio.html" },
+    { "source": "/cutter", "destination": "/cutter.html" },
+    { "source": "/artwork", "destination": "/artwork.html" },
+    { "source": "/([^.]*)", "destination": "/index.html" }
+  ]
+}

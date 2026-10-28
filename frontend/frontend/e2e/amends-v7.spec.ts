@@ -1,0 +1,77 @@
+import { expect, test, readCurrentProject } from "./helpers/testState"
+
+test("new pouch projects keep two trim eyemarks and their requested seals", async ({ page }) => {
+  for (const [label, id, bottom] of [
+    ["2-Side Seal Pouch", "2-side-seal-pouch", 0],
+    ["3-Side Seal Pouch", "3-side-seal-pouch", 7.5],
+  ] as const) {
+    await page.goto("/")
+    await page.getByRole("button", { name: "New Project", exact: true }).first().click()
+    const dialog = page.getByRole("dialog", { name: "Start a cutter" })
+    await dialog.getByLabel("Project name").fill(`V7 ${label}`)
+    await dialog.getByLabel("Pack type").selectOption(id)
+    await expect(dialog.getByLabel("Pouch width (mm)")).toHaveValue("190")
+    await expect(dialog.getByLabel("Pouch height (mm)")).toHaveValue("250")
+    await expect(dialog).toContainText("Two 15 mm trims")
+    if (id === "2-side-seal-pouch") {
+      await dialog.getByRole("button", { name: "0", exact: true }).click()
+      page.once("dialog", prompt => prompt.accept())
+      await dialog.getByRole("button", { name: "2", exact: true }).click()
+      await expect(dialog.getByRole("button", { name: "2", exact: true })).toHaveAttribute("aria-pressed", "true")
+    }
+    await dialog.getByRole("button", { name: "Create Project" }).click()
+    await page.waitForURL(/projectId=/)
+    const project = await readCurrentProject(page)
+    expect(project?.cutter?.packType).toBe(id)
+    expect(project?.cutter?.legacySpec?.seals?.bottom).toBe(bottom)
+    expect(project?.cutter?.legacySpec?.eyeMarks?.count).toBe(2)
+    expect(project?.cutter?.legacySpec?.sideSealPouch?.trimWidth).toBe(15)
+    await expect(page.locator('svg [data-role="eye-mark"]')).toHaveCount(2)
+    await expect(page.locator('svg [data-seal-side="left"]').first()).toHaveAttribute("fill", "#2e8b57")
+    await expect(page.locator('svg [data-seal-side="left"]').first()).toHaveAttribute("opacity", "0.32")
+    await expect(page.locator('svg [data-seal-side="left"]').first()).toHaveAttribute("stroke", "none")
+    if (bottom > 0) await expect(page.locator('svg [data-role="bottom-seal-centre-line"]')).toHaveCount(1)
+    else await expect(page.locator('svg [data-role="pouch-centre-fold"]')).toHaveCount(1)
+  }
+})
+
+test("plain film creates without seals and Sandbox receives its starting size", async ({ page }) => {
+  await page.goto("/")
+  await page.getByRole("button", { name: "New Project", exact: true }).first().click()
+  const dialog = page.getByRole("dialog", { name: "Start a cutter" })
+  await dialog.getByLabel("Project name").fill("V7 Plain Film")
+  await dialog.getByLabel("Pack type").selectOption("plain-film")
+  await expect(dialog.getByLabel("Starting width (mm)")).toHaveValue("400")
+  await expect(dialog.getByLabel("Starting height (mm)")).toHaveValue("240")
+  await dialog.getByRole("button", { name: "Create Project" }).click()
+  await page.waitForURL(/projectId=/)
+  const project = await readCurrentProject(page)
+  expect(project?.cutter?.packType).toBe("plain-film")
+  expect(project?.cutter?.legacySpec?.seal).toBe(0)
+  expect(project?.cutter?.legacySpec?.eyeMarks?.count).toBe(0)
+
+  await page.goto("/")
+  await page.getByRole("button", { name: "New Project", exact: true }).first().click()
+  const markedFilm = page.getByRole("dialog", { name: "Start a cutter" })
+  await markedFilm.getByLabel("Project name").fill("V7 Marked Film")
+  await markedFilm.getByLabel("Pack type").selectOption("plain-film")
+  await markedFilm.getByRole("button", { name: "2", exact: true }).click()
+  await markedFilm.getByRole("button", { name: "Create Project" }).click()
+  await page.waitForURL(/projectId=/)
+  await expect(page.locator('svg [data-role="eye-mark"]')).toHaveCount(2)
+  const markX = await page.locator('svg [data-role="eye-mark"]').evaluateAll(marks => marks.map(mark => Number(mark.getAttribute("x"))))
+  expect(markX[0]).toBeLessThan(markX[1])
+
+  await page.goto("/")
+  await page.getByRole("button", { name: "New Project", exact: true }).first().click()
+  const sandboxDialog = page.getByRole("dialog", { name: "Start a cutter" })
+  await sandboxDialog.getByLabel("Project name").fill("V7 Sandbox")
+  await sandboxDialog.getByLabel("Pack type").selectOption("sandbox")
+  await sandboxDialog.getByLabel("Starting width (mm)").fill("600")
+  await sandboxDialog.getByRole("button", { name: "Create Project" }).click()
+  await page.waitForURL(/studio=sandbox/)
+  await expect(page.locator(".sandbox-entry")).toBeVisible()
+  await page.getByRole("button", { name: "Set Up", exact: true }).click()
+  await expect(page.locator('svg[data-pack="sandbox"]')).toBeVisible()
+  await expect(page.locator('svg[data-pack="sandbox"]')).toHaveAttribute("data-sandbox-width", "600")
+})

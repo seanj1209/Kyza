@@ -1,0 +1,127 @@
+{
+  "errors": [],
+  "geometry": {
+    "height": 202,
+    "width": 216
+  },
+  "layout": {
+    "cells": [
+      {
+        "column": 0,
+        "height": 190,
+        "id": "1A",
+        "row": 0,
+        "slitHeight": 202,
+        "slitWidth": 216,
+        "slitX": 0,
+        "slitY": 0,
+        "width": 190,
+        "x": 13,
+        "y": 6
+      }
+    ],
+    "cutter": {
+      "height": 202,
+      "width": 216
+    },
+    "eyemarks": [
+      {
+        "height": 6,
+        "width": 10,
+        "x": 1.5,
+        "y": 1.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 204.5,
+        "y": 1.5
+      }
+    ],
+    "lidBlock": {
+      "height": 190,
+      "width": 190,
+      "x": 13,
+      "y": 6
+    },
+    "minimumCutter": {
+      "height": 202,
+      "width": 216
+    },
+    "ringReductions": {
+      "bleed": 2,
+      "safe": 10,
+      "sealInner": 8,
+      "sealOuter": 6
+    },
+    "rows": [
+      {
+        "extra": 0,
+        "height": 202,
+        "top": 0
+      }
+    ],
+    "slit": {
+      "height": 202,
+      "width": 216
+    }
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [],
+    "bleed": 3,
+    "eyeMarks": {
+      "color": "black",
+      "count": 2,
+      "height": 6,
+      "height2": 6,
+      "position": "top",
+      "width": 10,
+      "width2": 10
+    },
+    "foldLines": [],
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 202,
+    "lidding": {
+      "across": 1,
+      "activeStep": "1A",
+      "around": 1,
+      "artworkSafeArea": 180,
+      "compensatedExtra": 0,
+      "compensatedRow": 1,
+      "innerLines": true,
+      "mode": "auto",
+      "multipack": false,
+      "multipackSingleSide": "right",
+      "outerBleed": 2,
+      "outerCutHeight": 190,
+      "outerCutWidth": 190,
+      "pullTab": true,
+      "pullTabAngle": 45,
+      "repeatMode": "uniform",
+      "sealInner": 2,
+      "sealOuter": 4,
+      "slitSizingVersion": 2,
+      "style": "square",
+      "syncMirror": true
+    },
+    "safeZones": [],
+    "seal": 0,
+    "sealClearance": 0,
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    },
+    "substrate": "clear",
+    "width": 216,
+    "windows": []
+  },
+  "packId": "lidding",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

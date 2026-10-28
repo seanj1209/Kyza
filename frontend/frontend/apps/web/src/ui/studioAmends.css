@@ -1,0 +1,160 @@
+/* Requested Studio amendments, scoped above the legacy panel styles. */
+:root body .studio-return-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid var(--klyro-border);
+  border-radius: 11px;
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text-muted);
+  box-shadow: var(--klyro-control-shadow);
+  font-size: 11px;
+  cursor: pointer;
+}
+:root body .studio-return-button:hover { color: var(--klyro-accent-text); }
+:root body .cutter-project-tabs #artboard-tabs { padding-left: 10px; }
+:root body .artboard-tab { text-transform: none; letter-spacing: .025em; white-space: nowrap; flex: 0 0 auto; }
+:root body .customisation-panel:not(.is-file-mode) {
+  top: 132px;
+  right: 110px !important;
+  left: auto !important;
+  height: calc(100dvh - 156px);
+  max-height: 680px;
+  width: 340px;
+  min-width: 340px;
+  max-width: min(340px, calc(100vw - 105px));
+}
+:root body .customisation-panel:not(.is-file-mode) > .right-rail-tab-shell {
+  display: flex;
+  overflow: hidden;
+  direction: ltr;
+  padding: 10px;
+  flex: 1;
+}
+:root body .customisation-panel:not(.is-file-mode) .right-rail-tab-body,
+:root body .customisation-panel:not(.is-file-mode) .right-rail-tab-panel.is-active {
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+}
+:root body .studio-vertical-tabs {
+  display: grid;
+  grid-template-columns: 35px minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+  height: 100%;
+}
+:root body .studio-vertical-tablist {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: stretch;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 2px;
+}
+:root body .studio-vertical-tab {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 57px;
+  padding: 9px 6px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  border: 1px solid var(--klyro-border);
+  border-radius: 10px;
+  background: var(--klyro-panel-soft);
+  color: var(--klyro-text-muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+:root body .studio-vertical-tab:hover { color: var(--klyro-text); background: var(--klyro-panel-raised); }
+:root body .customisation-panel.is-open .studio-vertical-tab.is-active {
+  color: var(--klyro-accent-text);
+  background: color-mix(in srgb, var(--klyro-brand) 10%, var(--klyro-panel-raised));
+  border-color: color-mix(in srgb, var(--klyro-accent-text) 45%, var(--klyro-border));
+  box-shadow: inset -2px 0 0 var(--klyro-accent-text);
+}
+:root body .customisation-panel:not(.is-open) :is(.studio-vertical-tab,.right-rail-tab).is-active {
+  color:var(--klyro-text-muted);
+  background:var(--klyro-panel-soft);
+  border-color:var(--klyro-border);
+  box-shadow:none;
+}
+:root body #right-rail .right-rail-button:not([aria-expanded="true"]):is(:hover,.is-active) {
+  color:var(--klyro-text-muted);
+  background:var(--klyro-panel-soft);
+  border-color:var(--klyro-border);
+  box-shadow:none;
+  transform:none;
+}
+@media (min-width:1101px) {
+  :root body.studio-mode #preview-frame { padding-right:168px; }
+}
+:root body .studio-vertical-tab:focus-visible { outline-offset: -2px; }
+:root body .studio-vertical-content { min-width: 0; min-height: 0; overflow-y: auto; scrollbar-width: thin; padding-right: 3px; }
+:root body .studio-vertical-panel[hidden] { display: none !important; }
+:root body .studio-vertical-panel { outline-offset: -3px; }
+:root body .customise-category { display: flex; flex-direction: column; gap: 12px; }
+:root body .customisation-category-note { margin: 0; color: var(--klyro-text-muted); font-size: 12px; line-height: 1.6; }
+:root body #side-panel:has(#attributes-panel.is-active) .side-panel-body { overflow: hidden; direction: ltr; }
+:root body #attributes-panel.is-active { min-height: 0; height: 100%; }
+:root body .elements-category-title { margin: 3px 0 12px; font-size: 13px; color: var(--klyro-text); }
+:root body .elements-category .attributes-menu { display: flex; flex-direction: column; gap: 7px; }
+:root body .elements-category .attributes-menu-item { width: 100%; min-height: 42px; }
+:root body .elements-category .attributes-menu-label { white-space: normal; }
+:root body .custom-project-builder { padding: 24px; background: var(--klyro-scrim); backdrop-filter: blur(8px); }
+:root body .custom-project-builder-card {
+  display: flex;
+  flex-direction: column;
+  width: min(680px, calc(100vw - 48px));
+  max-height: min(620px, calc(100dvh - 180px));
+  overflow: hidden;
+  color: var(--klyro-text);
+  border: 1px solid var(--klyro-border-strong);
+  background: var(--klyro-panel-raised);
+  box-shadow: var(--klyro-shadow-overlay);
+}
+:root body .custom-project-builder-header { flex: 0 0 auto; padding: 14px 18px; border-color: var(--klyro-border); }
+:root body .custom-project-builder-header h3 { font-size: 15px; }
+:root body .custom-project-builder-body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; padding: 14px 18px 18px; overflow-y: auto; scrollbar-width: thin; }
+:root body .custom-project-builder-body > :not(.custom-project-builder-field) { grid-column: 1 / -1; }
+:root body .custom-project-builder-note { color: var(--klyro-text-muted); font-size: 12px; }
+:root body .custom-project-builder-field { gap: 5px; min-width: 0; }
+:root body .custom-project-builder-field > span { font-size: 10px; color: var(--klyro-text-muted); letter-spacing: .045em; }
+:root body .custom-project-builder-field :is(input:not([type="checkbox"]), select) { min-height: 33px; padding: 7px 10px; border-radius: 9px; font-size: 12px; background: var(--klyro-panel-soft); color: var(--klyro-text); border-color: var(--klyro-border-strong); }
+:root body .custom-project-builder-rule input[type="checkbox"] { width: 15px; height: 15px; min-height: 15px; padding: 0; flex: 0 0 15px; }
+:root body .custom-project-builder-rule { color: var(--klyro-text); font-size: 12px; }
+:root body :is(.custom-project-builder-close, .custom-project-builder-cancel) { color: var(--klyro-text); background: var(--klyro-panel-soft); border: 1px solid var(--klyro-border); font-size: 11px; }
+:root body .custom-project-builder-submit { color: white; background: var(--klyro-brand); font-size: 11px; }
+:root body .custom-project-builder-body > .custom-project-builder-actions { position: sticky; bottom: -18px; padding: 12px 0 6px; margin-top: 4px; background: var(--klyro-panel-raised); border-top: 1px solid var(--klyro-border); flex-wrap: wrap; }
+:root body .customisation-panel.is-file-mode { top: calc(50% + 60px); bottom: auto; left: 50%; transform: translate(-50%, -50%); height: auto; max-height: min(540px, calc(100dvh - 180px)); }
+:root body .customisation-panel.is-file-mode > .right-rail-tab-shell { min-height: 0; overflow-y: auto; }
+:root body .is-file-mode :is(.file-export-package, .file-export-readiness) { font-size: 12px; line-height: 1.45; }
+:root body .is-file-mode .file-menu-wrap { gap: 10px; }
+:root body .is-file-mode .file-export-package { padding: 12px; }
+:root body .is-file-mode .file-menu-item { font-size: 12px; padding: 8px 10px; }
+:root body .floating-panel { max-height: calc(100dvh - 120px); }
+@media (max-width: 600px) {
+  :root body .studio-return-button > span:last-child { display: none; }
+  :root body .custom-project-builder-body { grid-template-columns: 1fr; }
+  :root body .customisation-panel:not(.is-file-mode) { min-width: 0; width: calc(100vw - 108px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root body .studio-vertical-tab { transition: none; }
+}
+
+/* AMENDS 9.1: cutter annotations are graphics, not selectable page copy.
+   Keep pointer interaction intact for the editor's selection/drag tools. */
+:root body #preview-canvas svg :is(text, tspan) {
+  -webkit-user-select: none;
+  user-select: none;
+}

@@ -1,0 +1,255 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 260,
+      "width": 310,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 240,
+      "width": 290,
+      "x": 10,
+      "y": 10
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 10,
+        "width": 310,
+        "x": 0,
+        "y": 250
+      },
+      "left": {
+        "height": 260,
+        "width": 10,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 260,
+        "width": 10,
+        "x": 300,
+        "y": 0
+      },
+      "top": {
+        "height": 10,
+        "width": 310,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 10,
+      "left": 10,
+      "right": 10,
+      "top": 10
+    }
+  },
+  "layout": {
+    "clearStrip": {
+      "clearance": 5,
+      "groupWidth": 50,
+      "maxX": 245,
+      "minX": 15,
+      "resolvedPositionX": 130,
+      "stripCount": 0,
+      "stripWidth": 0
+    },
+    "cutterRect": {
+      "height": 260,
+      "width": 310,
+      "x": 0,
+      "y": 0
+    },
+    "instances": [
+      {
+        "clearStripMaxX": 245,
+        "clearStripMinX": 15,
+        "clearStripRect": null,
+        "clearStripRects": [],
+        "cutterRect": {
+          "height": 260,
+          "width": 310,
+          "x": 0,
+          "y": 0
+        },
+        "foldXs": [],
+        "index": 0,
+        "liveRect": {
+          "height": 240,
+          "width": 290,
+          "x": 10,
+          "y": 10
+        },
+        "sealRects": {
+          "bottom": {
+            "height": 10,
+            "width": 310,
+            "x": 0,
+            "y": 250
+          },
+          "left": {
+            "height": 260,
+            "width": 10,
+            "x": 0,
+            "y": 0
+          },
+          "right": {
+            "height": 260,
+            "width": 10,
+            "x": 300,
+            "y": 0
+          },
+          "top": {
+            "height": 10,
+            "width": 310,
+            "x": 0,
+            "y": 0
+          }
+        },
+        "seals": {
+          "bottom": 10,
+          "left": 10,
+          "right": 10,
+          "top": 10
+        },
+        "selected": true,
+        "xOffset": 0
+      }
+    ],
+    "liveRect": {
+      "height": 240,
+      "width": 290,
+      "x": 10,
+      "y": 10
+    },
+    "measurements": {
+      "bottomSeal": 10,
+      "clearStripGroupRect": {
+        "height": 260,
+        "width": 50,
+        "x": 130,
+        "y": 0
+      },
+      "firstInstanceCutterRect": {
+        "height": 260,
+        "width": 310,
+        "x": 0,
+        "y": 0
+      },
+      "firstInstanceLiveRect": {
+        "height": 240,
+        "width": 290,
+        "x": 10,
+        "y": 10
+      },
+      "firstInstanceXOffset": 0,
+      "leftGap": 120,
+      "leftSeal": 10,
+      "overallHeight": 260,
+      "overallWidth": 310,
+      "rightGap": 120,
+      "rightSeal": 10,
+      "topSeal": 10
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 10,
+        "width": 310,
+        "x": 0,
+        "y": 250
+      },
+      "left": {
+        "height": 260,
+        "width": 10,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 260,
+        "width": 10,
+        "x": 300,
+        "y": 0
+      },
+      "top": {
+        "height": 10,
+        "width": 310,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 10,
+      "left": 10,
+      "right": 10,
+      "top": 10
+    },
+    "totalHeight": 260,
+    "totalWidth": 310
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleed": 3,
+    "height": 260,
+    "paperStrip": {
+      "clearStripWindow": {
+        "lanes": [],
+        "positionX": 130,
+        "stripCount": 0,
+        "stripWidth": 50
+      },
+      "paperColor": "#8B5A2B",
+      "stepping": {
+        "gap": 0,
+        "stepCount": 1
+      }
+    },
+    "safeZones": [],
+    "seal": 10,
+    "sealClearance": 5,
+    "seals": {
+      "bottom": 10,
+      "left": 10,
+      "right": 10,
+      "top": 10
+    },
+    "substrate": "paper",
+    "width": 310
+  },
+  "packId": "paper-strip",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

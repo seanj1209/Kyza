@@ -1,0 +1,321 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 100,
+      "width": 50,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 90,
+      "width": 44,
+      "x": 3,
+      "y": 5
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 5,
+        "width": 50,
+        "x": 0,
+        "y": 95
+      },
+      "left": {
+        "height": 100,
+        "width": 3,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 100,
+        "width": 3,
+        "x": 47,
+        "y": 0
+      },
+      "top": {
+        "height": 5,
+        "width": 50,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 5,
+      "left": 3,
+      "right": 3,
+      "top": 5
+    }
+  },
+  "layout": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "laneSide": "B",
+        "width": 25,
+        "x": 10,
+        "y": 10
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "laneSide": "B",
+        "width": 10,
+        "x": 10,
+        "y": 30
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "laneSide": "B",
+        "width": 25,
+        "x": 10,
+        "y": 45
+      }
+    ],
+    "bodyOriginX": 80,
+    "contentWidth": 200,
+    "drawPerLaneOutline": false,
+    "eyeMarkWidth": 5,
+    "eyemarkCutterOriginX": 80,
+    "eyemarkCutterWidth": 50,
+    "foldLines": [],
+    "geometry": {
+      "bleedInset": 3,
+      "cutterRect": {
+        "height": 100,
+        "width": 50,
+        "x": 0,
+        "y": 0
+      },
+      "liveRect": {
+        "height": 90,
+        "width": 44,
+        "x": 3,
+        "y": 5
+      },
+      "sealRects": {
+        "bottom": {
+          "height": 5,
+          "width": 50,
+          "x": 0,
+          "y": 95
+        },
+        "left": {
+          "height": 100,
+          "width": 3,
+          "x": 0,
+          "y": 0
+        },
+        "right": {
+          "height": 100,
+          "width": 3,
+          "x": 47,
+          "y": 0
+        },
+        "top": {
+          "height": 5,
+          "width": 50,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "seals": {
+        "bottom": 5,
+        "left": 3,
+        "right": 3,
+        "top": 5
+      }
+    },
+    "hangerSlots": [],
+    "lanes": [
+      {
+        "bodyOriginX": 80,
+        "index": 0,
+        "isTrackLane": true,
+        "liveOriginX": 83,
+        "outlineWidth": 50,
+        "outlineX": 80,
+        "side": "A"
+      },
+      {
+        "bodyOriginX": 130,
+        "index": 1,
+        "isTrackLane": false,
+        "liveOriginX": 133,
+        "outlineWidth": 50,
+        "outlineX": 130,
+        "side": "A"
+      },
+      {
+        "bodyOriginX": 180,
+        "index": 2,
+        "isTrackLane": false,
+        "liveOriginX": 183,
+        "outlineWidth": 50,
+        "outlineX": 180,
+        "side": "B"
+      },
+      {
+        "bodyOriginX": 230,
+        "index": 3,
+        "isTrackLane": false,
+        "liveOriginX": 233,
+        "outlineWidth": 50,
+        "outlineX": 230,
+        "side": "B"
+      }
+    ],
+    "leftTrimWidth": 0,
+    "liveOriginX": 83,
+    "liveOriginY": 85,
+    "margin": 80,
+    "measureMeta": {
+      "bodyOriginX": 80,
+      "height": 100,
+      "leftTrimWidth": 0,
+      "margin": 80,
+      "originY": 80,
+      "rightTrimWidth": 0,
+      "stepCount": 4,
+      "stepSpan": 50,
+      "trackSide": "left",
+      "trackWidth": 0,
+      "trimPosition": "left",
+      "trimWidth": 0,
+      "width": 200
+    },
+    "originY": 80,
+    "pairEyeMarks": {
+      "bottomY": 177.5,
+      "fillColor": "#000000",
+      "halfHeight": 2.5,
+      "strokeColor": "#000000",
+      "topY": 80,
+      "warning": null,
+      "width": 5,
+      "x": 177.5
+    },
+    "rightTrim": 0,
+    "rightTrimWidth": 0,
+    "safeZones": [],
+    "seals": {
+      "bottom": 5,
+      "left": 3,
+      "right": 3,
+      "top": 5
+    },
+    "showLaneLabels": true,
+    "stepCount": 4,
+    "stepEnabled": true,
+    "stepSpan": 50,
+    "substrate": "clear",
+    "substrateFill": "#b9dfe8",
+    "substrateOpacity": 0.6,
+    "tearNotch": {
+      "depth": 3,
+      "enabled": false,
+      "offsetX": 6,
+      "style": "triangle",
+      "width": 6
+    },
+    "totalHeight": 260,
+    "totalWidth": 360,
+    "trackOriginX": 80,
+    "trackSide": "left",
+    "trackWidth": 0,
+    "trimPosition": "left",
+    "trimWidth": 0,
+    "usePairEyeMarks": true,
+    "windows": []
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "laneSide": "B",
+        "width": 25,
+        "x": 10,
+        "y": 10
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "laneSide": "B",
+        "width": 10,
+        "x": 10,
+        "y": 30
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "laneSide": "B",
+        "width": 25,
+        "x": 10,
+        "y": 45
+      }
+    ],
+    "bleed": 3,
+    "eyeMarks": {
+      "color": "black",
+      "count": 1,
+      "height": 5,
+      "position": "top-left",
+      "width": 5
+    },
+    "foldLines": [],
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 100,
+    "sachet": {
+      "rightTrim": 0,
+      "safeZoneBuffer": 2,
+      "showLaneLabels": true,
+      "showOverallMeasure": true,
+      "showTrackMeasure": true,
+      "stepCount": 4,
+      "stepEnabled": true,
+      "stepPair": true,
+      "tearNotch": {
+        "depth": 3,
+        "enabled": false,
+        "offsetX": 6,
+        "style": "triangle",
+        "width": 6
+      },
+      "trackSide": "left",
+      "trackWidth": 0
+    },
+    "safeZones": [],
+    "seal": 3,
+    "sealClearance": 2,
+    "seals": {
+      "bottom": 5,
+      "left": 3,
+      "right": 3,
+      "top": 5
+    },
+    "width": 50,
+    "windows": []
+  },
+  "packId": "sachet-4-side-seal",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

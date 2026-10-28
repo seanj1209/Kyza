@@ -1,0 +1,162 @@
+{
+  "projectName": "Northshore Coffee 500 g DOY Pouch",
+  "currentStage": "Cutter Build",
+  "packType": "DOY Pouch",
+  "widthMm": 180,
+  "heightMm": 260,
+  "flatSize": {
+    "widthMm": 380,
+    "heightMm": 310,
+    "display": "380 × 310 mm"
+  },
+  "substrate": "PET 12 / MET PET 12 / PE 80 laminate",
+  "sealAreas": [
+    {
+      "id": "seal-top",
+      "name": "Top Seal",
+      "depthMm": 15,
+      "visible": true
+    },
+    {
+      "id": "seal-side-left",
+      "name": "Left Side Seal",
+      "depthMm": 10,
+      "visible": true
+    },
+    {
+      "id": "seal-side-right",
+      "name": "Right Side Seal",
+      "depthMm": 10,
+      "visible": true
+    }
+  ],
+  "eyemarkCount": 2,
+  "eyemarkSize": {
+    "widthMm": 10,
+    "heightMm": 5,
+    "display": "10 × 5 mm"
+  },
+  "foldLineCount": 3,
+  "safeZoneCount": 4,
+  "cutterLineLength": {
+    "value": 1380,
+    "units": "mm",
+    "display": "1,380 mm"
+  },
+  "units": "mm",
+  "scale": "1:1",
+  "validationStatuses": [
+    {
+      "id": "closed-cutter-contour",
+      "label": "Closed Cutter Contour",
+      "status": "Pass",
+      "message": "Mock cutter contour is represented as closed."
+    },
+    {
+      "id": "cutter-line-present",
+      "label": "Cutter Line Present",
+      "status": "Pass",
+      "message": "Cutter Lines layer is present."
+    },
+    {
+      "id": "slit-tolerance",
+      "label": "Slit Tolerance",
+      "status": "Warning",
+      "message": "Right eyemark clearance needs review."
+    },
+    {
+      "id": "safe-zone-clearance",
+      "label": "Safe Zone Clearance",
+      "status": "Pass",
+      "message": "Important-content placeholders are clear of the safe zones."
+    },
+    {
+      "id": "export-readiness",
+      "label": "Export Readiness",
+      "status": "Not Checked",
+      "message": "Run mock cutter validation before export review."
+    }
+  ],
+  "layerGroups": [
+    {
+      "id": "cutter-lines",
+      "name": "Cutter Lines",
+      "elementCount": 1,
+      "visible": true,
+      "locked": true
+    },
+    {
+      "id": "fold-lines",
+      "name": "Fold Lines",
+      "elementCount": 3,
+      "visible": true,
+      "locked": false
+    },
+    {
+      "id": "seal-areas",
+      "name": "Seal Areas",
+      "elementCount": 3,
+      "visible": true,
+      "locked": false
+    },
+    {
+      "id": "safe-zones",
+      "name": "Safe Zones",
+      "elementCount": 4,
+      "visible": true,
+      "locked": false
+    },
+    {
+      "id": "eyemarks",
+      "name": "Eyemarks",
+      "elementCount": 2,
+      "visible": true,
+      "locked": false
+    },
+    {
+      "id": "dimensions",
+      "name": "Dimensions",
+      "elementCount": 8,
+      "visible": true,
+      "locked": true
+    }
+  ],
+  "selectedElement": {
+    "id": "eyemark-right-01",
+    "name": "Right Eyemark",
+    "type": "Eyemark",
+    "layerGroup": "Eyemarks",
+    "position": "Right web edge",
+    "widthMm": 10,
+    "heightMm": 5,
+    "visible": true,
+    "locked": false,
+    "validationStatus": "Warning"
+  },
+  "availableMockActions": [
+    "Add 1 Eyemark",
+    "Add 2 Eyemarks",
+    "Remove Eyemark",
+    "Reduce Eyemark Size",
+    "Increase Eyemark Width",
+    "Move Eyemark Inward",
+    "Move Eyemark Outward",
+    "Fix Slit Tolerance",
+    "Add Safe Zone",
+    "Add Fold Line",
+    "Add Perf",
+    "Add Regulated Perf",
+    "Add Round Hole",
+    "Add Hanger Slot",
+    "Add Tear Notch",
+    "Add Dummy Barcode",
+    "Toggle Layer",
+    "Hide / Unhide Element",
+    "Lock / Unlock Element",
+    "Select Element",
+    "Delete Element",
+    "Validate Cutter",
+    "Export PDF",
+    "Send to Artwork Studio"
+  ]
+}

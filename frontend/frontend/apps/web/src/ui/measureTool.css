@@ -1,0 +1,13 @@
+/* Tool overlays never change production strokes or export data. */
+:root body #dock .dock-zoom-readout.sr-only { position: absolute; width: 1px; height: 1px; min-width: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:root body #preview svg[data-measure-enabled="true"],
+:root body #preview svg[data-measure-enabled="true"] * { cursor: crosshair !important; }
+.cutter-measure-readout { position: fixed; transform: translate(12px,-140%); pointer-events: none; z-index: 9999; padding: 8px 11px; border: 1px solid var(--klyro-border); border-radius: 12px; background: var(--klyro-panel-raised,#fff); color: var(--klyro-text,#222); box-shadow: var(--klyro-shadow-soft); font: 600 12px/1.4 system-ui; max-width: min(430px,80vw); }
+.cutter-measure-grid-note { position: absolute; right: 14px; bottom: 14px; z-index: 3; pointer-events: none; border: 1px solid var(--klyro-border); border-radius: 10px; padding: 6px 9px; background: var(--klyro-panel-raised,#fff); color: var(--klyro-text-muted,#444); font: 500 11px/1.4 system-ui; }
+/* The full-canvas grid sits behind objects and foreignObject action buttons. */
+#preview:has(svg[data-reference-grid="true"]) #preview-canvas { position: relative; z-index: 2; }
+#preview-canvas > svg[data-reference-grid="true"] { background: transparent !important; }
+:root body.studio-mode #dock .dock-zoom-presets { width: 72px; border: 0; border-radius: 9px; padding: 5px 2px; background: transparent; color: var(--klyro-text); font: 650 12px system-ui; cursor: pointer; }
+:root body.studio-mode #dock .dock-zoom-presets option { background: var(--klyro-panel-raised); color: var(--klyro-text); }
+:root body.studio-mode #dock .dock-pixel-grid { flex: 0 0 auto; border: 1px solid var(--klyro-border); border-radius: 10px; padding: 5px 7px; background: transparent; color: var(--klyro-text-muted); font: 600 10px system-ui; cursor: pointer; }
+:root body.studio-mode #dock .dock-pixel-grid[aria-pressed="true"] { color: var(--klyro-accent-text); background: color-mix(in srgb,var(--klyro-brand) 10%,transparent); }

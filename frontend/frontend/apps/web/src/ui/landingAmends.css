@@ -1,0 +1,51 @@
+/* v6 landing actions and dashboard-style recent projects. Loaded after the carousel. */
+:root body #start-overlay .start-feature-row { display: flex; flex-direction: column; gap: 12px; }
+:root body #start-overlay .start-entry-action { display: flex; align-items: center; gap: 14px; width: 100%; min-height: 78px; padding: 16px 18px; border: 1px solid var(--border-strong); border-radius: 16px; background: linear-gradient(125deg, color-mix(in srgb, var(--brand-ink) 8%, var(--raised)), var(--raised) 70%); color: var(--text); text-align: left; font: inherit; cursor: pointer; box-shadow: inset 0 1px 0 var(--klyro-highlight), var(--klyro-shadow-soft); transition: transform 160ms, border-color 160ms; }
+:root body #start-overlay .start-entry-action[hidden], :root body #start-overlay .start-choose-panel[hidden] { display: none; }
+:root body #start-overlay .start-entry-action:hover { transform: translateY(-2px); border-color: var(--brand-ink); }
+:root body #start-overlay .start-entry-action:focus-visible { outline: 3px solid var(--klyro-focus); outline-offset: 3px; }
+:root body #start-overlay .start-entry-action > svg { width: 26px; height: 26px; flex: 0 0 26px; color: var(--brand-ink); }
+:root body #start-overlay .start-entry-action > span { display: grid; gap: 6px; }
+:root body #start-overlay .start-entry-action strong { font-size: 15px; }
+:root body #start-overlay .start-entry-action small { color: var(--muted); font-size: 12px; line-height: 1.5; }
+:root body #start-overlay .start-choose-panel { min-width: 0; }
+:root body #start-overlay .start-choose-panel .pack-gen-shell { min-height: 0; width: auto; max-width: none; margin: 0; padding: 0; gap: 12px; }
+:root body #start-overlay .start-choose-panel .pack-gen-prompt-panel { padding: 16px; }
+:root body #start-overlay .start-choose-panel .pack-gen-prompt { min-height: 120px; }
+:root body #start-overlay .start-choose-panel .pack-gen-prompt-idea { white-space: normal; }
+:root body #start-overlay .start-file-card { display: block; position: relative; min-height: 190px; padding: 18px; overflow: visible; }
+:root body #start-overlay .start-file-card-open { display: block; width: 100%; padding: 0; }
+:root body #start-overlay .start-file-card-details { display: grid; gap: 6px; width: 100%; }
+:root body #start-overlay .start-file-card-name-overlay { padding-right: 30px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
+:root body #start-overlay .start-file-card-glyph { display: grid; height: 78px; width: 100%; margin: 2px 0; border: 0; background: #f5f6f4; overflow: hidden; border-radius: 9px; }
+:root body #start-overlay .start-file-card-glyph svg { width: 100%; height: 100%; }
+:root body #start-overlay .start-file-card-details > span:last-child, :root body #start-overlay .start-file-card-date-overlay { font-size: 12px; color: var(--klyro-text); }
+:root body #start-overlay .start-file-card-menu-trigger { position: absolute; top: 8px; right: 8px; }
+:root body #start-overlay .start-file-card-menu { top: auto; bottom: calc(100% - 8px); right: 8px; z-index: 20; max-height: min(420px, 65vh); overflow-y: auto; }
+:root body #start-overlay .start-file-card:has(.start-file-card-menu.is-open) { z-index: 21; transform: none; }
+:root .klyro-project-card.is-menu-open { z-index: 10; }
+:root .klyro-project-card strong { padding-right: 26px; }
+@media (prefers-reduced-motion: reduce) { :root body #start-overlay .start-entry-action { transition: none; } }
+:root body #start-overlay .start-file-card-menu-trigger { z-index: 3; }
+
+/* Amends v11 — Cutter Studio heading reads as the page title, not another control label. */
+:root body #start-overlay .start-sidebar .start-studio-title {
+  position: relative; margin: 0; padding-bottom: 14px;
+  color: var(--klyro-text); font-size: clamp(28px, 2.4vw, 34px); font-weight: 720;
+  letter-spacing: -.04em; line-height: 1.05;
+}
+:root body #start-overlay .start-sidebar .start-studio-title::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 38px; height: 3px; border-radius: 3px;
+  background: linear-gradient(90deg, var(--klyro-brand), color-mix(in srgb, var(--klyro-brand) 40%, transparent));
+}
+/* Amends v11 — the pack indicator sits centred under the pack card. The carousel is
+   symmetric (equal nav insets and viewport padding), so its centre is the card's centre. */
+:root body #start-overlay .studio-pack-carousel .rail { justify-content: center; }
+:root body #start-overlay .studio-pack-carousel .rail .dots { justify-content: center; }
+
+/* Help Me Choose Flow F mark. The frame keeps the supplied cream on dark
+   and switches to Dark Charcoal on light surfaces so the mark stays legible. */
+:root body #start-overlay .start-entry-action > svg.flow-mark { width: 26px; height: 26px; flex: 0 0 26px; --flow-mark-frame: #1d1d1d; }
+:root[data-klyro-theme="dark"] body #start-overlay .start-entry-action > svg.flow-mark { --flow-mark-frame: #fdf8f3; }
+:root body #start-overlay svg.flow-mark .flow-mark-frame { fill: var(--flow-mark-frame); }
+:root body #start-overlay svg.flow-mark .flow-mark-letter { fill: #fc0608; }

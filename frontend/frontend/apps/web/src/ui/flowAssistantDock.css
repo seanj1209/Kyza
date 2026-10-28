@@ -1,0 +1,138 @@
+/* Shared Flow presentation surface. Deterministic validation remains engine-owned. */
+:root body .flow-assistant-dock {
+  position: fixed;
+  z-index: 75;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  width: min(510px, calc(100vw - 32px));
+  color: var(--klyro-text);
+  background: var(--klyro-overlay, #242323);
+  border: 1px solid var(--klyro-border-strong, #625c58);
+  border-radius: 18px;
+  box-shadow: var(--klyro-shadow-overlay, 0 12px 35px #0005);
+  backdrop-filter: blur(20px);
+  font: 13px/1.4 system-ui, sans-serif;
+  overflow: hidden;
+}
+:root body.start-mode .flow-assistant-dock,
+:root body.preview-mode .flow-assistant-dock { display: none; }
+.flow-assistant-top { display: flex; align-items: center; gap: 8px; padding: 7px 10px; min-height: 45px; }
+.flow-assistant-top button, .flow-assistant-tabs button, .flow-assistant-form button {
+  font: inherit; cursor: pointer; color: inherit;
+}
+.flow-assistant-brand { border: 0; background: transparent; font-weight: 750 !important; letter-spacing: -.01em; white-space: nowrap; }
+.flow-assistant-status { margin-left: auto; border: 1px solid var(--klyro-border); border-radius: 99px; background: var(--klyro-panel-soft); padding: 5px 11px; font-size: 11px !important; white-space: nowrap; }
+.flow-assistant-status[data-severity="critical"] { color: var(--klyro-danger); }
+.flow-assistant-status[data-severity="warning"] { color: var(--klyro-accent-text); }
+.flow-assistant-toggle { border: 0; background: transparent; font-size: 19px !important; width: 28px; height: 28px; }
+.flow-assistant-dock[data-state="collapsed"] .flow-assistant-body { display: none; }
+.flow-assistant-body { border-top: 1px solid var(--klyro-border); }
+.flow-assistant-tabs { display: flex; gap: 5px; padding: 10px 12px 0; }
+.flow-assistant-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; padding: 8px 14px; color: var(--klyro-text-muted); }
+.flow-assistant-tabs button[aria-selected="true"] { color: var(--klyro-accent-text); border-bottom-color: var(--klyro-brand); }
+.flow-assistant-chat { min-height: 115px; max-height: min(34vh, 250px); overflow-y: auto; padding: 14px 18px; }
+.flow-assistant-response { white-space: pre-wrap; line-height: 1.55; color: var(--klyro-text); }
+.flow-assistant-response p { margin: 0 0 8px; }
+.flow-assistant-question { color: var(--klyro-text-muted); font-size: 11px; }
+:root body .flow-assistant-dock #studio-errors-panel {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  max-height: min(38vh, 330px) !important;
+  overflow-y: auto;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+}
+:root body .flow-assistant-dock [hidden] { display: none !important; }
+:root body .flow-assistant-dock .studio-errors-close { display: none; }
+:root body .flow-assistant-dock .studio-errors-header { padding: 10px 16px; }
+:root body .flow-assistant-dock .studio-errors-list { max-height: none; }
+.flow-assistant-form { display: flex; gap: 8px; padding: 10px 12px 12px; border-top: 1px solid var(--klyro-border); }
+.flow-assistant-form input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid var(--klyro-border-strong); border-radius: 11px; background: var(--klyro-panel-soft); color: var(--klyro-text); font: inherit; }
+.flow-assistant-form button { border: 0; border-radius: 10px; padding: 8px 14px; background: var(--klyro-brand); color: #fff; }
+.flow-assistant-dock :is(button, input):focus-visible { outline: 2px solid var(--klyro-focus); outline-offset: 2px; }
+@media (max-width: 600px) {
+  :root body .flow-assistant-dock { bottom: 10px; width: calc(100vw - 18px); }
+  .flow-assistant-chat { min-height: 85px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .flow-assistant-dock * { animation: none !important; transition: none !important; }
+}
+
+/* Preserve PR #33's centred tabs and right-aligned production actions without overlap. */
+:root body.studio-mode .cutter-klyro-app .cutter-project-tabs {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) minmax(0, auto) minmax(360px, 1fr);
+  align-items: center;
+  gap: 12px;
+  overflow: visible;
+}
+:root body.studio-mode .cutter-project-tabs > .studio-return-button { grid-column: 1; justify-self: start; }
+:root body.studio-mode .cutter-klyro-app .cutter-project-tabs #artboard-tabs {
+  grid-column: 2;
+  justify-self: center;
+  min-width: 0;
+  max-width: min(32vw, 590px);
+  overflow-x: auto;
+  padding-left: 0;
+}
+:root body.studio-mode .cutter-project-tabs #studio-bottom-actions {
+  grid-column: 3;
+  justify-self: end;
+  position: static;
+  margin: 0;
+}
+:root body.studio-mode .cutter-tab-actions { display: none !important; }
+@media (max-width: 1100px) {
+  :root body.studio-mode .cutter-klyro-app .cutter-project-tabs {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 7px;
+  }
+  :root body.studio-mode .cutter-klyro-app .cutter-project-tabs #artboard-tabs {
+    grid-column: 2;
+    grid-row: 1;
+    max-width: 100%;
+  }
+  :root body.studio-mode .cutter-project-tabs #studio-bottom-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+
+/* V3: compact switches just above the composer, branded Flow mark and arrow submit. */
+.flow-assistant-brand { display:flex; align-items:center; gap:6px; }
+.flow-assistant-brand .flow-mark { width:19px; height:19px; flex:none; }
+.flow-assistant-tabs { padding:3px 12px 5px; }
+.flow-assistant-tabs button { font-size:11px; padding:5px 10px; }
+.flow-assistant-form { position:relative; }
+.flow-assistant-form input { padding-right:48px; border-radius:22px; }
+.flow-assistant-form button { position:absolute; right:19px; top:16px; width:29px; height:29px; border-radius:50%; padding:5px; display:grid; place-items:center; }
+.flow-assistant-form button svg { width:19px; height:19px; }
+.flow-assistant-brand .flow-mark-frame { fill:var(--klyro-text); }
+.flow-assistant-brand .flow-mark-letter { fill:#fc0608; }
+/* V4: an idle tray stays narrow; the two visible tabs open and switch views. */
+:root body .flow-assistant-dock[data-state="collapsed"] { width:min(335px,calc(100vw - 32px)); }
+.flow-assistant-top { position:relative; display:grid; grid-template-columns:1fr auto 1fr; gap:8px; padding-right:31px; }
+.flow-assistant-chat-tab { justify-self:start; border:1px solid color-mix(in srgb,#4fbc85 55%,var(--klyro-border)); border-radius:99px; background:color-mix(in srgb,#4fbc85 18%,var(--klyro-panel-soft)); color:var(--klyro-text); padding:5px 12px; font-size:11px !important; }
+.flow-assistant-brand { justify-self:center; padding:4px; }
+.flow-assistant-status { justify-self:end; margin-left:0; margin-right:0; border-color:color-mix(in srgb,#d3ba4f 60%,var(--klyro-border)); background:color-mix(in srgb,#d3ba4f 17%,var(--klyro-panel-soft)); }
+.flow-assistant-toggle { position:absolute; right:6px; top:50%; transform:translateY(-50%); }
+.flow-assistant-chat-tab[aria-selected="true"],.flow-assistant-status[aria-selected="true"] { box-shadow:inset 0 0 0 1px currentColor; }
+.flow-assistant-dock[data-state="collapsed"] .flow-assistant-form { padding-top:5px; }
+.flow-assistant-dock[data-state="collapsed"] .flow-assistant-form input { padding-block:8px; }
+.flow-assistant-dock[data-state="collapsed"] .flow-assistant-form button { top:10px; }
+#preview svg:not([data-select-enabled="true"]) [data-role="opening-controls"],
+#preview svg[data-pan-enabled="true"] [data-role="opening-controls"],
+#preview svg[data-measure-enabled="true"] [data-role="opening-controls"] { display:none; }
+/* Keep decorative dock SVGs out of the cutter SVG sizing/hit-testing rules. */
+:root body #preview #flow-assistant-dock svg { width:19px; height:19px; max-width:none; max-height:none; flex:none; display:block; background:transparent; border-radius:0; box-shadow:none; pointer-events:none; }
+#preview svg[data-select-enabled="true"] [data-role="opening-controls"] image { opacity:1 !important; pointer-events:all !important; }
+
+/* Open inspector/export controls must remain usable above the floating Flow dock. */
+:root body #controls:has(#customisation-panel.is-open) { position:fixed; z-index:80 !important; }

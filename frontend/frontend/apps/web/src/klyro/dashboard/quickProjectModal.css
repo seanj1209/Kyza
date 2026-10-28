@@ -1,0 +1,20 @@
+.quick-project-backdrop { position: fixed; inset: 0; z-index: 1100; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,.68); }
+.quick-project-dialog { width: min(600px, 100%); max-height: calc(100dvh - 40px); overflow: auto; padding: 24px; border: 1px solid var(--klyro-border-strong); border-radius: 18px; color: var(--klyro-text); background: var(--klyro-panel-raised); box-shadow: 0 28px 90px rgba(0,0,0,.35); }
+.quick-project-dialog header, .quick-project-dialog footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.quick-project-dialog header { margin-bottom: 20px; }
+.quick-project-dialog h2 { margin: 5px 0; }
+.quick-project-dialog p { margin: 0; color: var(--klyro-text-muted); }
+.quick-project-dialog header button, .quick-project-dialog footer button { border: 1px solid var(--klyro-border); border-radius: 9px; padding: 9px 13px; color: var(--klyro-text); background: var(--klyro-panel-soft); cursor: pointer; }
+.quick-project-dialog footer button:last-child { border-color: var(--klyro-brand); color: #fff; background: var(--klyro-brand); }
+.quick-project-fields { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+.quick-project-fields label { display: grid; gap: 7px; min-width: 0; font-weight: 650; }
+.quick-project-fields input, .quick-project-fields select { width: 100%; border: 1px solid var(--klyro-border); border-radius: 9px; padding: 10px; color: var(--klyro-text); background: var(--klyro-canvas); }
+.quick-project-fields fieldset { margin: 0; padding: 0; border: 0; }
+.quick-project-fields legend { margin-bottom: 7px; font-weight: 650; }
+.quick-project-eyemarks { display: flex; gap: 7px; }
+.quick-project-eyemarks button { flex: 1; border: 1px solid var(--klyro-border); border-radius: 9px; padding: 10px; color: var(--klyro-text); background: var(--klyro-canvas); cursor: pointer; }
+.quick-project-eyemarks button[aria-pressed="true"] { color: #fff; background: var(--klyro-brand); }
+.quick-project-dialog .quick-project-note { margin-top: 14px; font-size: .84rem; }
+.quick-project-dialog .quick-project-error { min-height: 26px; margin: 12px 0; color: #ffaaa7; }
+.quick-project-dialog footer { justify-content: flex-end; }
+@media(max-width:600px) { .quick-project-fields { grid-template-columns: 1fr; } .quick-project-dialog { padding: 18px; } }

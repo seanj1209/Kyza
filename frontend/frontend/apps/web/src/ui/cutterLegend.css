@@ -1,0 +1,17 @@
+.cutter-legend-bar { position:absolute; z-index:5; right:18px; top:18px; display:flex; align-items:center; gap:4px; padding:4px; border:1px solid #d3c9bf; border-radius:12px; background:#faf7f3; box-shadow:0 3px 14px #0002; }
+.cutter-legend-button,.cutter-legend-settings { border:0; border-radius:8px; background:transparent; color:#9e1316; padding:8px 12px; font:600 12px/1.2 sans-serif; cursor:pointer; }
+.cutter-legend-settings { display:flex; color:#302d2c; padding:7px; }
+.cutter-legend-settings:hover { background:#e9e1d8; }
+.cutter-legend-tray { position:absolute; right:0; top:calc(100% + 8px); width:245px; padding:14px; border:1px solid #d3c9bf; border-radius:12px; background:#faf7f3; color:#302d2c; box-shadow:0 4px 18px #0002; font:12px sans-serif; }
+.cutter-legend-tray[hidden] { display:none; }
+.cutter-legend-tray label { display:grid; gap:8px; }
+.cutter-legend-tray select,.cutter-legend-tray button { width:100%; padding:8px; margin-top:6px; border:1px solid #d3c9bf; border-radius:6px; background:white; color:#302d2c; }
+.cutter-legend-button:hover, .cutter-legend-button[aria-pressed="true"] { background:#a71d26; color:#fff; }
+.cutter-legend-button:focus-visible { outline:3px solid #e5a0a5; outline-offset:3px; }
+.cutter-legend-layout { border:0; border-radius:8px; padding:7px 9px; color:#9e1316; background:transparent; cursor:pointer; }
+.cutter-legend-layout:hover,.cutter-legend-layout[aria-expanded="true"] { background:#e9e1d8; }
+.cutter-legend-layout-tray { position:absolute; top:calc(100% + 8px); left:0; min-width:160px; padding:6px; border:1px solid #d3c9bf; border-radius:10px; background:#faf7f3; box-shadow:0 4px 18px #0002; }
+.cutter-legend-layout-tray[hidden] { display:none; }
+.cutter-legend-layout-tray button { display:block; width:100%; padding:9px; border:0; border-radius:6px; background:transparent; color:#302d2c; text-align:left; cursor:pointer; }
+.cutter-legend-layout-tray button:hover,.cutter-legend-layout-tray button[aria-pressed="true"] { background:#e9e1d8; }
+@media(max-width:640px) { .cutter-legend-button { right:8px; padding:8px 10px; font-size:11px; } }

@@ -1,0 +1,287 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 135,
+      "width": 488,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 115,
+      "width": 488,
+      "x": 0,
+      "y": 10
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 10,
+        "width": 488,
+        "x": 0,
+        "y": 125
+      },
+      "left": {
+        "height": 135,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 135,
+        "width": 0,
+        "x": 488,
+        "y": 0
+      },
+      "top": {
+        "height": 10,
+        "width": 488,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 10,
+      "left": 0,
+      "right": 0,
+      "top": 10
+    }
+  },
+  "layout": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleedInset": 3,
+    "cutterHeight": 135,
+    "cutterWidth": 488,
+    "doyLayout": {
+      "arcInsetDepth": 36.666666666666664,
+      "arcLeftX": 254,
+      "arcRightX": 394,
+      "bottomSealGap": 15,
+      "centerLeft": 289,
+      "centerRight": 359,
+      "centerWidth": 70,
+      "cutterRightX": 568,
+      "gap1": 6,
+      "gap2": 8,
+      "gripSealWidth": 10,
+      "gussetDepth": 122.22222222222221,
+      "gussetLeftX": 296.5,
+      "gussetRightX": 351.5,
+      "gussetWidth": 55,
+      "height": 135,
+      "leftGripX": 125,
+      "notchHalf": 3,
+      "notchLeftX": 92,
+      "notchRightX": 556,
+      "ovalCenterX": 324,
+      "ovalLeftX": 287.3333333333333,
+      "ovalRightX": 360.6666666666667,
+      "ovalWidth": 73.33333333333333,
+      "rectCenterX": 324,
+      "rightGripX": 513,
+      "width": 488,
+      "zipperLeftX": 96,
+      "zipperRightX": 542,
+      "zipperWidth": 10
+    },
+    "doyOval": {
+      "centerX": 324,
+      "width": 73.33333333333333
+    },
+    "foldLines": [],
+    "geometry": {
+      "bleedInset": 3,
+      "cutterRect": {
+        "height": 135,
+        "width": 488,
+        "x": 0,
+        "y": 0
+      },
+      "liveRect": {
+        "height": 115,
+        "width": 488,
+        "x": 0,
+        "y": 10
+      },
+      "sealRects": {
+        "bottom": {
+          "height": 10,
+          "width": 488,
+          "x": 0,
+          "y": 125
+        },
+        "left": {
+          "height": 135,
+          "width": 0,
+          "x": 0,
+          "y": 0
+        },
+        "right": {
+          "height": 135,
+          "width": 0,
+          "x": 488,
+          "y": 0
+        },
+        "top": {
+          "height": 10,
+          "width": 488,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "seals": {
+        "bottom": 10,
+        "left": 0,
+        "right": 0,
+        "top": 10
+      }
+    },
+    "hangerSlots": [],
+    "liveHeight": 115,
+    "liveOriginX": 80,
+    "liveOriginY": 90,
+    "liveWidth": 488,
+    "margin": 80,
+    "originX": 80,
+    "originY": 80,
+    "perfCenters": null,
+    "perfMaxRadius": null,
+    "perfPatternOverflow": false,
+    "safeZones": [],
+    "seals": {
+      "bottom": 10,
+      "left": 0,
+      "right": 0,
+      "top": 10
+    },
+    "substrate": "clear",
+    "substrateFill": "#b9dfe8",
+    "substrateOpacity": 0.6,
+    "totalHeight": 295,
+    "totalWidth": 648,
+    "validationErrors": [],
+    "warnings": [],
+    "windows": []
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleed": 3,
+    "doyPouch": {
+      "bottomSeal": 7.5,
+      "centerOffsetX": 0,
+      "gripSeal": 10,
+      "gussetDepth": 83,
+      "ovalOffsetX": 0,
+      "ovalWidth": 80,
+      "panelWidths": {
+        "center": 70,
+        "left": 199,
+        "right": 199
+      },
+      "showCenterBox": true,
+      "showGripSeal": false,
+      "showGusset": true,
+      "showOval": true,
+      "showTearNotch": true,
+      "showZipper": true,
+      "sideBleed": 45,
+      "tearNotch": {
+        "depth": 3,
+        "offsetX": 12,
+        "offsetY": 8,
+        "width": 6
+      },
+      "trim": 15,
+      "trimEnabled": false,
+      "zipper": {
+        "height": 2,
+        "jawGap": 2,
+        "offsetX": 16,
+        "offsetY": 14,
+        "stopWidth": 8,
+        "width": 10
+      }
+    },
+    "eyeMarks": {
+      "color": "black",
+      "count": 1,
+      "height": 5,
+      "position": "centre",
+      "width": 10
+    },
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 135,
+    "safeZones": [],
+    "seal": 10,
+    "sealClearance": 5,
+    "seals": {
+      "left": 0,
+      "right": 0
+    },
+    "width": 488,
+    "windows": []
+  },
+  "packId": "doy-pouch",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

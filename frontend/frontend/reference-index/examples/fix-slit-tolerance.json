@@ -1,0 +1,48 @@
+{
+  "request": {
+    "requestId": "req-slit-fix-004",
+    "engine": "cutter",
+    "action": "fix-td-slit-clearance",
+    "projectId": "project-demo-004",
+    "payload": {
+      "mode": "grouped-two-eyemark-fix",
+      "strategy": "move-inward",
+      "requiredTdClearanceMm": 1.5,
+      "affectedEyemarks": [
+        {
+          "eyemarkId": "eyemark-1",
+          "eyemarkIndex": 0,
+          "affectedSide": "left"
+        },
+        {
+          "eyemarkId": "eyemark-2",
+          "eyemarkIndex": 1,
+          "affectedSide": "right"
+        }
+      ]
+    }
+  },
+  "response": {
+    "success": true,
+    "engine": "cutter",
+    "action": "fix-td-slit-clearance",
+    "requestId": "req-slit-fix-004",
+    "updatedState": {
+      "eyeMarks": {
+        "count": 2
+      }
+    },
+    "warnings": [],
+    "errors": [],
+    "validationReport": {
+      "valid": true,
+      "messages": [
+        {
+          "code": "TD_CLEARANCE_OK",
+          "message": "TD/slit clearance is valid after the grouped fix.",
+          "severity": "info"
+        }
+      ]
+    }
+  }
+}

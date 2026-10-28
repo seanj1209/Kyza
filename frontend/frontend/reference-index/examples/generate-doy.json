@@ -1,0 +1,37 @@
+{
+  "request": {
+    "requestId": "req-generate-doy-001",
+    "engine": "pack-generator",
+    "action": "generate-pack",
+    "projectId": "project-demo-001",
+    "payload": {
+      "packType": "doy-pouch",
+      "spec": {
+        "width": 488,
+        "height": 135,
+        "seal": 10
+      }
+    },
+    "meta": {
+      "source": "reference-index-example"
+    }
+  },
+  "response": {
+    "success": true,
+    "engine": "pack-generator",
+    "action": "generate-pack",
+    "requestId": "req-generate-doy-001",
+    "updatedState": {
+      "packType": "doy-pouch"
+    },
+    "output": {
+      "packType": "doy-pouch"
+    },
+    "warnings": [],
+    "errors": [],
+    "validationReport": {
+      "valid": true,
+      "messages": []
+    }
+  }
+}

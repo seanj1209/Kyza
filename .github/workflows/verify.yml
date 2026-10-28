@@ -1,0 +1,51 @@
+name: Verify
+
+on:
+  pull_request:
+    paths:
+      - "frontend/frontend/**"
+      - ".github/workflows/verify.yml"
+  push:
+    branches: [main]
+    paths:
+      - "frontend/frontend/**"
+      - ".github/workflows/verify.yml"
+
+jobs:
+  validation-export:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run test:pre-export-validation
+      - run: npm run test:project-export-service
+      - run: npm run build
+  amendments-browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/amends-v3.spec.ts e2e/amends-v6.spec.ts e2e/amends-v7.spec.ts e2e/beta-review.spec.ts e2e/studio-panels.spec.ts --workers=2
+      - run: npx playwright test --workers=2
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: amendment-browser-results
+          path: frontend/frontend/test-results

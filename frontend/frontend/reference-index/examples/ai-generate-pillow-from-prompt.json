@@ -1,0 +1,18 @@
+{
+  "userPrompt": "make a pillow pack 350 x 220",
+  "expectedStructuredRequest": {
+    "requestId": "ai-example-pillow-001",
+    "engine": "pack-generator",
+    "action": "generatePack",
+    "payload": {
+      "packType": "pillow-pack",
+      "spec": {
+        "width": 350,
+        "height": 220
+      },
+      "promptSource": "make a pillow pack 350 x 220"
+    }
+  },
+  "expectedWarnings": [],
+  "expectedErrors": []
+}

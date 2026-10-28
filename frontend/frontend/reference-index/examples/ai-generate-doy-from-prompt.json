@@ -1,0 +1,21 @@
+{
+  "userPrompt": "160 x 220 doy pouch with zip and tear notch",
+  "expectedStructuredRequest": {
+    "requestId": "ai-example-doy-001",
+    "engine": "pack-generator",
+    "action": "generatePack",
+    "payload": {
+      "packType": "doy-pouch",
+      "spec": {
+        "width": 160,
+        "height": 220
+      },
+      "promptSource": "160 x 220 doy pouch with zip and tear notch"
+    }
+  },
+  "expectedWarnings": [
+    "Zipper was captured as a request hint only and is not applied directly by the AI scaffold.",
+    "Tear notch was captured as a request hint only and is not applied directly by the AI scaffold."
+  ],
+  "expectedErrors": []
+}

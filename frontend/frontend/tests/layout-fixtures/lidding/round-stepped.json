@@ -1,0 +1,207 @@
+{
+  "errors": [],
+  "geometry": {
+    "height": 814,
+    "width": 842
+  },
+  "layout": {
+    "cells": [
+      {
+        "column": 0,
+        "height": 395,
+        "id": "1A",
+        "row": 0,
+        "slitHeight": 407,
+        "slitWidth": 421,
+        "slitX": 0,
+        "slitY": 0,
+        "width": 395,
+        "x": 13,
+        "y": 6
+      },
+      {
+        "column": 1,
+        "height": 395,
+        "id": "2A",
+        "row": 0,
+        "slitHeight": 407,
+        "slitWidth": 421,
+        "slitX": 421,
+        "slitY": 0,
+        "width": 395,
+        "x": 434,
+        "y": 6
+      },
+      {
+        "column": 0,
+        "height": 395,
+        "id": "1B",
+        "row": 1,
+        "slitHeight": 407,
+        "slitWidth": 421,
+        "slitX": 0,
+        "slitY": 407,
+        "width": 395,
+        "x": 13,
+        "y": 413
+      },
+      {
+        "column": 1,
+        "height": 395,
+        "id": "2B",
+        "row": 1,
+        "slitHeight": 407,
+        "slitWidth": 421,
+        "slitX": 421,
+        "slitY": 407,
+        "width": 395,
+        "x": 434,
+        "y": 413
+      }
+    ],
+    "cutter": {
+      "height": 814,
+      "width": 842
+    },
+    "eyemarks": [
+      {
+        "height": 6,
+        "width": 10,
+        "x": 1.5,
+        "y": 1.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 409.5,
+        "y": 1.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 422.5,
+        "y": 1.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 830.5,
+        "y": 1.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 1.5,
+        "y": 408.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 409.5,
+        "y": 408.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 422.5,
+        "y": 408.5
+      },
+      {
+        "height": 6,
+        "width": 10,
+        "x": 830.5,
+        "y": 408.5
+      }
+    ],
+    "lidBlock": {
+      "height": 395,
+      "width": 395,
+      "x": 13,
+      "y": 6
+    },
+    "minimumCutter": {
+      "height": 814,
+      "width": 842
+    },
+    "ringReductions": {
+      "bleed": 2,
+      "safe": 10,
+      "sealInner": 8,
+      "sealOuter": 6
+    },
+    "rows": [
+      {
+        "extra": 0,
+        "height": 407,
+        "top": 0
+      },
+      {
+        "extra": 0,
+        "height": 407,
+        "top": 407
+      }
+    ],
+    "slit": {
+      "height": 407,
+      "width": 421
+    }
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [],
+    "bleed": 3,
+    "eyeMarks": {
+      "color": "black",
+      "count": 2,
+      "height": 6,
+      "height2": 6,
+      "position": "top",
+      "width": 10,
+      "width2": 10
+    },
+    "foldLines": [],
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 814,
+    "lidding": {
+      "across": 2,
+      "activeStep": "1A",
+      "around": 2,
+      "artworkSafeArea": 385,
+      "compensatedExtra": 0,
+      "compensatedRow": 1,
+      "innerLines": true,
+      "mode": "auto",
+      "multipack": false,
+      "multipackSingleSide": "right",
+      "outerBleed": 2,
+      "outerCutHeight": 395,
+      "outerCutWidth": 395,
+      "pullTab": true,
+      "pullTabAngle": 45,
+      "repeatMode": "uniform",
+      "sealInner": 2,
+      "sealOuter": 4,
+      "slitSizingVersion": 2,
+      "style": "round",
+      "syncMirror": true
+    },
+    "safeZones": [],
+    "seal": 0,
+    "sealClearance": 0,
+    "seals": {
+      "bottom": 0,
+      "left": 0,
+      "right": 0,
+      "top": 0
+    },
+    "substrate": "clear",
+    "width": 842,
+    "windows": []
+  },
+  "packId": "lidding",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

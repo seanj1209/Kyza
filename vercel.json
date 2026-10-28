@@ -1,5 +1,17 @@
 {
   "cleanUrls": true,
+  "installCommand": "npm --prefix frontend/frontend ci --ignore-scripts",
+  "buildCommand": "npm --prefix frontend/frontend run build",
+  "outputDirectory": "frontend/frontend/dist",
+  "rewrites": [
+    { "source": "/", "destination": "/landing.html" },
+    { "source": "/app", "destination": "/index.html" },
+    { "source": "/ai-studio", "destination": "/ai-studio.html" },
+    { "source": "/cutter", "destination": "/cutter.html" },
+    { "source": "/artwork", "destination": "/artwork.html" },
+    { "source": "/validation", "destination": "/validation.html" },
+    { "source": "/account", "destination": "/account.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",

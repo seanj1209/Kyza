@@ -1,0 +1,569 @@
+{
+  "errors": [],
+  "geometry": {
+    "armDegree": 45,
+    "armLines": [
+      {
+        "endX": 200,
+        "endY": 39.99999999999999,
+        "position": "inner",
+        "side": "top-left",
+        "startX": 240,
+        "startY": 0
+      },
+      {
+        "endX": 280,
+        "endY": 39.99999999999999,
+        "position": "inner",
+        "side": "top-right",
+        "startX": 240,
+        "startY": 0
+      },
+      {
+        "endX": 200,
+        "endY": 150,
+        "position": "inner",
+        "side": "bottom-left",
+        "startX": 240,
+        "startY": 190
+      },
+      {
+        "endX": 280,
+        "endY": 150,
+        "position": "inner",
+        "side": "bottom-right",
+        "startX": 240,
+        "startY": 190
+      },
+      {
+        "endX": 200,
+        "endY": 39.99999999999999,
+        "position": "outer",
+        "side": "top-left",
+        "startX": 160,
+        "startY": 0
+      },
+      {
+        "endX": 280,
+        "endY": 39.99999999999999,
+        "position": "outer",
+        "side": "top-right",
+        "startX": 320,
+        "startY": 0
+      },
+      {
+        "endX": 200,
+        "endY": 150,
+        "position": "outer",
+        "side": "bottom-left",
+        "startX": 160,
+        "startY": 190
+      },
+      {
+        "endX": 280,
+        "endY": 150,
+        "position": "outer",
+        "side": "bottom-right",
+        "startX": 320,
+        "startY": 190
+      }
+    ],
+    "armWidth": 7.5,
+    "bottomApexY": 182.5,
+    "bottomSeal": 7.5,
+    "bottomSealAreaWidth": 15,
+    "bottomShoulderY": 142.5,
+    "centerOffsetX": 0,
+    "centerX": 240,
+    "customArmDegreeEnabled": true,
+    "gussetDepth": 40,
+    "gussetDepthRatio": 0.463768115942029,
+    "gussetLeftX": 207.5,
+    "gussetRightX": 272.5,
+    "gussetSize": 40,
+    "gussetWidth": 65,
+    "gussetX": 207.5,
+    "height": 190,
+    "leftBottomSealX": 192.5,
+    "leftFoldX": 200,
+    "leftGuideX": 190,
+    "leftPanelX": 0,
+    "leftTrimWidth": 0,
+    "leftTrimX": 0,
+    "liveHeight": 175,
+    "liveWidth": 480,
+    "liveX": 0,
+    "liveY": 7.5,
+    "midSectionWidth": 80,
+    "midSectionWidthRatio": 0.16666666666666666,
+    "midY": 96.25,
+    "pouchHeight": 200,
+    "pouchWidth": 190,
+    "renderedHeight": 190,
+    "renderedWidth": 480,
+    "rightBottomSealX": 272.5,
+    "rightFoldX": 280,
+    "rightGuideX": 290,
+    "rightPanelX": 280,
+    "rightTrimWidth": 0,
+    "rightTrimX": 480,
+    "sealWidth": 7.5,
+    "shoulderHeight": 39.99999999999999,
+    "shoulderHeightRatio": 0.21052631578947364,
+    "sideGuideOffset": 10,
+    "sideSeal": 7.5,
+    "topApexY": 10,
+    "topShoulderY": 49.99999999999999,
+    "trim": 15,
+    "trimEnabled": false,
+    "trimWidth": 0,
+    "width": 480
+  },
+  "layout": {
+    "attributeBoxes": [],
+    "bottomApexY": 262.5,
+    "bottomShoulderY": 222.5,
+    "centerX": 320,
+    "featureMeasureSegments": [
+      {
+        "endX": 320,
+        "index": 0,
+        "label": "40mm",
+        "row": "bottom",
+        "startX": 280,
+        "y": 273
+      },
+      {
+        "endX": 360,
+        "index": 1,
+        "label": "40mm",
+        "row": "bottom",
+        "startX": 320,
+        "y": 273
+      },
+      {
+        "endX": 280,
+        "index": 0,
+        "label": "7.5",
+        "row": "bottom",
+        "startX": 272.5,
+        "y": 279
+      },
+      {
+        "endX": 287.5,
+        "index": 1,
+        "label": "7.5",
+        "row": "bottom",
+        "startX": 280,
+        "y": 279
+      },
+      {
+        "endX": 360,
+        "index": 2,
+        "label": "7.5",
+        "row": "bottom",
+        "startX": 352.5,
+        "y": 279
+      },
+      {
+        "endX": 367.5,
+        "index": 3,
+        "label": "7.5",
+        "row": "bottom",
+        "startX": 360,
+        "y": 279
+      },
+      {
+        "endX": 280,
+        "index": 10,
+        "label": "40mm",
+        "row": "bottom",
+        "startX": 240,
+        "y": 273
+      },
+      {
+        "endX": 400,
+        "index": 11,
+        "label": "40mm",
+        "row": "bottom",
+        "startX": 360,
+        "y": 273
+      }
+    ],
+    "flowGeometry": {
+      "bleedInset": 3,
+      "cutterRect": {
+        "height": 190,
+        "width": 480,
+        "x": 0,
+        "y": 0
+      },
+      "liveRect": {
+        "height": 175,
+        "width": 480,
+        "x": 0,
+        "y": 7.5
+      },
+      "sealRects": {
+        "bottom": {
+          "height": 7.5,
+          "width": 480,
+          "x": 0,
+          "y": 182.5
+        },
+        "left": {
+          "height": 190,
+          "width": 0,
+          "x": 0,
+          "y": 0
+        },
+        "right": {
+          "height": 190,
+          "width": 0,
+          "x": 480,
+          "y": 0
+        },
+        "top": {
+          "height": 7.5,
+          "width": 480,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "seals": {
+        "bottom": 7.5,
+        "left": 0,
+        "right": 0,
+        "top": 7.5
+      }
+    },
+    "geometry": {
+      "armDegree": 45,
+      "armLines": [
+        {
+          "endX": 200,
+          "endY": 39.99999999999999,
+          "position": "inner",
+          "side": "top-left",
+          "startX": 240,
+          "startY": 0
+        },
+        {
+          "endX": 280,
+          "endY": 39.99999999999999,
+          "position": "inner",
+          "side": "top-right",
+          "startX": 240,
+          "startY": 0
+        },
+        {
+          "endX": 200,
+          "endY": 150,
+          "position": "inner",
+          "side": "bottom-left",
+          "startX": 240,
+          "startY": 190
+        },
+        {
+          "endX": 280,
+          "endY": 150,
+          "position": "inner",
+          "side": "bottom-right",
+          "startX": 240,
+          "startY": 190
+        },
+        {
+          "endX": 200,
+          "endY": 39.99999999999999,
+          "position": "outer",
+          "side": "top-left",
+          "startX": 160,
+          "startY": 0
+        },
+        {
+          "endX": 280,
+          "endY": 39.99999999999999,
+          "position": "outer",
+          "side": "top-right",
+          "startX": 320,
+          "startY": 0
+        },
+        {
+          "endX": 200,
+          "endY": 150,
+          "position": "outer",
+          "side": "bottom-left",
+          "startX": 160,
+          "startY": 190
+        },
+        {
+          "endX": 280,
+          "endY": 150,
+          "position": "outer",
+          "side": "bottom-right",
+          "startX": 320,
+          "startY": 190
+        }
+      ],
+      "armWidth": 7.5,
+      "bottomApexY": 182.5,
+      "bottomSeal": 7.5,
+      "bottomSealAreaWidth": 15,
+      "bottomShoulderY": 142.5,
+      "centerOffsetX": 0,
+      "centerX": 240,
+      "customArmDegreeEnabled": true,
+      "gussetDepth": 40,
+      "gussetDepthRatio": 0.463768115942029,
+      "gussetLeftX": 207.5,
+      "gussetRightX": 272.5,
+      "gussetSize": 40,
+      "gussetWidth": 65,
+      "gussetX": 207.5,
+      "height": 190,
+      "leftBottomSealX": 192.5,
+      "leftFoldX": 200,
+      "leftGuideX": 190,
+      "leftPanelX": 0,
+      "leftTrimWidth": 0,
+      "leftTrimX": 0,
+      "liveHeight": 175,
+      "liveWidth": 480,
+      "liveX": 0,
+      "liveY": 7.5,
+      "midSectionWidth": 80,
+      "midSectionWidthRatio": 0.16666666666666666,
+      "midY": 96.25,
+      "pouchHeight": 200,
+      "pouchWidth": 190,
+      "renderedHeight": 190,
+      "renderedWidth": 480,
+      "rightBottomSealX": 272.5,
+      "rightFoldX": 280,
+      "rightGuideX": 290,
+      "rightPanelX": 280,
+      "rightTrimWidth": 0,
+      "rightTrimX": 480,
+      "sealWidth": 7.5,
+      "shoulderHeight": 39.99999999999999,
+      "shoulderHeightRatio": 0.21052631578947364,
+      "sideGuideOffset": 10,
+      "sideSeal": 7.5,
+      "topApexY": 10,
+      "topShoulderY": 49.99999999999999,
+      "trim": 15,
+      "trimEnabled": false,
+      "trimWidth": 0,
+      "width": 480
+    },
+    "hangerSlots": [],
+    "height": 190,
+    "heightMeasureSegments": [
+      {
+        "endY": 87.5,
+        "index": 0,
+        "label": "7.5mm",
+        "row": "height",
+        "startY": 80,
+        "x": 563
+      },
+      {
+        "endY": 262.5,
+        "index": 1,
+        "label": "175mm",
+        "row": "height",
+        "startY": 87.5,
+        "x": 563
+      },
+      {
+        "endY": 270,
+        "index": 2,
+        "label": "7.5mm",
+        "row": "height",
+        "startY": 262.5,
+        "x": 563
+      }
+    ],
+    "innerPathPoints": [
+      {
+        "x": 320,
+        "y": 90
+      },
+      {
+        "x": 360,
+        "y": 130
+      },
+      {
+        "x": 360,
+        "y": 222.5
+      },
+      {
+        "x": 320,
+        "y": 262.5
+      },
+      {
+        "x": 280,
+        "y": 222.5
+      },
+      {
+        "x": 280,
+        "y": 130
+      }
+    ],
+    "leftFoldX": 280,
+    "leftGuideX": 270,
+    "liveHeight": 175,
+    "liveOriginX": 80,
+    "liveOriginY": 87.5,
+    "liveWidth": 480,
+    "margin": 80,
+    "midY": 176.25,
+    "originX": 80,
+    "originY": 80,
+    "rightFoldX": 360,
+    "rightGuideX": 370,
+    "safeZones": [],
+    "sealPathPoints": [
+      {
+        "x": 320,
+        "y": 82.5
+      },
+      {
+        "x": 367.5,
+        "y": 122.5
+      },
+      {
+        "x": 367.5,
+        "y": 230
+      },
+      {
+        "x": 320,
+        "y": 270
+      },
+      {
+        "x": 272.5,
+        "y": 230
+      },
+      {
+        "x": 272.5,
+        "y": 122.5
+      }
+    ],
+    "sealWidth": 7.5,
+    "seals": {
+      "bottom": 7.5,
+      "left": 0,
+      "right": 0,
+      "top": 7.5
+    },
+    "softWarnings": [],
+    "substrate": "clear",
+    "substrateFill": "#b9dfe8",
+    "substrateOpacity": 0.6,
+    "topApexY": 90,
+    "topMeasureSegments": [
+      {
+        "endX": 280,
+        "index": 1,
+        "label": "200mm",
+        "row": "top",
+        "startX": 80,
+        "y": 77
+      },
+      {
+        "endX": 560,
+        "index": 3,
+        "label": "200mm",
+        "row": "top",
+        "startX": 360,
+        "y": 77
+      }
+    ],
+    "topShoulderY": 130,
+    "viewHeight": 350,
+    "viewWidth": 640,
+    "width": 480,
+    "windows": []
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [],
+    "doyPouch": {
+      "bottomSeal": 7.5,
+      "gripSeal": 10,
+      "gussetDepth": 35,
+      "panelWidths": {
+        "center": 100,
+        "left": 160,
+        "right": 160
+      },
+      "showCenterBox": false,
+      "showGripSeal": false,
+      "showGusset": false,
+      "showOval": false,
+      "showTearNotch": false,
+      "showZipper": false,
+      "sideBleed": 45,
+      "tearNotch": {
+        "depth": 3,
+        "offsetX": 35,
+        "width": 6
+      },
+      "trim": 15,
+      "trimEnabled": false,
+      "zipper": {
+        "height": 2,
+        "jawGap": 2,
+        "offsetX": 60,
+        "offsetY": 14,
+        "stopWidth": 8,
+        "width": 10
+      }
+    },
+    "eyeMarks": {
+      "color": "black",
+      "count": 1,
+      "height": 5,
+      "position": "centre",
+      "width": 15
+    },
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 190,
+    "kSealPouch": {
+      "armDegree": 45,
+      "armWidth": 7.5,
+      "bottomApexY": 190,
+      "bottomSeal": 7.5,
+      "centerOffsetX": 0,
+      "customArmDegreeEnabled": true,
+      "gussetDepth": 40,
+      "gussetSize": 40,
+      "midSectionWidthRatio": 0.17291666666666666,
+      "pouchHeight": 200,
+      "pouchWidth": 190,
+      "sealWidth": 10,
+      "shoulderHeightRatio": 0.11219512195121951,
+      "sideGuideOffset": 10,
+      "sideSeal": 7.5,
+      "topApexY": 10,
+      "trim": 15,
+      "trimEnabled": false
+    },
+    "safeZones": [],
+    "seal": 7.5,
+    "seals": {
+      "bottom": 7.5,
+      "left": 15,
+      "right": 15,
+      "top": 7.5
+    },
+    "width": 510,
+    "windows": []
+  },
+  "packId": "k-seal-pouch",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": []
+}

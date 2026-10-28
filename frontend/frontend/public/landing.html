@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Kyza — a focused workspace for packaging artwork, cutter planning and preflight." />
+  <title>Kyza — packaging artwork, made clear</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="/" aria-label="Kyza home"><span class="mark">K</span><span>Kyza</span></a>
+    <span class="status-pill"><span class="status-dot"></span> private beta in preparation</span>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">A clearer route from artwork to cutter</p>
+        <h1 id="hero-title">Packaging work,<br /><em>without the fog.</em></h1>
+        <p class="lede">Kyza is a focused workspace for preparing packaging artwork, shaping cutter-ready layouts and checking the details that matter before release.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#demo">Explore the preview <span>↓</span></a>
+          <span class="quiet-note">Full workspace access is private.</span>
+        </div>
+      </div>
+      <div class="hero-orbit" aria-hidden="true">
+        <div class="orbit-ring ring-one"></div>
+        <div class="orbit-ring ring-two"></div>
+        <div class="orbit-core"><span>K</span></div>
+        <div class="orbit-label label-top">ARTWORK</div>
+        <div class="orbit-label label-right">CUTTER</div>
+        <div class="orbit-label label-bottom">PREFLIGHT</div>
+      </div>
+    </section>
+
+    <section class="intro-grid" aria-label="Kyza overview">
+      <div>
+        <p class="section-kicker">What Kyza is</p>
+        <h2>A small, sharp place for the work between idea and production.</h2>
+      </div>
+      <div class="intro-body">
+        <p>Kyza brings the practical parts of packaging preparation into one calm surface: artwork context, cutter geometry, validation and export readiness.</p>
+        <div class="feature-list">
+          <div><span>01</span><strong>Structure</strong><p>Start from a clear pack specification.</p></div>
+          <div><span>02</span><strong>Shape</strong><p>See the cutter and its working zones.</p></div>
+          <div><span>03</span><strong>Confidence</strong><p>Surface issues before they reach production.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo" class="demo-section" aria-labelledby="demo-title">
+      <div class="demo-heading">
+        <p class="section-kicker">Read-only preview</p>
+        <h2 id="demo-title">A glimpse of the cutter workspace.</h2>
+        <p>This preview is illustrative only. It does not save, upload or modify anything.</p>
+      </div>
+      <div class="demo-shell">
+        <div class="demo-toolbar">
+          <span class="demo-title"><span class="mini-mark">K</span> cutter preview</span>
+          <span class="read-only-badge">READ ONLY</span>
+        </div>
+        <div class="demo-canvas">
+          <div class="canvas-ruler ruler-top"><span>0</span><span>50</span><span>100</span><span>150</span><span>200 mm</span></div>
+          <div class="canvas-ruler ruler-left"><span>0</span><span>50</span><span>100</span><span>150</span></div>
+          <svg class="cutter-svg" viewBox="0 0 640 360" role="img" aria-label="Illustrative packaging cutter layout">
+            <rect x="115" y="66" width="410" height="220" rx="8" class="substrate" />
+            <path d="M115 104 H525 M115 248 H525 M192 66 V286 M448 66 V286" class="construction" />
+            <path d="M115 66 H525 V286 H115 Z" class="cut-line" />
+            <path d="M192 66 V286 M448 66 V286" class="fold-line" />
+            <path d="M135 86 H172 M468 86 H505 M135 266 H172 M468 266 H505" class="safe-zone" />
+            <circle cx="320" cy="48" r="7" class="eyemark" />
+            <text x="320" y="326" text-anchor="middle" class="svg-label">FLOWWRAP · 200 × 110 mm · ILLUSTRATIVE</text>
+          </svg>
+          <div class="canvas-callout callout-one">cut line <i></i></div>
+          <div class="canvas-callout callout-two">safe zone <i></i></div>
+          <div class="canvas-callout callout-three">eyemark <i></i></div>
+        </div>
+        <div class="demo-footer">
+          <span><b></b> Geometry preview</span><span><b></b> No data leaves this page</span><span><b></b> Development access is private</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="access-note" aria-label="Access note">
+      <div class="lock-icon">⌁</div>
+      <div><p class="section-kicker">Behind the wall</p><h2>The full Kyza workspace is for authorised development only.</h2><p>Public visitors can read about Kyza and explore this safe preview. Full app routes and write actions will be protected server-side in staging and production.</p></div>
+      <span class="access-tag">AUTHORISED ONLY</span>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>Kyza / 2026</span><span>Packaging artwork, cutter planning, preflight.</span><span>Public preview · no account required</span></footer>
+  <script src="/script.js"></script>
+</body>
+</html>

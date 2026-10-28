@@ -1,0 +1,576 @@
+/* =========================================================
+   Sandbox Studio — scoped styles
+   All classes prefixed with .sandbox- to prevent leaking
+   into conventional pack-type UI.
+   ========================================================= */
+
+/* ---- Entry screen (welcome overlay) ---- */
+.sandbox-entry {
+  position: absolute;
+  inset: 0 68px 0 0;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(120% 90% at 50% 42%, rgba(73, 198, 220, 0.03), transparent 60%),
+    var(--klyro-canvas);
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.25s var(--klyro-ease);
+}
+
+/* Fade the whole welcome screen (graphics included) when entering Set-Up. */
+.sandbox-entry.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sandbox-entry-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Decorative: the SVG controls its own per-element contrast + a radial
+     mask keeps the centre faint. This is the overall intensity dial. */
+  opacity: 0.68;
+  overflow: hidden;
+}
+
+#preview .sandbox-studio-root .sandbox-entry-bg > svg {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  display: block;
+}
+
+/* ---- Restrained animated details (disabled under reduced-motion) ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .sandbox-entry-bg .sbx-scan {
+    animation: sbx-scan-move 14s linear infinite;
+  }
+  .sandbox-entry-bg .sbx-pulse {
+    animation: sbx-pulse-fade 4.5s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .sandbox-entry-bg :is(.sbx-pack, .sbx-mat, .sbx-legend, .sbx-ink) {
+    animation: sbx-detail-breathe 9s ease-in-out infinite alternate;
+  }
+  .sandbox-entry-bg .sbx-mat { animation-delay: -2s; }
+  .sandbox-entry-bg .sbx-legend { animation-delay: -4s; }
+  .sandbox-entry-bg .sbx-ink { animation-delay: -6s; }
+}
+
+@keyframes sbx-scan-move {
+  0% { transform: translateY(70px); }
+  100% { transform: translateY(770px); }
+}
+@keyframes sbx-pulse-fade {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+@keyframes sbx-detail-breathe {
+  from { opacity: .32; }
+  to { opacity: .58; }
+}
+.sandbox-entry-text {
+  position: relative;
+  max-width: min(520px, 100%);
+  margin: 0;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--klyro-text-muted);
+  letter-spacing: -0.01em;
+}
+
+.sandbox-entry-buttons {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.sandbox-entry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--klyro-border-strong);
+  border-radius: var(--klyro-radius-control);
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.18s var(--klyro-ease), border-color 0.18s var(--klyro-ease), box-shadow 0.18s var(--klyro-ease);
+}
+
+.sandbox-entry-btn:hover {
+  background: var(--klyro-panel-soft);
+  border-color: var(--klyro-border-strong);
+  box-shadow: var(--klyro-shadow-soft);
+}
+
+#preview .sandbox-studio-root .sandbox-entry-btn > svg {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex: 0 0 16px;
+}
+
+.sandbox-entry-btn.is-primary {
+  background: var(--klyro-brand);
+  border-color: var(--klyro-brand);
+  color: #fff;
+}
+.sandbox-entry-btn.is-primary:hover {
+  background: var(--klyro-brand-hover);
+  border-color: var(--klyro-brand-hover);
+}
+
+/* ---- Right-hand toolbar ---- */
+.sandbox-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 68px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 0;
+  gap: 8px;
+  background: var(--klyro-panel);
+  border-left: 1px solid var(--klyro-border);
+  z-index: 16;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sandbox-toolbar-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--klyro-text-muted);
+  cursor: pointer;
+  transition: background 0.15s var(--klyro-ease), color 0.15s var(--klyro-ease);
+}
+
+.sandbox-toolbar-btn:hover {
+  background: var(--klyro-hover);
+  color: var(--klyro-text);
+}
+
+.sandbox-toolbar-btn.is-active {
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+  box-shadow: var(--klyro-control-shadow);
+}
+
+#preview .sandbox-studio-root .sandbox-toolbar-btn > svg {
+  width: 20px;
+  height: 20px;
+  max-width: 20px;
+  max-height: 20px;
+  flex: 0 0 20px;
+}
+
+/* Tooltip */
+.sandbox-toolbar-btn::after {
+  content: attr(aria-label);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  box-shadow: var(--klyro-shadow);
+  border: 1px solid var(--klyro-border-strong);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 50;
+}
+
+.sandbox-toolbar-btn:hover::after {
+  opacity: 1;
+}
+
+/* ---- Side panel (shared container for Set-Up, Specs, etc.) ---- */
+.sandbox-panel {
+  position: absolute;
+  top: 0;
+  right: 68px;
+  bottom: 0;
+  width: min(320px, calc(100% - 68px));
+  display: flex;
+  flex-direction: column;
+  background: var(--klyro-panel);
+  border-left: 1px solid var(--klyro-border);
+  box-shadow: var(--klyro-shadow);
+  z-index: 11;
+  overflow: hidden;
+  transform: translateX(0);
+  transition: transform 0.22s var(--klyro-ease), opacity 0.22s var(--klyro-ease);
+}
+
+.sandbox-panel[hidden] {
+  display: none;
+}
+
+.sandbox-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  min-height: 50px;
+  border-bottom: 1px solid var(--klyro-border);
+  background: linear-gradient(135deg, var(--klyro-panel-raised), var(--klyro-panel));
+}
+
+.sandbox-panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--klyro-text);
+  margin: 0;
+}
+
+.sandbox-panel-close {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--klyro-border);
+  border-radius: 8px;
+  background: var(--klyro-panel-soft);
+  color: var(--klyro-text);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sandbox-panel-close:hover {
+  background: var(--klyro-panel-raised);
+}
+
+.sandbox-panel-body {
+  flex: 1 1 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---- Form field styling ---- */
+.sandbox-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sandbox-field-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--klyro-text-muted);
+}
+
+.sandbox-field-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.sandbox-field-row .sandbox-input {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.sandbox-input {
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--klyro-border-strong);
+  border-radius: 9px;
+  background: var(--klyro-panel-soft);
+  color: var(--klyro-text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.sandbox-input:focus {
+  border-color: var(--klyro-brand);
+  box-shadow: 0 0 0 2px rgba(158, 19, 22, 0.15);
+}
+
+.sandbox-input::placeholder {
+  color: var(--klyro-text-subtle);
+}
+
+select.sandbox-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 28px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a69c96' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.sandbox-field-unit {
+  font-size: 12px;
+  color: var(--klyro-text-muted);
+  white-space: nowrap;
+}
+
+.sandbox-field-separator {
+  width: 100%;
+  height: 1px;
+  background: var(--klyro-border);
+  margin: 4px 0;
+}
+
+/* ---- Measures toggle (mm/in) ---- */
+.sandbox-measures-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--klyro-border-strong);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.sandbox-measures-btn {
+  flex: 1 1 0;
+  padding: 7px 0;
+  border: none;
+  background: transparent;
+  color: var(--klyro-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sandbox-measures-btn.is-active {
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+}
+
+.sandbox-measures-btn:not(.is-active):hover {
+  background: var(--klyro-hover);
+}
+
+/* ---- Specs panel: vertical tab selector ---- */
+.sandbox-specs-layout {
+  display: flex;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.sandbox-specs-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 0 10px 10px;
+  border-right: 1px solid var(--klyro-border);
+  width: 42px;
+  min-width: 42px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sandbox-specs-tab {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--klyro-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sandbox-specs-tab:hover {
+  background: var(--klyro-hover);
+  color: var(--klyro-text);
+}
+
+.sandbox-specs-tab.is-active {
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+  box-shadow: var(--klyro-control-shadow);
+}
+
+#preview .sandbox-studio-root .sandbox-specs-tab > svg {
+  width: 16px;
+  height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex: 0 0 16px;
+}
+
+/* Specs tab tooltip */
+.sandbox-specs-tab::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--klyro-panel-raised);
+  color: var(--klyro-text);
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: var(--klyro-shadow-soft);
+  border: 1px solid var(--klyro-border-strong);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 5;
+}
+
+.sandbox-specs-tab:hover::after {
+  opacity: 1;
+}
+
+.sandbox-specs-content {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding: 14px 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---- Substrate tabs (numbered circles) ---- */
+.sandbox-substrate-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.sandbox-substrate-tab {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--klyro-border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--klyro-text-muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sandbox-substrate-tab.is-active {
+  background: var(--klyro-brand);
+  border-color: var(--klyro-brand);
+  color: #fff;
+}
+
+.sandbox-substrate-tab:not(.is-active):hover {
+  background: var(--klyro-hover);
+  color: var(--klyro-text);
+}
+
+/* ---- Placeholder panel (Coming Soon) ---- */
+.sandbox-placeholder {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--klyro-text-subtle);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+/* ---- Substrate count selector ---- */
+.sandbox-substrate-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sandbox-substrate-count-label {
+  font-size: 12px;
+  color: var(--klyro-text-muted);
+  white-space: nowrap;
+}
+
+.sandbox-substrate-count select.sandbox-input {
+  width: 60px;
+}
+
+/* ---- Specs section placeholder ---- */
+.sandbox-specs-placeholder {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--klyro-text-subtle);
+  font-size: 13px;
+  padding: 32px;
+  text-align: center;
+}
+
+/* ---- Responsive adjustments ---- */
+@media (max-width: 720px) {
+  .sandbox-entry {
+    padding: 16px;
+  }
+
+  .sandbox-panel {
+    width: min(280px, calc(100% - 68px));
+  }
+}
+
+/* The conventional inspector is replaced only while the Sandbox shell is active. */
+:root body.sandbox-mode #right-rail,
+:root body.sandbox-mode #side-panel,
+:root body.sandbox-mode .customisation-panel:not(.is-file-mode) {
+  display: none;
+}

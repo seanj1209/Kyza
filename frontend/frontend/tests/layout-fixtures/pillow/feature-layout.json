@@ -1,0 +1,278 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 235,
+      "width": 510,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 215,
+      "width": 490,
+      "x": 10,
+      "y": 10
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 10,
+        "width": 510,
+        "x": 0,
+        "y": 225
+      },
+      "left": {
+        "height": 235,
+        "width": 10,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 235,
+        "width": 10,
+        "x": 500,
+        "y": 0
+      },
+      "top": {
+        "height": 10,
+        "width": 510,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 10,
+      "left": 10,
+      "right": 10,
+      "top": 10
+    }
+  },
+  "layout": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleedInset": 3,
+    "cutterHeight": 235,
+    "cutterWidth": 510,
+    "doyLayout": null,
+    "doyOval": null,
+    "foldLines": [
+      {
+        "id": "pillow-fold-left",
+        "offset": 122.5,
+        "orientation": "vertical"
+      },
+      {
+        "id": "pillow-fold-right",
+        "offset": 367.5,
+        "orientation": "vertical"
+      }
+    ],
+    "geometry": {
+      "bleedInset": 3,
+      "cutterRect": {
+        "height": 235,
+        "width": 510,
+        "x": 0,
+        "y": 0
+      },
+      "liveRect": {
+        "height": 215,
+        "width": 490,
+        "x": 10,
+        "y": 10
+      },
+      "sealRects": {
+        "bottom": {
+          "height": 10,
+          "width": 510,
+          "x": 0,
+          "y": 225
+        },
+        "left": {
+          "height": 235,
+          "width": 10,
+          "x": 0,
+          "y": 0
+        },
+        "right": {
+          "height": 235,
+          "width": 10,
+          "x": 500,
+          "y": 0
+        },
+        "top": {
+          "height": 10,
+          "width": 510,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "seals": {
+        "bottom": 10,
+        "left": 10,
+        "right": 10,
+        "top": 10
+      }
+    },
+    "hangerSlots": [
+      {
+        "centerX": 255,
+        "centerY": 20,
+        "diameter": 8,
+        "id": "pillow-slot-1",
+        "mirrored": true,
+        "subtype": "round-hole",
+        "type": "hanger-slot"
+      }
+    ],
+    "liveHeight": 215,
+    "liveOriginX": 90,
+    "liveOriginY": 90,
+    "liveWidth": 490,
+    "margin": 80,
+    "originX": 80,
+    "originY": 80,
+    "perfCenters": null,
+    "perfMaxRadius": null,
+    "perfPatternOverflow": false,
+    "safeZones": [
+      {
+        "height": 50,
+        "id": "pillow-safe-1",
+        "label": "Print",
+        "width": 120,
+        "x": 24,
+        "y": 24
+      }
+    ],
+    "seals": {
+      "bottom": 10,
+      "left": 10,
+      "right": 10,
+      "top": 10
+    },
+    "substrate": "clear",
+    "substrateFill": "#b9dfe8",
+    "substrateOpacity": 0.6,
+    "totalHeight": 395,
+    "totalWidth": 670,
+    "validationErrors": [],
+    "warnings": [
+      "Eyemark may not fit cleanly inside the seal/track area with the current seal size."
+    ],
+    "windows": []
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleed": 3,
+    "eyeMarks": {
+      "color": "black",
+      "count": 1,
+      "height": 5,
+      "position": "top-right",
+      "width": 10
+    },
+    "foldLines": [
+      {
+        "id": "pillow-fold-left",
+        "offset": 122.5,
+        "orientation": "vertical"
+      },
+      {
+        "id": "pillow-fold-right",
+        "offset": 367.5,
+        "orientation": "vertical"
+      }
+    ],
+    "halfMoonCutouts": [],
+    "hangerSlots": [
+      {
+        "centerX": 255,
+        "centerY": 20,
+        "diameter": 8,
+        "id": "pillow-slot-1",
+        "mirrored": true,
+        "subtype": "round-hole",
+        "type": "hanger-slot"
+      }
+    ],
+    "height": 235,
+    "safeZones": [
+      {
+        "height": 50,
+        "id": "pillow-safe-1",
+        "label": "Print",
+        "width": 120,
+        "x": 24,
+        "y": 24
+      }
+    ],
+    "seal": 10,
+    "sealClearance": 3,
+    "width": 510,
+    "windows": []
+  },
+  "packId": "pillow-pack",
+  "validation": {
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [
+    "Eyemark may not fit cleanly inside the seal/track area with the current seal size."
+  ]
+}

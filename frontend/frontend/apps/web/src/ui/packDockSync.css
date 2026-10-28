@@ -1,0 +1,3 @@
+:root body .pack-dock-sync { box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-width:66px;min-height:25px;padding:5px 8px;border:1px solid #32c7aa;border-radius:8px;background:#27b394;color:#fff;font:700 10px/1 sans-serif;white-space:nowrap;cursor:pointer; }
+:root body .pack-dock-sync[aria-pressed="false"] { border-color:#746b67;background:#403c3d;color:#e8dfd8; }
+:root body .pack-dock-sync:focus-visible { outline:2px solid #fff;outline-offset:2px; }

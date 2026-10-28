@@ -1,0 +1,42 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".tmp-tests",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "allowImportingTsExtensions": false,
+    "verbatimModuleSyntax": false
+  },
+  "include": [
+    "tests/flowwrap-constraints.test.ts",
+    "tests/kseal-validation-fixtures.ts",
+    "tests/kseal-validation.test.ts",
+    "tests/paper-strip-validation.test.ts",
+    "tests/plain-web-validation.test.ts",
+    "tests/project-contract.test.ts",
+    "tests/project-update-service.test.ts",
+    "tests/project-continuity-migrations.test.ts",
+    "tests/element-identity.test.ts",
+    "tests/project-validation-export.test.ts",
+    "tests/packgen-flowai.test.ts",
+    "tests/packgen-project.test.ts",
+    "tests/packgen-benchmark.test.ts",
+    "tests/selection-transforms.test.ts",
+    "tests/metric-formatting.test.ts",
+    "tests/klyro-project-adapter.test.ts",
+    "tests/klyro-new-project-form.test.ts",
+    "tests/project-open-handoff.test.ts",
+    "tests/project-creation.test.ts",
+    "tests/beta-validation-core.test.ts",
+    "tests/beta-eyemark-refinement.test.ts",
+    "tests/amends-v10-regression.test.ts",
+    "tests/amends-v12-regression.test.ts",
+    "tests/pre-export-validation.test.ts",
+    "tests/project-export-service.test.ts",
+    "tests/hanger-slot-orientation.test.ts",
+    "tests/amends-v6-1.test.ts",
+    "tests/amends-v8-2.test.ts",
+    "tests/amends-v8-3-lidding-v1-2.test.ts"
+  ]
+}

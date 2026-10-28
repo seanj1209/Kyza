@@ -1,0 +1,15 @@
+{
+  "userPrompt": "make something good for a snack product",
+  "expectedBehavior": {
+    "success": true,
+    "confidence": "low",
+    "minimumRecommendationCount": 2,
+    "requiresReview": true,
+    "includesAssumptions": true,
+    "includesQuestions": true
+  },
+  "expectedWarnings": [
+    "Starting estimates must be validated against product, film, machine and tooling requirements."
+  ],
+  "expectedErrors": []
+}

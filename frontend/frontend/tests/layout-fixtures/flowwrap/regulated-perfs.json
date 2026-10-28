@@ -1,0 +1,293 @@
+{
+  "errors": [],
+  "geometry": {
+    "bleedInset": 3,
+    "cutterRect": {
+      "height": 200,
+      "width": 460,
+      "x": 0,
+      "y": 0
+    },
+    "liveRect": {
+      "height": 160,
+      "width": 420,
+      "x": 20,
+      "y": 20
+    },
+    "sealRects": {
+      "bottom": {
+        "height": 20,
+        "width": 460,
+        "x": 0,
+        "y": 180
+      },
+      "left": {
+        "height": 200,
+        "width": 20,
+        "x": 0,
+        "y": 0
+      },
+      "right": {
+        "height": 200,
+        "width": 20,
+        "x": 440,
+        "y": 0
+      },
+      "top": {
+        "height": 20,
+        "width": 460,
+        "x": 0,
+        "y": 0
+      }
+    },
+    "seals": {
+      "bottom": 20,
+      "left": 20,
+      "right": 20,
+      "top": 20
+    }
+  },
+  "layout": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleedInset": 3,
+    "cutterHeight": 200,
+    "cutterWidth": 460,
+    "doyLayout": null,
+    "doyOval": null,
+    "foldLines": [],
+    "geometry": {
+      "bleedInset": 3,
+      "cutterRect": {
+        "height": 200,
+        "width": 460,
+        "x": 0,
+        "y": 0
+      },
+      "liveRect": {
+        "height": 160,
+        "width": 420,
+        "x": 20,
+        "y": 20
+      },
+      "sealRects": {
+        "bottom": {
+          "height": 20,
+          "width": 460,
+          "x": 0,
+          "y": 180
+        },
+        "left": {
+          "height": 200,
+          "width": 20,
+          "x": 0,
+          "y": 0
+        },
+        "right": {
+          "height": 200,
+          "width": 20,
+          "x": 440,
+          "y": 0
+        },
+        "top": {
+          "height": 20,
+          "width": 460,
+          "x": 0,
+          "y": 0
+        }
+      },
+      "seals": {
+        "bottom": 20,
+        "left": 20,
+        "right": 20,
+        "top": 20
+      }
+    },
+    "hangerSlots": [],
+    "liveHeight": 160,
+    "liveOriginX": 100,
+    "liveOriginY": 100,
+    "liveWidth": 420,
+    "margin": 80,
+    "originX": 80,
+    "originY": 80,
+    "perfCenters": [
+      {
+        "laneIndex": 0,
+        "radius": 0.75,
+        "x": 130,
+        "y": 124
+      },
+      {
+        "laneIndex": 0,
+        "radius": 0.75,
+        "x": 130,
+        "y": 146
+      },
+      {
+        "laneIndex": 0,
+        "radius": 0.75,
+        "x": 130,
+        "y": 168
+      },
+      {
+        "laneIndex": 0,
+        "radius": 0.75,
+        "x": 130,
+        "y": 190
+      },
+      {
+        "laneIndex": 1,
+        "radius": 1,
+        "x": 280,
+        "y": 128
+      },
+      {
+        "laneIndex": 1,
+        "radius": 1,
+        "x": 280,
+        "y": 150
+      },
+      {
+        "laneIndex": 1,
+        "radius": 1,
+        "x": 280,
+        "y": 172
+      },
+      {
+        "laneIndex": 1,
+        "radius": 1,
+        "x": 280,
+        "y": 194
+      }
+    ],
+    "perfMaxRadius": 1,
+    "perfPatternOverflow": false,
+    "safeZones": [],
+    "seals": {
+      "bottom": 20,
+      "left": 20,
+      "right": 20,
+      "top": 20
+    },
+    "substrate": "clear",
+    "substrateFill": "#b9dfe8",
+    "substrateOpacity": 0.6,
+    "totalHeight": 360,
+    "totalWidth": 620,
+    "validationErrors": [],
+    "warnings": [
+      "Microperf lanes this close require two runs through the slitter. Increase spacing to at least 151 mm for single-pass processing."
+    ],
+    "windows": []
+  },
+  "normalizedSpec": {
+    "attributeBoxes": [
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-barcode",
+        "kind": "barcode",
+        "width": 25,
+        "x": 20,
+        "y": 20
+      },
+      {
+        "enabled": false,
+        "height": 10,
+        "id": "attr-qr",
+        "kind": "qr",
+        "width": 10,
+        "x": 20,
+        "y": 40
+      },
+      {
+        "enabled": false,
+        "height": 15,
+        "id": "attr-bbe",
+        "kind": "bbe",
+        "width": 25,
+        "x": 20,
+        "y": 55
+      }
+    ],
+    "bleed": 3,
+    "eyeMarks": {
+      "color": "black",
+      "count": 2,
+      "height": 5,
+      "height2": 5,
+      "offsetY": 7.5,
+      "offsetY2": 7.5,
+      "position": "top",
+      "width": 15,
+      "width2": 15
+    },
+    "halfMoonCutouts": [],
+    "hangerSlots": [],
+    "height": 200,
+    "perfs": {
+      "count": 4,
+      "diameter": 1.5,
+      "lanes": [
+        {
+          "originX": 30,
+          "originY": 24,
+          "style": "circles"
+        },
+        {
+          "diameter": 2,
+          "originX": 180,
+          "originY": 28,
+          "style": "scope"
+        }
+      ],
+      "mode": "regulated",
+      "originX": 30,
+      "originY": 24,
+      "separation": 22
+    },
+    "safeZones": [],
+    "seal": 20,
+    "sealClearance": 5,
+    "width": 460,
+    "windows": []
+  },
+  "packId": "flowwrap",
+  "validation": {
+    "errors": [],
+    "warnings": [
+      "Microperf lanes this close require two runs through the slitter. Increase spacing to at least 151 mm for single-pass processing."
+    ]
+  },
+  "warnings": [
+    "Microperf lanes this close require two runs through the slitter. Increase spacing to at least 151 mm for single-pass processing."
+  ]
+}
