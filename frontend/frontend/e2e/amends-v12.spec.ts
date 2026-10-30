@@ -15,8 +15,8 @@ test('v12 landing tagline, FlowAI mark and Strip Laminate naming', async ({ page
   await page.goto('/cutter')
   await expect(page.locator('.kyza-brand-product').first()).toHaveText('Workflows built on Intelligence')
   const help = page.getByRole('button', { name: /Help Me Choose/ })
-  await expect(help.locator('svg.flow-mark path')).toHaveCount(3)
-  await expect(help.locator('svg.flow-mark text')).toHaveCount(0)
+  await expect(help.locator('svg.kyza-assistant-mark image')).toHaveCount(2)
+  await expect(help.locator('svg.kyza-assistant-mark path')).toHaveCount(0)
   const carousel = page.locator('.studio-pack-carousel')
   const names: string[] = []
   for (let i = 0; i < 10; i++) { names.push((await carousel.locator('.slide.is-active h3').textContent()) ?? ''); await carousel.locator('.nav.next').click() }
