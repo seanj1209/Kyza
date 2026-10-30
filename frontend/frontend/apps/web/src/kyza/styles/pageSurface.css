@@ -1,0 +1,53 @@
+/* Page chrome only: never paint a texture over SVGs, previews or export data. */
+:root {
+  --kyza-page-texture: repeating-linear-gradient(135deg, transparent 0 78px, color-mix(in srgb, var(--kyza-text, #302d2c) 3%, transparent) 78px 79px, transparent 79px 120px);
+}
+:root body .kyza-app {
+  background: var(--kyza-page-texture), radial-gradient(ellipse at 80% 0%, color-mix(in srgb, var(--kyza-cream) 9%, transparent), transparent 60%), var(--kyza-page);
+}
+:root body .kyza-main {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  background: var(--kyza-page-texture), radial-gradient(ellipse at 100% 0%, color-mix(in srgb, var(--kyza-brand) 4%, transparent), transparent 60%), var(--kyza-canvas);
+}
+/* Nested scrolling stays inside its panel in browser and installed-app mode. */
+:root body :is(#start-overlay .start-body, .side-panel-body, .right-rail-tab-shell, .customise-target-content) {
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+:root body .cutter-kyza-app .cutter-shell-workspace {
+  background: var(--kyza-page-texture), var(--kyza-page);
+}
+/* Artwork Studio is currently a separate, light-only shell. Retain that theme. */
+:root body:has(#artwork-app) {
+  background: var(--kyza-page-texture), radial-gradient(circle at top, rgba(255,255,255,.92), transparent 45%), linear-gradient(180deg, #ece7dc, #f8f4eb 46%, #f1ebdf);
+}
+/* Dashboard refinements do not alter semantic validation or engineering colours. */
+:root body .kyza-dashboard > .kyza-hero:has(.kyza-feature-showcase) {
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items: center; gap: clamp(24px, 4vw, 52px);
+}
+:root body .kyza-dashboard .kyza-hero h1 span { color: var(--kyza-accent-text); }
+:root body #quick-links-title { position: relative; display: inline-block; padding-bottom: 7px; }
+:root body #quick-links-title::after {
+  content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px;
+  border-radius: 99px; background: color-mix(in srgb, var(--kyza-accent-text) 70%, transparent);
+  transform: scaleX(0); transform-origin: left; transition: transform 300ms var(--kyza-ease);
+}
+:root body #quick-links:is(:hover, :focus-within) #quick-links-title::after { transform: scaleX(1); }
+@media (max-width: 950px) {
+  :root body .kyza-dashboard > .kyza-hero:has(.kyza-feature-showcase) { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  :root body .kyza-feature-showcase { max-width: 680px; justify-self: center; }
+}
+/* Keep the branded sidebar out of the content flow on touch-sized screens. */
+@media (max-width: 800px) {
+  :root body .kyza-navigation {
+    position: fixed; top: 72px; bottom: 10px; left: 10px;
+    width: min(276px, calc(100vw - 32px)); height: auto; flex-basis: auto;
+    transform: translateX(calc(-100% - 18px)); animation: none;
+    visibility: hidden;
+  }
+  :root body .kyza-navigation.is-mobile-open { transform: translateX(0); visibility: visible; }
+  :root body .kyza-main { width: 100%; min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { :root body #quick-links-title::after { transition: none; } }

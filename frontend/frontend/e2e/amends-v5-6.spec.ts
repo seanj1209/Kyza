@@ -110,7 +110,7 @@ test('@beta V5.6 a chosen Sub measure setting survives project tabs', async ({ p
 test('@beta V5.6 visible Help Me Choose copy says Flow', async ({ page }) => {
   await page.goto('/cutter')
   const help = page.getByRole('button', { name: /Help Me Choose/ })
-  await expect(help.locator('small')).toContainText('Flow suggestions')
+  await expect(help.locator('small')).toContainText('Kyza suggestions')
   await help.click()
   await expect(page.locator('body')).not.toContainText('FlowAI')
 })

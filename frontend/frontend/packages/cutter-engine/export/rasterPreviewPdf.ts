@@ -100,7 +100,7 @@ export const createRasterPreviewPdfFromSvg = async (
   if (metadata) {
     addObject(
       6,
-      `<< /Title (${escapePdfString(metadata.projectName)} - PDF Proof) /Subject (CutNFlow raster proof; not editable vector) /Creator (CutNFlow) /CreationDate (${toPdfDate(metadata.createdAt)}) /CutNFlowExportTier (${metadata.exportTier}) /CutNFlowExportFormat (${metadata.exportFormat}) /CutNFlowPackType (${escapePdfString(metadata.packType)}) /CutNFlowWidthMm (${metadata.dimensions.widthMm}) /CutNFlowHeightMm (${metadata.dimensions.heightMm}) /CutNFlowValidationStatus (${metadata.validationStatus}) /CutNFlowWarnings (${metadata.warningsCount}) /CutNFlowErrors (${metadata.errorsCount}) >>\n`
+      `<< /Title (${escapePdfString(metadata.projectName)} - PDF Proof) /Subject (Kyza raster proof; not editable vector) /Creator (Kyza) /CreationDate (${toPdfDate(metadata.createdAt)}) /KyzaExportTier (${metadata.exportTier}) /KyzaExportFormat (${metadata.exportFormat}) /KyzaPackType (${escapePdfString(metadata.packType)}) /KyzaWidthMm (${metadata.dimensions.widthMm}) /KyzaHeightMm (${metadata.dimensions.heightMm}) /KyzaValidationStatus (${metadata.validationStatus}) /KyzaWarnings (${metadata.warningsCount}) /KyzaErrors (${metadata.errorsCount}) >>\n`
     )
   }
   const xrefStart = total

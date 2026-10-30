@@ -3,7 +3,7 @@ import {
   getPerfLaneElementRefs,
   getTearNotchElementRefs,
   migrateStoredProjectRecord,
-  parseCutNFlowProject,
+  parseKyzaProject,
   resolveEyemarkById,
   resolvePerfLaneById,
   resolveTearNotchById,
@@ -12,7 +12,7 @@ import {
   syncLegacySpecFromEyemarkRefs,
   syncLegacySpecFromPerfLaneRefs,
   syncLegacySpecFromTearNotchRefs,
-  type CutNFlowProjectV1,
+  type KyzaProjectV1,
   type EyemarkElementRef,
   type PerfLaneElementRef,
   type TearNotchElementRef,
@@ -48,10 +48,10 @@ export type DeepPartial<T> = {
 export type ProjectUpdate =
   | { type: "replace-legacy-spec"; spec: FlowwrapSpec }
   | { type: "patch-legacy-spec"; patch: DeepPartial<FlowwrapSpec> }
-  | { type: "replace-project"; project: CutNFlowProjectV1 }
+  | { type: "replace-project"; project: KyzaProjectV1 }
 
 export type ProjectUpdateInput = {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   reason: ProjectUpdateReason
   update: ProjectUpdate
   expectedRevision?: number
@@ -63,14 +63,14 @@ export type ProjectValidationHookResult = {
 }
 
 export type ProjectUpdateHooks = {
-  validate?: (project: CutNFlowProjectV1) => ProjectValidationHookResult
+  validate?: (project: KyzaProjectV1) => ProjectValidationHookResult
   onUpdated?: (result: ProjectUpdateResult) => void
 }
 
 export type ProjectUpdateResult = {
   ok: boolean
   reason: ProjectUpdateReason
-  project?: CutNFlowProjectV1
+  project?: KyzaProjectV1
   legacySpec?: FlowwrapSpec
   errors: string[]
   warnings: string[]
@@ -80,7 +80,7 @@ export type ProjectUpdateResult = {
 
 export type MigratedSavedProjectRecord = {
   cardId: string
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
 }
 
 export type EyemarkElementUpdater = (
@@ -151,11 +151,11 @@ const reject = (
   revision: previousRevision
 })
 
-export const synchroniseCutNFlowProject = (
-  project: CutNFlowProjectV1,
+export const synchroniseKyzaProject = (
+  project: KyzaProjectV1,
   reason: ProjectUpdateReason
 ): ProjectUpdateResult => {
-  const parsed = parseCutNFlowProject(project)
+  const parsed = parseKyzaProject(project)
   if (parsed.ok === false) {
     return reject(reason, parsed.errors)
   }
@@ -165,7 +165,7 @@ export const synchroniseCutNFlowProject = (
     // (projects saved before the lidding update used a narrower edge rule).
     const restored = syncLiddingCutterSize(normaliseOpeningStyle(restoreLegacyHangerSlotPlacement(value.cutter.legacySpec)))
     if (restored !== value.cutter.legacySpec) {
-      return updateCutNFlowProject({ project: value, reason, update: { type: "replace-legacy-spec", spec: restored } })
+      return updateKyzaProject({ project: value, reason, update: { type: "replace-legacy-spec", spec: restored } })
     }
   }
   return {
@@ -180,11 +180,11 @@ export const synchroniseCutNFlowProject = (
   }
 }
 
-export const updateCutNFlowProject = (
+export const updateKyzaProject = (
   input: ProjectUpdateInput,
   hooks: ProjectUpdateHooks = {}
 ): ProjectUpdateResult => {
-  const currentResult = parseCutNFlowProject(input.project)
+  const currentResult = parseKyzaProject(input.project)
   if (currentResult.ok === false) {
     return reject(input.reason, currentResult.errors)
   }
@@ -202,9 +202,9 @@ export const updateCutNFlowProject = (
     )
   }
 
-  let candidate: CutNFlowProjectV1
+  let candidate: KyzaProjectV1
   if (input.update.type === "replace-project") {
-    const replacement = parseCutNFlowProject(input.update.project)
+    const replacement = parseKyzaProject(input.update.project)
     if (replacement.ok === false) {
       return reject(input.reason, replacement.errors, current.revision)
     }
@@ -229,12 +229,12 @@ export const updateCutNFlowProject = (
   )
 
   const nextRevision = Math.max(current.revision, candidate.revision) + 1
-  const nextCandidate: CutNFlowProjectV1 = {
+  const nextCandidate: KyzaProjectV1 = {
     ...candidate,
     revision: nextRevision,
     updatedAt: new Date().toISOString()
   }
-  const parsedNext = parseCutNFlowProject(nextCandidate)
+  const parsedNext = parseKyzaProject(nextCandidate)
   if (parsedNext.ok === false) {
     return reject(input.reason, parsedNext.errors, current.revision)
   }
@@ -270,7 +270,7 @@ export const updateCutNFlowProject = (
 }
 
 export const updateEyemarkById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string,
   updater: EyemarkElementUpdater,
   reason: ProjectUpdateReason = "engine-action"
@@ -308,7 +308,7 @@ export const updateEyemarkById = (
       }
     }
   })
-  return updateCutNFlowProject({
+  return updateKyzaProject({
     project,
     reason,
     expectedRevision: project.revision,
@@ -317,7 +317,7 @@ export const updateEyemarkById = (
 }
 
 export const updatePerfLaneById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string,
   updater: PerfLaneElementUpdater,
   reason: ProjectUpdateReason = "engine-action"
@@ -355,7 +355,7 @@ export const updatePerfLaneById = (
       }
     }
   })
-  return updateCutNFlowProject({
+  return updateKyzaProject({
     project,
     reason,
     expectedRevision: project.revision,
@@ -364,7 +364,7 @@ export const updatePerfLaneById = (
 }
 
 export const updateTearNotchById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string,
   updater: TearNotchElementUpdater,
   reason: ProjectUpdateReason = "engine-action"
@@ -402,7 +402,7 @@ export const updateTearNotchById = (
       }
     }
   })
-  return updateCutNFlowProject({
+  return updateKyzaProject({
     project,
     reason,
     expectedRevision: project.revision,

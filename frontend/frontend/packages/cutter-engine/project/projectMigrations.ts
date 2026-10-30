@@ -1,15 +1,15 @@
 import type { FlowwrapSpec } from "../types"
 import {
-  parseCutNFlowProject,
+  parseKyzaProject,
   projectFromLegacySpec
 } from "./projectContract"
 import {
-  CUTNFLOW_PROJECT_SCHEMA_VERSION,
-  type CutNFlowProjectV1,
+  KYZA_PROJECT_SCHEMA_VERSION,
+  type KyzaProjectV1,
   type ParseResult
 } from "./projectTypes"
 
-export const CUTNFLOW_PROJECT_MIGRATION_ORDER = [
+export const KYZA_PROJECT_MIGRATION_ORDER = [
   "identify-record-shape",
   "apply-v1-envelope-defaults",
   "apply-v1-workspace-defaults",
@@ -18,14 +18,14 @@ export const CUTNFLOW_PROJECT_MIGRATION_ORDER = [
 
 // V1 rejects unknown Project-envelope and Cutter-document fields before
 // normalisation so engineering data is never silently discarded.
-export const CUTNFLOW_PROJECT_UNKNOWN_FIELD_POLICY = "reject" as const
+export const KYZA_PROJECT_UNKNOWN_FIELD_POLICY = "reject" as const
 
 export type StoredProjectMigrationSource =
   | "current-v1"
   | "legacy-saved-card"
 
 export type StoredProjectMigration = {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   source: StoredProjectMigrationSource
   migrated: boolean
 }
@@ -53,7 +53,7 @@ const deterministicProjectId = (value: Record<string, unknown>) => {
   const draft = isRecord(value.projectDraft) ? value.projectDraft : undefined
   return isNonEmptyString(draft?.id)
     ? draft.id.trim()
-    : `cutnflow-project-migrated-${deterministicHash(value)}`
+    : `kyza-project-migrated-${deterministicHash(value)}`
 }
 
 const retainUnprovenValidationAsHistory = (value: Record<string, unknown>) => {
@@ -106,7 +106,7 @@ const migrateCurrentV1 = (
     migrated = true
   }
 
-  const parsed = parseCutNFlowProject(candidate)
+  const parsed = parseKyzaProject(candidate)
   if (parsed.ok === false) return parsed
   return {
     ok: true,
@@ -146,7 +146,7 @@ const migrateLegacySavedCard = (
         updatedAt: value.updatedAt
       }
     )
-    const parsed = parseCutNFlowProject(project)
+    const parsed = parseKyzaProject(project)
     return parsed.ok === false
       ? parsed
       : {
@@ -172,7 +172,7 @@ export const migrateStoredProjectRecord = (
   if (!isRecord(value)) {
     return { ok: false, errors: ["Project record must be an object."] }
   }
-  if (value.schemaVersion === CUTNFLOW_PROJECT_SCHEMA_VERSION) {
+  if (value.schemaVersion === KYZA_PROJECT_SCHEMA_VERSION) {
     return migrateCurrentV1(value)
   }
   if (isLegacySavedCard(value)) {

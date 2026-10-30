@@ -1,7 +1,7 @@
-# CutNFlow Visual Direction Brief
+# Kyza Visual Direction Brief
 
 ## Purpose
-Define the visual style, theme and user experience direction for CutNFlow before applying changes to the MVP.
+Define the visual style, theme and user experience direction for Kyza before applying changes to the MVP.
 
 ## Goal
 Find a base UI direction that can be used consistently across:
@@ -14,7 +14,7 @@ Find a base UI direction that can be used consistently across:
 - Account/Billing
 
 ## Design Intent
-CutNFlow should feel like a professional packaging CAD/SaaS platform, not a chatbot or basic form app.
+Kyza should feel like a professional packaging CAD/SaaS platform, not a chatbot or basic form app.
 
 ## Visual Keywords
 - professional

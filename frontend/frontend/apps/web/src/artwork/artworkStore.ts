@@ -30,7 +30,7 @@ const normalizeText = (value: string | undefined) =>
 const buildProjectSignature = (project: CurrentProject) => {
   const prompt = normalizeText(project.prompt || project.displayName || project.productName)
   return [
-    "cutnflow.artworkAssets",
+    "kyza.artworkAssets",
     ARTWORK_STORAGE_VERSION,
     normalizeText(project.packType),
     `${Math.round(project.width)}x${Math.round(project.height)}`,

@@ -50,7 +50,7 @@ test("Validation remains clickable and Customise/export use a single padded scro
   await expect(validation).toBeVisible()
   // A real click catches clipping by a scroll ancestor; visibility alone does not.
   await validation.getByRole("button", { name: "Re-run validation" }).click()
-  await page.getByRole("button", { name: "Collapse Flow", exact: true }).click()
+  await page.getByRole("button", { name: "Collapse Kyza", exact: true }).click()
   await expect(validation).toBeHidden()
   await page.getByRole("button", { name: "Customise", exact: true }).click()
   const panel = page.locator("#customisation-panel")

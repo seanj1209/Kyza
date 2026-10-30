@@ -1,5 +1,5 @@
 import type { PackGenRecommendation } from "../../../../packages/ai-engine"
-import type { CutNFlowProjectDraftV1 } from "../../../../packages/cutter-engine/project"
+import type { KyzaProjectDraftV1 } from "../../../../packages/cutter-engine/project"
 import type { FlowwrapSpec } from "../types/flowwrap"
 import { getPackModule } from "../packs"
 import { createCutterSpecFromConfirmedPackValues } from "./packGenHandoff"
@@ -23,7 +23,7 @@ const substrateLabel = (value: unknown) => {
 }
 
 export function getPackGenSubstratePresentation(
-  draft: Pick<CutNFlowProjectDraftV1, "workspace">,
+  draft: Pick<KyzaProjectDraftV1, "workspace">,
 ): PackGenSubstratePresentation {
   const entry = draft.workspace?.fields.materialNotes
   if (!entry || entry.value === undefined || entry.value === "") {
@@ -38,7 +38,7 @@ export function getPackGenSubstratePresentation(
 }
 
 export type PackGenSuggestionPreviewModel = {
-  draft: CutNFlowProjectDraftV1
+  draft: KyzaProjectDraftV1
   substrate: PackGenSubstratePresentation
   keyFeatures: string[]
   available: boolean
@@ -69,7 +69,7 @@ const stripEditorUi = (svg: SVGSVGElement) => {
 }
 
 export function createPackGenSuggestionPreviewModel(
-  baseDraft: CutNFlowProjectDraftV1,
+  baseDraft: KyzaProjectDraftV1,
   recommendation: PackGenRecommendation,
   prompt: string,
 ): PackGenSuggestionPreviewModel {

@@ -4,7 +4,7 @@ test("@beta public pack catalogue preserves the seven mapped Airtable identities
   await page.goto("/")
   const catalogue=await page.evaluate(async()=>{
     const {packModules}=await import("/apps/web/src/packs/index.ts")
-    const {PUBLIC_PACK_CATALOGUE}=await import("/apps/web/src/klyro/packCatalogue.ts")
+    const {PUBLIC_PACK_CATALOGUE}=await import("/apps/web/src/kyza/packCatalogue.ts")
     return {app:packModules.map(pack=>({id:pack.id,name:pack.name})),mapped:PUBLIC_PACK_CATALOGUE}
   })
   expect(catalogue.mapped).toHaveLength(7)

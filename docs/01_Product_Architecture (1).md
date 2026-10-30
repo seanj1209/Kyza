@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Product Architecture
+document_name: Kyza Product Architecture
 file_name: 01_Product_Architecture.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Klyro
+owner: Kyza
 last_reviewed: 2026-07-19
 source_replaces: 06_Product_Architecture.md
 authority: Product hierarchy, module responsibilities, release boundaries, shared workflows and cross-module architecture
@@ -18,15 +18,15 @@ related_sources:
   - 11_Marketing_Website.md
 ---
 
-# Klyro Product Architecture
+# Kyza Product Architecture
 
 ## Document Purpose
 
-This document defines how Klyro should operate as a connected flexible-packaging engineering product.
+This document defines how Kyza should operate as a connected flexible-packaging engineering product.
 
 It establishes:
 
-- The relationship between Klyro, the Klyro App, CutNFlow/CnF Tech and FlowAI
+- The relationship between Kyza, the Kyza App, Kyza/Kyza Tech and FlowAI
 - The product’s project-centric structure
 - The responsibilities of each application module
 - The initial beta boundary
@@ -45,34 +45,34 @@ Detailed engineering rules, visual design, API structure, data schemas, AI behav
 
 # 1. Product Hierarchy
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the master customer-facing brand.
+Kyza is the master customer-facing brand.
 
-Klyro includes:
+Kyza includes:
 
-- The public Klyro website
-- The Klyro App
+- The public Kyza website
+- The Kyza App
 - Product positioning and messaging
 - Customer-facing services and modules
 - Account, access and future subscription experiences
-- The Klyro visual and interaction system
+- The Kyza visual and interaction system
 
-Klyro should be the name users recognise, access and trust.
+Kyza should be the name users recognise, access and trust.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the main working environment.
+The Kyza App is the main working environment.
 
 It connects packaging definition, cutter engineering, validation, export and future artwork-preparation capabilities inside one project-centred system.
 
-The Klyro App must not behave like a collection of disconnected tools.
+The Kyza App must not behave like a collection of disconnected tools.
 
 Every working module must read from or write to the same Project.
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow, referred to operationally as CnF Tech where suitable, is the underlying packaging-engineering capability used by Klyro.
+Kyza, referred to operationally as Kyza Tech where suitable, is the underlying packaging-engineering capability used by Kyza.
 
 It may provide:
 
@@ -87,13 +87,13 @@ It may provide:
 - Structured technical export data
 - Production constraints
 
-CutNFlow/CnF Tech is not a competing customer-facing platform within the current architecture.
+Kyza/Kyza Tech is not a competing customer-facing platform within the current architecture.
 
-The working name remains CutNFlow/CnF Tech unless a later formal decision replaces it. “K-Tech” is not adopted by this document.
+The working name remains Kyza/Kyza Tech unless a later formal decision replaces it. “K-Tech” is not adopted by this document.
 
 ## 1.4 FlowAI
 
-FlowAI is Klyro’s intelligence, explanation and guided-assistance layer.
+FlowAI is Kyza’s intelligence, explanation and guided-assistance layer.
 
 FlowAI may support:
 
@@ -115,10 +115,10 @@ A deterministic engineering or validation rule must remain responsible for pass,
 The product relationship is:
 
 ```text
-Klyro
-└── Klyro App
+Kyza
+└── Kyza App
     ├── Customer-facing modules and workflows
-    ├── CutNFlow / CnF Tech engineering capability
+    ├── Kyza / Kyza Tech engineering capability
     └── FlowAI intelligence and explanation capability
 ```
 
@@ -126,11 +126,11 @@ Klyro
 
 # 2. Product Definition
 
-Klyro is a connected flexible-packaging engineering and prepress platform.
+Kyza is a connected flexible-packaging engineering and prepress platform.
 
 It is intended to help users move from an early product or pack requirement towards a controlled, validated and exportable technical result.
 
-Klyro is not only a cutter-drawing application.
+Kyza is not only a cutter-drawing application.
 
 It should bring together the practical functions of:
 
@@ -157,7 +157,7 @@ The product must remain:
 
 # 3. Product Mission
 
-Klyro exists to help packaging, reprographics, design and print users:
+Kyza exists to help packaging, reprographics, design and print users:
 
 - Create suitable flexible-packaging starting points more quickly
 - Build and review cutter guides safely
@@ -168,7 +168,7 @@ Klyro exists to help packaging, reprographics, design and print users:
 - Keep project information connected
 - Use AI without surrendering control of production-critical decisions
 
-The long-term ambition is to develop Klyro into a trusted operating environment for flexible-packaging engineering, prepress automation, validation and production intelligence.
+The long-term ambition is to develop Kyza into a trusted operating environment for flexible-packaging engineering, prepress automation, validation and production intelligence.
 
 The initial beta must prove the core connected workflow before the platform expands into every long-term capability.
 
@@ -176,7 +176,7 @@ The initial beta must prove the core connected workflow before the platform expa
 
 # 4. Target Users
 
-Klyro should support different experience levels without splitting into unrelated products.
+Kyza should support different experience levels without splitting into unrelated products.
 
 Primary user groups include:
 
@@ -203,7 +203,7 @@ Both users must operate on the same underlying Project and engineering model.
 
 # 5. Core Product Principles
 
-Klyro must follow these principles.
+Kyza must follow these principles.
 
 1. Engineering accuracy comes before decoration.
 2. The user remains in control of production-critical decisions.
@@ -219,7 +219,7 @@ Klyro must follow these principles.
 12. Beta scope must prioritise a complete reliable workflow over a large number of incomplete modules.
 13. Future capabilities must not be presented as complete or production-ready.
 14. Human approval remains required for release-critical decisions.
-15. Klyro should feel advanced without becoming unfamiliar or unnecessarily complex.
+15. Kyza should feel advanced without becoming unfamiliar or unnecessarily complex.
 
 ---
 
@@ -229,7 +229,7 @@ The product architecture distinguishes four release levels.
 
 ## 6.1 Beta Core
 
-Beta Core proves the primary Klyro workflow.
+Beta Core proves the primary Kyza workflow.
 
 It includes:
 
@@ -307,7 +307,7 @@ These remain part of the product architecture but must not compete with Beta Cor
 
 # 7. Project-Centric Architecture
 
-Klyro is project-centric, not file-centric.
+Kyza is project-centric, not file-centric.
 
 A Project is the central working object and the connection point between modules.
 
@@ -446,9 +446,9 @@ The Project should be able to answer:
 
 ---
 
-# 9. Klyro App Structure
+# 9. Kyza App Structure
 
-The current Klyro App navigation is organised as follows.
+The current Kyza App navigation is organised as follows.
 
 ## Dashboard
 
@@ -666,7 +666,7 @@ Possible generated recommendations, confidence indicators and alternatives shoul
 
 ### Product Role
 
-Cutter Studio is Klyro’s controlled engineering workspace for creating, reviewing and editing cutter structures.
+Cutter Studio is Kyza’s controlled engineering workspace for creating, reviewing and editing cutter structures.
 
 It is not a freeform drawing application.
 
@@ -1314,7 +1314,7 @@ Detailed coding standards belong in the development standards source when availa
 Current priority order is:
 
 1. Keep the product hierarchy stable.
-2. Keep the Klyro App project-centric.
+2. Keep the Kyza App project-centric.
 3. Stabilise the global application shell.
 4. Complete Dashboard connections to real Project data.
 5. Complete Pack Gen prompt and Build Pack paths.
@@ -1327,14 +1327,14 @@ Current priority order is:
 12. Complete Account & Specs essentials.
 13. Harden error, empty, loading and recovery states.
 14. Complete beta regression and release testing.
-15. Align the public Klyro website with real app capability.
+15. Align the public Kyza website with real app capability.
 16. Expand into Artwork Studio, full configuration and advanced FlowAI after the core workflow is reliable.
 
 ---
 
 # 21. Product Success Criteria
 
-Klyro’s initial beta is successful when a user can:
+Kyza’s initial beta is successful when a user can:
 
 - Understand where to begin
 - Create or open a Project
@@ -1362,9 +1362,9 @@ Long-term success includes:
 
 ---
 
-# 22. What Klyro Must Not Become
+# 22. What Kyza Must Not Become
 
-Klyro must not become:
+Kyza must not become:
 
 - A decorative drawing toy
 - A generic AI chatbot
@@ -1377,7 +1377,7 @@ Klyro must not become:
 - A platform where each module stores incompatible versions of the same Project
 - A beta overloaded by unfinished long-term features
 
-Klyro must remain focused on connected packaging engineering, prepress clarity and controlled production output.
+Kyza must remain focused on connected packaging engineering, prepress clarity and controlled production output.
 
 ---
 
@@ -1442,7 +1442,7 @@ Airtable tracks actions and progress. It is not the source of product truth.
 
 # 25. Final Architecture Rule
 
-Klyro must behave as one connected, intelligent and controlled packaging-engineering product.
+Kyza must behave as one connected, intelligent and controlled packaging-engineering product.
 
 Every working module should help the user move from an idea or specification towards a validated and exportable Project.
 
@@ -1476,9 +1476,9 @@ The initial beta must prove this connected journey before the platform expands i
 
 ## Version 2.1 — 18 July 2026
 
-- Reframed Klyro as the customer-facing master brand.
-- Defined the Klyro App as the connected working environment.
-- Repositioned CutNFlow/CnF Tech as the underlying engineering capability.
+- Reframed Kyza as the customer-facing master brand.
+- Defined the Kyza App as the connected working environment.
+- Repositioned Kyza/Kyza Tech as the underlying engineering capability.
 - Repositioned FlowAI as the intelligence and validation-explanation layer.
 - Renamed the source from `06_Product_Architecture.md` to `01_Product_Architecture.md`.
 - Added Beta Core, Beta Supporting, Limited Beta and Post-Beta boundaries.

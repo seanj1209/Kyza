@@ -1,11 +1,11 @@
 import { getPackModule } from "../apps/web/src/packs"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  loadCutNFlowProject,
+  loadKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  saveKyzaProject,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
   type ParseResult
 } from "../packages/cutter-engine/project"
 import {
@@ -22,9 +22,9 @@ import {
   runPreExportValidation
 } from "../packages/cutter-engine/export/preExportValidation"
 import { executeProjectExport } from "../packages/cutter-engine/export/projectExportService"
-import { exportCutNFlowProject } from "../packages/cutter-engine/export/cutterExportService"
+import { exportKyzaProject } from "../packages/cutter-engine/export/cutterExportService"
 import { createExportPackageDraft } from "../packages/cutter-engine/export/exportPackage"
-import { buildCutNFlowJsonExport } from "../packages/cutter-engine/export/jsonExport"
+import { buildKyzaJsonExport } from "../packages/cutter-engine/export/jsonExport"
 import { validationRunToLegacyResult } from "../packages/cutter-engine/validation"
 import { buildPreExportReviewModel } from "../apps/web/src/ui/preExportReview"
 
@@ -39,7 +39,7 @@ function assertEqual(actual: unknown, expected: unknown, message: string) {
   )
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
   getItem(key: string) { return this.values.get(key) ?? null }
   setItem(key: string, value: string) { this.values.set(key, value) }
@@ -86,7 +86,7 @@ const ruleReturning = (...issues: ValidationIssue[]): ValidationRule => ({
 })
 
 const runFor = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   issues: ValidationIssue[],
   now = timestamp
 ) => validateProjectCutter(project, {
@@ -95,8 +95,8 @@ const runFor = (
   rules: [ruleReturning(...issues)]
 })
 
-const persistInMemory = (holder: { project: CutNFlowProjectV1 }) =>
-  (project: CutNFlowProjectV1): ParseResult<CutNFlowProjectV1> => {
+const persistInMemory = (holder: { project: KyzaProjectV1 }) =>
+  (project: KyzaProjectV1): ParseResult<KyzaProjectV1> => {
     holder.project = project
     return { ok: true, value: project }
   }
@@ -329,11 +329,11 @@ const main = async () => {
     preserveVector: true,
     includeValidationReport: true
   }
-  const serviceBlocked = exportCutNFlowProject(project, exportOptions, svgSource, {
+  const serviceBlocked = exportKyzaProject(project, exportOptions, svgSource, {
     validationRun: warningRun
   })
   assert(serviceBlocked.ok === false && serviceBlocked.code === "warning_acknowledgement_required", "The SVG service must independently reject unacknowledged Warnings.")
-  const serviceExport = exportCutNFlowProject(project, exportOptions, svgSource, {
+  const serviceExport = exportKyzaProject(project, exportOptions, svgSource, {
     validationRun: warningRun,
     acknowledgement,
     exportId: "export-warning",
@@ -410,7 +410,7 @@ const main = async () => {
   assert(!runningReview.canExport, "An incomplete review must not enable Export Cutter.")
 
   // Completed evidence persists exact IDs and survives reopen without applying to a new revision.
-  const evidenceHolder: { project: CutNFlowProjectV1 } = {
+  const evidenceHolder: { project: KyzaProjectV1 } = {
     project: { ...project, latestValidationRun: warningRun, validationRuns: [warningRun] }
   }
   const completedExport = await executeProjectExport({
@@ -450,7 +450,7 @@ const main = async () => {
     createdAt: laterTimestamp
   })
   assert(exportPackage.exportAudit?.id === warningAuthorized.audit.id, "Export Package metadata must retain the audit record.")
-  const jsonPayload = buildCutNFlowJsonExport({
+  const jsonPayload = buildKyzaJsonExport({
     project: evidenced,
     validation: validationRunToLegacyResult(warningRun),
     exportPackage,
@@ -461,8 +461,8 @@ const main = async () => {
   assertEqual(jsonPayload.validation.acknowledgedWarningIssueIds, warningRun.issues.map(candidate => candidate.id), "JSON export must retain exact acknowledged Warning IDs.")
 
   const storage = new MemoryStorage()
-  assert(saveCutNFlowProject(evidenced, storage).ok, "Project evidence must save through canonical storage.")
-  const reopened = loadCutNFlowProject(project.id, storage)
+  assert(saveKyzaProject(evidenced, storage).ok, "Project evidence must save through canonical storage.")
+  const reopened = loadKyzaProject(project.id, storage)
   assert(reopened.ok, "Project evidence must reopen.")
   if (!reopened.ok) return
   assert(reopened.value.validationRuns?.[0]?.id === warningRun.id, "Validation history must survive reopen.")

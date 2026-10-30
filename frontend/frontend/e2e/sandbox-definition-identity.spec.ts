@@ -10,7 +10,7 @@ test('Sandbox loaded definition keeps its ID when edited and saved again', async
     return saveCustomProject({ name: definition.label, definition, baseSpec: getPackModule(preset.packId)!.getDefaults() })
   })
 
-  const initial = await page.evaluate(() => JSON.parse(localStorage.getItem('cutnflow.customProjects.v1') || '[]'))
+  const initial = await page.evaluate(() => JSON.parse(localStorage.getItem('kyza.customProjects.v1') || '[]'))
   expect(initial).toHaveLength(1)
   expect(initial[0].definition.id).toBe(initial[0].id)
 
@@ -22,7 +22,7 @@ test('Sandbox loaded definition keeps its ID when edited and saved again', async
   page.once('dialog', dialog => dialog.accept('Trial cutter revised'))
   await page.getByRole('button', { name: 'Save Custom Project', exact: true }).click()
 
-  const revised = await page.evaluate(() => JSON.parse(localStorage.getItem('cutnflow.customProjects.v1') || '[]'))
+  const revised = await page.evaluate(() => JSON.parse(localStorage.getItem('kyza.customProjects.v1') || '[]'))
   expect(revised).toHaveLength(1)
   expect(revised[0].id).toBe(initial[0].id)
   expect(revised[0].definition.id).toBe(initial[0].id)

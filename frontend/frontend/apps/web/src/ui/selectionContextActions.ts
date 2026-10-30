@@ -76,7 +76,7 @@ export function attachSelectionContextActions(svg:SVGSVGElement,store:SelectionS
     foreign.setAttribute("data-context-action","true")
     foreign.style.overflow="visible"
     const shell=document.createElement("div")
-    shell.style.cssText=`width:${width}px;min-height:${height}px;transform:scale(${px});transform-origin:0 0;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding:3px;box-sizing:border-box;border-radius:12px;background:var(--klyro-panel-raised,#fff);border:1px solid var(--klyro-border,#ddd);box-shadow:0 3px 12px #0002;color:var(--klyro-text,#333);font:600 11px system-ui`
+    shell.style.cssText=`width:${width}px;min-height:${height}px;transform:scale(${px});transform-origin:0 0;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding:3px;box-sizing:border-box;border-radius:12px;background:var(--kyza-panel-raised,#fff);border:1px solid var(--kyza-border,#ddd);box-shadow:0 3px 12px #0002;color:var(--kyza-text,#333);font:600 11px system-ui`
     const button=(label:string,title:string,action:()=>void,disabled=false)=>{
       const node=document.createElement("button")
       node.type="button";node.textContent=label;node.title=title;node.setAttribute("aria-label",title);node.disabled=disabled
@@ -93,7 +93,7 @@ export function attachSelectionContextActions(svg:SVGSVGElement,store:SelectionS
       const field=(name:string,initial:number)=>{
         const label=document.createElement("label");label.textContent=name;label.style.cssText="display:grid;gap:2px;font-size:10px"
         const input=document.createElement("input");input.type="number";input.step="any";input.min=isWindow?"5":"1";input.required=true;input.value=String(initial)
-        input.style.cssText="width:100%;box-sizing:border-box;padding:3px;border:1px solid #aaa;border-radius:4px;color:inherit;background:var(--klyro-panel-raised,#fff)"
+        input.style.cssText="width:100%;box-sizing:border-box;padding:3px;border:1px solid #aaa;border-radius:4px;color:inherit;background:var(--kyza-panel-raised,#fff)"
         label.appendChild(input);form.appendChild(label);return input
       }
       const inputWidth=field("Width mm",current.width),inputHeight=field("Height mm",current.height)

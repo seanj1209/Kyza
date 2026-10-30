@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../project"
+import type { KyzaProjectV1 } from "../project"
 import type {
   CutterExportAuditRecord,
   ValidationResult
@@ -71,7 +71,7 @@ const createPackageId = (projectId: string | undefined, createdAt: string) =>
   `export-package-${projectId ?? "unassigned"}-${createdAt.replace(/[^0-9]/g, "")}`
 
 export const createExportPackageDraft = (input: {
-  project?: CutNFlowProjectV1 | null
+  project?: KyzaProjectV1 | null
   validation?: ValidationResult
   source: ExportPackageSource
   supported?: boolean

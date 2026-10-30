@@ -1,2 +1,0 @@
-// Shared, scalable interpretation of the supplied angular Klyro icon concept.
-export const KLYRO_MARK_SVG = '<svg viewBox="0 0 100 100" fill="none" aria-hidden="true" focusable="false"><path class="klyro-mark-neutral" d="M23 14H42L23 34Z"/><path class="klyro-mark-accent" d="M35 45L70 10H94L49 57Z"/><path class="klyro-mark-accent" d="M23 40L39 56L23 77Z"/><path class="klyro-mark-neutral" d="M46 59L59 46L91 78H66Z"/></svg>'

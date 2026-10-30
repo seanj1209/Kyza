@@ -1,6 +1,6 @@
 import { expect, test as base, type Page, type TestInfo } from "@playwright/test"
 
-export const CANONICAL_PROJECT_STORAGE_KEY = "cutnflow.projects.v1"
+export const CANONICAL_PROJECT_STORAGE_KEY = "kyza.projects.v1"
 export const SAVED_PROJECT_CARD_STORAGE_KEY = "cutter_saved_projects_v1"
 
 type DiagnosticFixtures = {
@@ -22,7 +22,7 @@ export const test = base.extend<DiagnosticFixtures>({
       // Playwright cannot automate the browser-native save picker. Removing the
       // optional API exercises the application's real anchor-download fallback.
       delete (window as typeof window & { showSaveFilePicker?: unknown }).showSaveFilePicker
-      const marker = "klyro.e2e.context.initialised"
+      const marker = "kyza.e2e.context.initialised"
       if (window.sessionStorage.getItem(marker) !== "true") {
         window.localStorage.clear()
         window.sessionStorage.clear()

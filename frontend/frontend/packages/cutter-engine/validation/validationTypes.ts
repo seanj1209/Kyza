@@ -141,12 +141,12 @@ export type CutterExportAuthorizationAudit = {
   userId?: string
 }
 
-export const CUTNFLOW_EXPORT_RECORD_VERSION = "cutnflow-export-record-1" as const
+export const KYZA_EXPORT_RECORD_VERSION = "kyza-export-record-1" as const
 
 export type CutterExportDeliveryStatus = "saved" | "download_initiated"
 
 export type CutterExportRecordV1 = CutterExportAuthorizationAudit & {
-  recordVersion: typeof CUTNFLOW_EXPORT_RECORD_VERSION
+  recordVersion: typeof KYZA_EXPORT_RECORD_VERSION
   exportTier: string
   filename: string
   mimeType: string

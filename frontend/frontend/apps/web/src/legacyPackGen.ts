@@ -1,3 +1,5 @@
+import "./brandBootstrap"
+
 // Preserve saved draft URLs and query parameters while consolidating entry in Cutter.
 const destination = new URL("/cutter", window.location.origin)
 destination.search = window.location.search

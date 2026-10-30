@@ -4,7 +4,7 @@ import { getPackModule } from "../apps/web/src/packs"
 import { positionEyemarks } from "../packages/cutter-engine/actions/eyemarkPosition"
 import { resolveKSealLayout } from "../apps/web/src/core/geometry/resolvers/resolveKSealLayout"
 import { liddingEyemarkInstances, liddingRepeatRows, syncLiddingCutterSize, updateLiddingSpec, validateLiddingSpec } from "../apps/web/src/constraints/lidding"
-import { addLegendPreset, loadLegendConfig, saveLegendConfig } from "../apps/web/src/klyro/legendConfig"
+import { addLegendPreset, loadLegendConfig, saveLegendConfig } from "../apps/web/src/kyza/legendConfig"
 
 function assert(condition: boolean, message: string) {
   if (!condition) throw new Error(message)

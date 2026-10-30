@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../project"
+import type { KyzaProjectV1 } from "../project"
 import type { ValidationResult } from "../validation"
 import {
   buildExportLayerManifest,
@@ -6,10 +6,10 @@ import {
 } from "./exportLayerManifest"
 import type { ExportPackage } from "./exportPackage"
 
-export const CUTNFLOW_JSON_EXPORT_SCHEMA_VERSION = "cutnflow-json-export-1" as const
+export const KYZA_JSON_EXPORT_SCHEMA_VERSION = "kyza-json-export-1" as const
 
-export type CutNFlowJsonExport = {
-  schemaVersion: typeof CUTNFLOW_JSON_EXPORT_SCHEMA_VERSION
+export type KyzaJsonExport = {
+  schemaVersion: typeof KYZA_JSON_EXPORT_SCHEMA_VERSION
   exportedAt: string
   exportPackage: ExportPackage
   project: {
@@ -38,8 +38,8 @@ export type CutNFlowJsonExport = {
       widthMm: number
       heightMm: number
     }
-    starterSpecification: CutNFlowProjectV1["cutter"]["legacySpec"]
-    elements: CutNFlowProjectV1["cutter"]["identityMap"]["elements"]
+    starterSpecification: KyzaProjectV1["cutter"]["legacySpec"]
+    elements: KyzaProjectV1["cutter"]["identityMap"]["elements"]
   }
   artwork: {
     status: ExportPackage["artworkStatus"]
@@ -60,19 +60,19 @@ export type CutNFlowJsonExport = {
   layerManifest: ExportLayerManifest
   metadata: {
     source: "save_export"
-    generatedBy: "CutNFlow"
+    generatedBy: "Kyza"
     reviewRequired: true
   }
 }
 
 const cloneJson = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
-export const buildCutNFlowJsonExport = (input: {
+export const buildKyzaJsonExport = (input: {
   exportPackage: ExportPackage
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validation: ValidationResult
   exportedAt?: string
-}): CutNFlowJsonExport => {
+}): KyzaJsonExport => {
   const { project, validation, exportPackage } = input
   const draft = project.projectDraft
   const packSpecification = draft?.packSpecification
@@ -81,7 +81,7 @@ export const buildCutNFlowJsonExport = (input: {
     ? exportPackage.advisories.filter(note => note.toLowerCase().includes("artwork"))
     : []
   return {
-    schemaVersion: CUTNFLOW_JSON_EXPORT_SCHEMA_VERSION,
+    schemaVersion: KYZA_JSON_EXPORT_SCHEMA_VERSION,
     exportedAt,
     exportPackage: cloneJson(exportPackage),
     project: {
@@ -152,13 +152,13 @@ export const buildCutNFlowJsonExport = (input: {
     }),
     metadata: {
       source: "save_export",
-      generatedBy: "CutNFlow",
+      generatedBy: "Kyza",
       reviewRequired: true
     }
   }
 }
 
-export const serializeCutNFlowJsonExport = (payload: CutNFlowJsonExport) =>
+export const serializeKyzaJsonExport = (payload: KyzaJsonExport) =>
   `${JSON.stringify(payload, null, 2)}\n`
 
 const sanitizeSlug = (value: string) =>
@@ -168,5 +168,5 @@ const sanitizeSlug = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "") || "project"
 
-export const createCutNFlowJsonExportFilename = (payload: CutNFlowJsonExport) =>
-  `cutnflow-export-${sanitizeSlug(payload.packSpecification.packTypeId)}-${payload.exportedAt.slice(0, 10)}.json`
+export const createKyzaJsonExportFilename = (payload: KyzaJsonExport) =>
+  `kyza-export-${sanitizeSlug(payload.packSpecification.packTypeId)}-${payload.exportedAt.slice(0, 10)}.json`

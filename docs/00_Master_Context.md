@@ -1,18 +1,18 @@
-# CutNFlow Master Context
+# Kyza Master Context
 
 **Version:** 1.0
 
 ## Purpose
 
-This document is the permanent source of truth for the CutNFlow platform. It defines the vision, principles, standards and long-term direction of the product.
+This document is the permanent source of truth for the Kyza platform. It defines the vision, principles, standards and long-term direction of the product.
 
 Every future feature, AI prompt, API endpoint, UI component and business decision should align with this document.
 
 ## 1. Platform Overview
 
-CutNFlow is an intelligent operating platform built specifically for the flexible packaging industry.
+Kyza is an intelligent operating platform built specifically for the flexible packaging industry.
 
-Rather than being a cutter drawing application, CutNFlow combines engineering knowledge, AI assistance and workflow automation into one connected platform that supports packaging development from concept through production.
+Rather than being a cutter drawing application, Kyza combines engineering knowledge, AI assistance and workflow automation into one connected platform that supports packaging development from concept through production.
 
 The platform is designed to reduce engineering time, improve consistency, minimise production errors and capture industry knowledge that traditionally exists only within experienced engineers and reprographics teams.
 
@@ -24,11 +24,11 @@ To become the world's leading intelligent platform for flexible packaging engine
 
 To provide every packaging engineer, artwork operator, repro house and converter with an AI-powered platform that combines cutter engineering, artwork validation, colour management and production knowledge into a single workflow.
 
-CutNFlow should become the industry standard for engineering flexible packaging.
+Kyza should become the industry standard for engineering flexible packaging.
 
 ## 4. Core Principles
 
-Every feature developed within CutNFlow must satisfy these principles.
+Every feature developed within Kyza must satisfy these principles.
 
 ### Intelligent
 
@@ -79,7 +79,7 @@ All modules should behave similarly. Navigation, terminology, colours and intera
 
 ## 6. Product Scope
 
-CutNFlow is not a single application. It is a connected platform made up of multiple engineering services.
+Kyza is not a single application. It is a connected platform made up of multiple engineering services.
 
 Core platform modules include:
 
@@ -175,7 +175,7 @@ If these questions cannot be answered clearly, the feature should not be priorit
 
 ## 12. Long-Term Goal
 
-CutNFlow aims to become the operating system for flexible packaging engineering by combining:
+Kyza aims to become the operating system for flexible packaging engineering by combining:
 
 - Cutter Engineering
 - Artwork Engineering
@@ -202,4 +202,4 @@ The platform should strive to:
 
 ## Enduring Rule
 
-Every decision made within CutNFlow should improve the speed, quality, consistency or intelligence of flexible packaging engineering while maintaining professional engineering standards.
+Every decision made within Kyza should improve the speed, quality, consistency or intelligence of flexible packaging engineering while maintaining professional engineering standards.

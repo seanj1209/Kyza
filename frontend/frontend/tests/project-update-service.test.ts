@@ -3,17 +3,17 @@ import { setOpeningStyle, normaliseOpeningStyle } from "../packages/cutter-engin
 import { createDoyPouchDefaults } from "../apps/web/src/core/model/parameterSchema"
 import {
   migrateSavedProjectRecord,
-  synchroniseCutNFlowProject,
-  updateCutNFlowProject
+  synchroniseKyzaProject,
+  updateKyzaProject
 } from "../apps/web/src/project/projectUpdateService"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  duplicateCutNFlowProject,
+  duplicateKyzaProject,
   legacySpecFromProject,
-  loadCutNFlowProject,
+  loadKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage
+  saveKyzaProject,
+  type KyzaProjectStorage
 } from "../packages/cutter-engine/project"
 
 function assert(condition: boolean, message: string) {
@@ -35,7 +35,7 @@ function withoutPerfLaneIds(perfs: FlowwrapSpec["perfs"]) {
     : perfs
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
 
   getItem(key: string) {
@@ -112,7 +112,7 @@ const project = projectFromLegacySpec("doy-pouch", "Update Boundary", twoEyemark
 })
 const originalSnapshot = JSON.parse(JSON.stringify(project))
 
-const patched = updateCutNFlowProject({
+const patched = updateKyzaProject({
   project,
   reason: "test-fixture",
   expectedRevision: project.revision,
@@ -171,7 +171,7 @@ const oneEyemarkSpec: FlowwrapSpec = {
     color: "white"
   }
 }
-const oneEyemarkUpdate = updateCutNFlowProject({
+const oneEyemarkUpdate = updateKyzaProject({
   project: projectFromLegacySpec("doy-pouch", "One Eyemark", oneEyemarkSpec),
   reason: "controls-edit",
   update: { type: "patch-legacy-spec", patch: { height: 210 } }
@@ -183,7 +183,7 @@ assertJsonEqual(
   "One-eyemark state must survive an unrelated update."
 )
 
-const conflict = updateCutNFlowProject({
+const conflict = updateKyzaProject({
   project,
   reason: "engine-action",
   expectedRevision: project.revision + 10,
@@ -192,14 +192,14 @@ const conflict = updateCutNFlowProject({
 assert(!conflict.ok && conflict.errors.length > 0, "Revision conflict must be rejected.")
 
 const malformedSpec = { ...twoEyemarkSpec, width: Number.NaN }
-const malformed = updateCutNFlowProject({
+const malformed = updateKyzaProject({
   project,
   reason: "test-fixture",
   update: { type: "replace-legacy-spec", spec: malformedSpec }
 })
 assert(!malformed.ok, "Malformed project update must return an error result.")
 
-const synced = synchroniseCutNFlowProject(project, "artboard-switch")
+const synced = synchroniseKyzaProject(project, "artboard-switch")
 assert(synced.ok, "Artboard switch synchronisation must parse successfully.")
 assert(synced.revision === project.revision, "Artboard sync must not increment revision.")
 assert(synced.project?.updatedAt === project.updatedAt, "Artboard sync must not touch updatedAt.")
@@ -235,8 +235,8 @@ if (migratedLegacy.ok) {
 
 const storage = new MemoryStorage()
 const projectToSave = patched.project ?? project
-assert(saveCutNFlowProject(projectToSave, storage).ok, "Updated project must save.")
-const loaded = loadCutNFlowProject(projectToSave.id, storage)
+assert(saveKyzaProject(projectToSave, storage).ok, "Updated project must save.")
+const loaded = loadKyzaProject(projectToSave.id, storage)
 assert(loaded.ok, "Updated project must load.")
 if (loaded.ok) {
   assertJsonEqual(
@@ -245,7 +245,7 @@ if (loaded.ok) {
     "Save/load must preserve updated cutter geometry."
   )
 }
-const duplicate = duplicateCutNFlowProject(projectToSave.id, storage)
+const duplicate = duplicateKyzaProject(projectToSave.id, storage)
 assert(duplicate.ok, "Updated project must duplicate.")
 if (duplicate.ok) {
   assert(duplicate.value.id !== projectToSave.id, "Duplicate must receive a new project ID.")
@@ -263,7 +263,7 @@ if (duplicate.ok) {
   )
 }
 
-console.log("CutNFlow project update boundary tests passed.")
+console.log("Kyza project update boundary tests passed.")
 
 const openingSpec: FlowwrapSpec = { ...twoEyemarkSpec, doyPouch: createDoyPouchDefaults({ showGripSeal: true, showZipper: false, sideBleed: 27, gripSeal: 8 }) }
 const zipStyle = setOpeningStyle(openingSpec, "zip")
@@ -275,8 +275,8 @@ assert(gripStyle.doyPouch!.sideBleed === 43 && gripStyle.doyPouch!.gripSeal === 
 assert(setOpeningStyle(gripStyle, "grip", false).doyPouch!.showGripSeal === false, "Removing the active opening does not enable another.")
 const duplicateOpening = { ...movedZip, doyPouch: { ...movedZip.doyPouch!, showGripSeal: true } }
 const oldOpeningProject = projectFromLegacySpec("flowwrap", "Old duplicate opening", duplicateOpening)
-const restoredOpening = synchroniseCutNFlowProject(oldOpeningProject, "save-load")
+const restoredOpening = synchroniseKyzaProject(oldOpeningProject, "save-load")
 assert(restoredOpening.ok && restoredOpening.legacySpec!.doyPouch!.showGripSeal === false && restoredOpening.legacySpec!.doyPouch!.zipper.offsetX === 43, "Loading old duplicates retains the zip and its saved position.")
-assert(synchroniseCutNFlowProject(restoredOpening.project!, "save-load").revision === restoredOpening.revision, "Opening migration is idempotent.")
+assert(synchroniseKyzaProject(restoredOpening.project!, "save-load").revision === restoredOpening.revision, "Opening migration is idempotent.")
 assert(normaliseOpeningStyle(gripStyle) === gripStyle, "Single openings remain unchanged.")
 console.log("Single opening, style switching, moved position and legacy duplicate migration checks passed.")

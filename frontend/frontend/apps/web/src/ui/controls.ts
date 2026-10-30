@@ -6,7 +6,7 @@ import { PIFA_ROTATIONS } from "../../../../packages/cutter-engine/actions/textD
 import { paperStripSynced, setPaperStripSync, setPaperStripStepCount } from "../../../../packages/cutter-engine/actions/paperStripSteps"
 import { sachetSynced, setSachetSync, setSachetStepCount } from "../../../../packages/cutter-engine/actions/sachetSteps"
 import { clampCanvasZoom, formatMeasurement, MAX_CANVAS_ZOOM, MIN_CANVAS_ZOOM } from "./canvasViewport"
-import { loadZoomStepPercent } from "../klyro/account/preferenceService"
+import { loadZoomStepPercent } from "../kyza/account/preferenceService"
 import { updateLiddingSpec } from "../constraints/lidding"
 import { createVerticalTabs } from "./verticalTabs"
 import {
@@ -1751,7 +1751,7 @@ export function initFlowwrapControls({
     })
 
     if (!bridgeResponse.success || !bridgeResponse.updatedState?.eyeMarks) {
-      console.warn("[CutNFlow][Engine API Bridge] Eyemark count action failed.", bridgeResponse.errors)
+      console.warn("[Kyza][Engine API Bridge] Eyemark count action failed.", bridgeResponse.errors)
       return false
     }
 
@@ -3041,7 +3041,7 @@ export function initFlowwrapControls({
   countTwoButton.textContent = "2"
   const setBaseEyemarkCount = (count: 0 | 1 | 2) => {
     if (count === 2 && spec.kSealPouch && !resolveKSealPouchGeometry(spec).trimEnabled) {
-      window.dispatchEvent(new CustomEvent("klyro:flow-prompt", { detail: {
+      window.dispatchEvent(new CustomEvent("kyza:flow-prompt", { detail: {
         message: "Two K Seal eyemarks need trim. Enable trim to add the second eyemark?",
         actionLabel: "Enable trim and add eyemark",
         action: () => { updateKSealPouch({ trimEnabled: true }); setBaseEyemarkCount(2) }
@@ -3852,7 +3852,7 @@ export function initFlowwrapControls({
   }
 
   let dockMode: "dark" | "light" =
-    document.documentElement.dataset.klyroTheme === "light" ? "light" : "dark"
+    document.documentElement.dataset.kyzaTheme === "light" ? "light" : "dark"
   let dockPinned = false
   let selectEnabled = false
   let panEnabled = true
@@ -4106,7 +4106,7 @@ export function initFlowwrapControls({
     }
   })
   syncDockIcons()
-  window.addEventListener("klyro-theme-change", event => {
+  window.addEventListener("kyza-theme-change", event => {
     const nextTheme = (event as CustomEvent<{ theme?: string }>).detail?.theme
     dockMode = nextTheme === "light" ? "light" : "dark"
     syncDockIcons()

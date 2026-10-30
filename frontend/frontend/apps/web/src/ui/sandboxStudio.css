@@ -18,10 +18,10 @@
   box-sizing: border-box;
   background:
     radial-gradient(120% 90% at 50% 42%, rgba(73, 198, 220, 0.03), transparent 60%),
-    var(--klyro-canvas);
+    var(--kyza-canvas);
   overflow: hidden;
   opacity: 1;
-  transition: opacity 0.25s var(--klyro-ease);
+  transition: opacity 0.25s var(--kyza-ease);
 }
 
 /* Fade the whole welcome screen (graphics included) when entering Set-Up. */
@@ -85,7 +85,7 @@
   text-align: center;
   font-size: 15px;
   line-height: 1.65;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   letter-spacing: -0.01em;
 }
 
@@ -103,22 +103,22 @@
   align-items: center;
   gap: 8px;
   padding: 9px 16px;
-  border: 1px solid var(--klyro-border-strong);
-  border-radius: var(--klyro-radius-control);
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
+  border: 1px solid var(--kyza-border-strong);
+  border-radius: var(--kyza-radius-control);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: -0.01em;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.18s var(--klyro-ease), border-color 0.18s var(--klyro-ease), box-shadow 0.18s var(--klyro-ease);
+  transition: background 0.18s var(--kyza-ease), border-color 0.18s var(--kyza-ease), box-shadow 0.18s var(--kyza-ease);
 }
 
 .sandbox-entry-btn:hover {
-  background: var(--klyro-panel-soft);
-  border-color: var(--klyro-border-strong);
-  box-shadow: var(--klyro-shadow-soft);
+  background: var(--kyza-panel-soft);
+  border-color: var(--kyza-border-strong);
+  box-shadow: var(--kyza-shadow-soft);
 }
 
 #preview .sandbox-studio-root .sandbox-entry-btn > svg {
@@ -130,13 +130,13 @@
 }
 
 .sandbox-entry-btn.is-primary {
-  background: var(--klyro-brand);
-  border-color: var(--klyro-brand);
+  background: var(--kyza-brand);
+  border-color: var(--kyza-brand);
   color: #fff;
 }
 .sandbox-entry-btn.is-primary:hover {
-  background: var(--klyro-brand-hover);
-  border-color: var(--klyro-brand-hover);
+  background: var(--kyza-brand-hover);
+  border-color: var(--kyza-brand-hover);
 }
 
 /* ---- Right-hand toolbar ---- */
@@ -151,8 +151,8 @@
   align-items: center;
   padding: 18px 0;
   gap: 8px;
-  background: var(--klyro-panel);
-  border-left: 1px solid var(--klyro-border);
+  background: var(--kyza-panel);
+  border-left: 1px solid var(--kyza-border);
   z-index: 16;
   overflow-y: auto;
   scrollbar-width: none;
@@ -169,20 +169,20 @@
   border: none;
   border-radius: 10px;
   background: transparent;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   cursor: pointer;
-  transition: background 0.15s var(--klyro-ease), color 0.15s var(--klyro-ease);
+  transition: background 0.15s var(--kyza-ease), color 0.15s var(--kyza-ease);
 }
 
 .sandbox-toolbar-btn:hover {
-  background: var(--klyro-hover);
-  color: var(--klyro-text);
+  background: var(--kyza-hover);
+  color: var(--kyza-text);
 }
 
 .sandbox-toolbar-btn.is-active {
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
-  box-shadow: var(--klyro-control-shadow);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
+  box-shadow: var(--kyza-control-shadow);
 }
 
 #preview .sandbox-studio-root .sandbox-toolbar-btn > svg {
@@ -203,13 +203,13 @@
   white-space: nowrap;
   padding: 5px 10px;
   border-radius: 8px;
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  box-shadow: var(--klyro-shadow);
-  border: 1px solid var(--klyro-border-strong);
+  box-shadow: var(--kyza-shadow);
+  border: 1px solid var(--kyza-border-strong);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
@@ -229,13 +229,13 @@
   width: min(320px, calc(100% - 68px));
   display: flex;
   flex-direction: column;
-  background: var(--klyro-panel);
-  border-left: 1px solid var(--klyro-border);
-  box-shadow: var(--klyro-shadow);
+  background: var(--kyza-panel);
+  border-left: 1px solid var(--kyza-border);
+  box-shadow: var(--kyza-shadow);
   z-index: 11;
   overflow: hidden;
   transform: translateX(0);
-  transition: transform 0.22s var(--klyro-ease), opacity 0.22s var(--klyro-ease);
+  transition: transform 0.22s var(--kyza-ease), opacity 0.22s var(--kyza-ease);
 }
 
 .sandbox-panel[hidden] {
@@ -248,15 +248,15 @@
   justify-content: space-between;
   padding: 14px 16px;
   min-height: 50px;
-  border-bottom: 1px solid var(--klyro-border);
-  background: linear-gradient(135deg, var(--klyro-panel-raised), var(--klyro-panel));
+  border-bottom: 1px solid var(--kyza-border);
+  background: linear-gradient(135deg, var(--kyza-panel-raised), var(--kyza-panel));
 }
 
 .sandbox-panel-title {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: var(--klyro-text);
+  color: var(--kyza-text);
   margin: 0;
 }
 
@@ -266,17 +266,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--klyro-border);
+  border: 1px solid var(--kyza-border);
   border-radius: 8px;
-  background: var(--klyro-panel-soft);
-  color: var(--klyro-text);
+  background: var(--kyza-panel-soft);
+  color: var(--kyza-text);
   font-size: 15px;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .sandbox-panel-close:hover {
-  background: var(--klyro-panel-raised);
+  background: var(--kyza-panel-raised);
 }
 
 .sandbox-panel-body {
@@ -302,7 +302,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
 }
 
 .sandbox-field-row {
@@ -319,10 +319,10 @@
 .sandbox-input {
   height: 34px;
   padding: 0 10px;
-  border: 1px solid var(--klyro-border-strong);
+  border: 1px solid var(--kyza-border-strong);
   border-radius: 9px;
-  background: var(--klyro-panel-soft);
-  color: var(--klyro-text);
+  background: var(--kyza-panel-soft);
+  color: var(--kyza-text);
   font-size: 13px;
   font-family: inherit;
   outline: none;
@@ -330,12 +330,12 @@
 }
 
 .sandbox-input:focus {
-  border-color: var(--klyro-brand);
+  border-color: var(--kyza-brand);
   box-shadow: 0 0 0 2px rgba(158, 19, 22, 0.15);
 }
 
 .sandbox-input::placeholder {
-  color: var(--klyro-text-subtle);
+  color: var(--kyza-text-subtle);
 }
 
 select.sandbox-input {
@@ -350,14 +350,14 @@ select.sandbox-input {
 
 .sandbox-field-unit {
   font-size: 12px;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   white-space: nowrap;
 }
 
 .sandbox-field-separator {
   width: 100%;
   height: 1px;
-  background: var(--klyro-border);
+  background: var(--kyza-border);
   margin: 4px 0;
 }
 
@@ -365,7 +365,7 @@ select.sandbox-input {
 .sandbox-measures-toggle {
   display: flex;
   gap: 0;
-  border: 1px solid var(--klyro-border-strong);
+  border: 1px solid var(--kyza-border-strong);
   border-radius: 9px;
   overflow: hidden;
 }
@@ -375,7 +375,7 @@ select.sandbox-input {
   padding: 7px 0;
   border: none;
   background: transparent;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -383,12 +383,12 @@ select.sandbox-input {
 }
 
 .sandbox-measures-btn.is-active {
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
 }
 
 .sandbox-measures-btn:not(.is-active):hover {
-  background: var(--klyro-hover);
+  background: var(--kyza-hover);
 }
 
 /* ---- Specs panel: vertical tab selector ---- */
@@ -403,7 +403,7 @@ select.sandbox-input {
   flex-direction: column;
   gap: 2px;
   padding: 10px 0 10px 10px;
-  border-right: 1px solid var(--klyro-border);
+  border-right: 1px solid var(--kyza-border);
   width: 42px;
   min-width: 42px;
   overflow-y: auto;
@@ -420,20 +420,20 @@ select.sandbox-input {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 
 .sandbox-specs-tab:hover {
-  background: var(--klyro-hover);
-  color: var(--klyro-text);
+  background: var(--kyza-hover);
+  color: var(--kyza-text);
 }
 
 .sandbox-specs-tab.is-active {
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
-  box-shadow: var(--klyro-control-shadow);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
+  box-shadow: var(--kyza-control-shadow);
 }
 
 #preview .sandbox-studio-root .sandbox-specs-tab > svg {
@@ -454,12 +454,12 @@ select.sandbox-input {
   white-space: nowrap;
   padding: 4px 8px;
   border-radius: 6px;
-  background: var(--klyro-panel-raised);
-  color: var(--klyro-text);
+  background: var(--kyza-panel-raised);
+  color: var(--kyza-text);
   font-size: 11px;
   font-weight: 500;
-  box-shadow: var(--klyro-shadow-soft);
-  border: 1px solid var(--klyro-border-strong);
+  box-shadow: var(--kyza-shadow-soft);
+  border: 1px solid var(--kyza-border-strong);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
@@ -494,10 +494,10 @@ select.sandbox-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--klyro-border-strong);
+  border: 1px solid var(--kyza-border-strong);
   border-radius: 50%;
   background: transparent;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -505,14 +505,14 @@ select.sandbox-input {
 }
 
 .sandbox-substrate-tab.is-active {
-  background: var(--klyro-brand);
-  border-color: var(--klyro-brand);
+  background: var(--kyza-brand);
+  border-color: var(--kyza-brand);
   color: #fff;
 }
 
 .sandbox-substrate-tab:not(.is-active):hover {
-  background: var(--klyro-hover);
-  color: var(--klyro-text);
+  background: var(--kyza-hover);
+  color: var(--kyza-text);
 }
 
 /* ---- Placeholder panel (Coming Soon) ---- */
@@ -521,7 +521,7 @@ select.sandbox-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--klyro-text-subtle);
+  color: var(--kyza-text-subtle);
   font-size: 13px;
   letter-spacing: -0.01em;
   padding: 32px 16px;
@@ -537,7 +537,7 @@ select.sandbox-input {
 
 .sandbox-substrate-count-label {
   font-size: 12px;
-  color: var(--klyro-text-muted);
+  color: var(--kyza-text-muted);
   white-space: nowrap;
 }
 
@@ -551,7 +551,7 @@ select.sandbox-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--klyro-text-subtle);
+  color: var(--kyza-text-subtle);
   font-size: 13px;
   padding: 32px;
   text-align: center;

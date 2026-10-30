@@ -2,9 +2,9 @@
 :root body .labels-dropdown > .attributes-menu-item { width: 100%; }
 :root body .labels-option-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; padding: 9px 2px 12px; }
 :root body .labels-option-grid[hidden] { display: none; }
-:root body .labels-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 62px; padding: 8px; border: 1px solid var(--klyro-border); border-radius: 12px; color: var(--klyro-text-muted); background: var(--klyro-panel-soft); box-shadow: var(--klyro-control-shadow); font: 600 10px system-ui; cursor: pointer; }
+:root body .labels-option { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 62px; padding: 8px; border: 1px solid var(--kyza-border); border-radius: 12px; color: var(--kyza-text-muted); background: var(--kyza-panel-soft); box-shadow: var(--kyza-control-shadow); font: 600 10px system-ui; cursor: pointer; }
 :root body .labels-option svg { width: 24px; height: 24px; }
-:root body .labels-option:hover, :root body .labels-option:focus-visible { color: var(--klyro-accent-text); border-color: var(--klyro-border-strong); background: var(--klyro-panel-raised); }
-:root body .paper-strip-sync { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--klyro-border); border-radius: 12px; color: var(--klyro-text-muted); background: var(--klyro-panel-soft); box-shadow: var(--klyro-control-shadow); font: 600 12px system-ui; cursor: pointer; }
+:root body .labels-option:hover, :root body .labels-option:focus-visible { color: var(--kyza-accent-text); border-color: var(--kyza-border-strong); background: var(--kyza-panel-raised); }
+:root body .paper-strip-sync { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--kyza-border); border-radius: 12px; color: var(--kyza-text-muted); background: var(--kyza-panel-soft); box-shadow: var(--kyza-control-shadow); font: 600 12px system-ui; cursor: pointer; }
 :root body .paper-strip-sync svg { width: 19px; height: 19px; }
-:root body .paper-strip-sync[aria-pressed="true"] { color: var(--klyro-accent-text); border-color: color-mix(in srgb,var(--klyro-brand) 30%,var(--klyro-border)); }
+:root body .paper-strip-sync[aria-pressed="true"] { color: var(--kyza-accent-text); border-color: color-mix(in srgb,var(--kyza-brand) 30%,var(--kyza-border)); }

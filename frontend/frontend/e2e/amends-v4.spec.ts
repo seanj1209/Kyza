@@ -78,7 +78,7 @@ test("@beta V4 legend centres on cutter and omits absent keys", async ({ page })
 test("@beta V4 legend action menu exposes Switch without moving the cutter", async ({ page }) => {
   await createManualProjectFromDashboard(page, { name: "V4 legend" })
   await page.getByRole("button", { name: "Legend layouts", exact: true }).click()
-  await page.getByRole("menuitem", { name: "Landscape Klyro legend" }).click()
+  await page.getByRole("menuitem", { name: "Landscape Kyza legend" }).click()
   const svg = page.locator("#preview-canvas > svg")
   await expect(svg.locator("#cutter_legend")).toBeVisible()
   await page.screenshot({ path: "test-results/v4-legend-landscape.png", fullPage: true })

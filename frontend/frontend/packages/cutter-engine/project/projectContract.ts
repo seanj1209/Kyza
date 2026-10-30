@@ -1,6 +1,7 @@
 import type { FlowwrapSpec } from "../types"
+import { normaliseLegacyProjectBrand } from "./brandCompatibility"
 import {
-  CUTNFLOW_EXPORT_RECORD_VERSION,
+  KYZA_EXPORT_RECORD_VERSION,
   type CutterExportAuditRecord,
   type ValidationAcknowledgement,
   type ValidationIssue,
@@ -8,13 +9,13 @@ import {
 } from "../validation/validationTypes"
 import { normaliseElementIdentityMap } from "./elementIdentity"
 import {
-  CUTNFLOW_PROJECT_COORDINATE_SPACE,
-  CUTNFLOW_PROJECT_SCHEMA_VERSION,
-  CUTNFLOW_PROJECT_UNITS,
-  type CreateCutNFlowProjectV1Input,
-  type CutNFlowCutterProjectV1,
-  type CutNFlowProjectDraftV1,
-  type CutNFlowProjectV1,
+  KYZA_PROJECT_COORDINATE_SPACE,
+  KYZA_PROJECT_SCHEMA_VERSION,
+  KYZA_PROJECT_UNITS,
+  type CreateKyzaProjectV1Input,
+  type KyzaCutterProjectV1,
+  type KyzaProjectDraftV1,
+  type KyzaProjectV1,
   type ExportSettingsV1,
   type ProjectMetadataV1,
   type ParseResult
@@ -387,7 +388,7 @@ const parseExportAuditRecord = (
   }
   if (!isIsoTimestamp(value.exportedAt)) errors.push(`${path}.exportedAt must be a valid timestamp.`)
   if (value.recordVersion !== undefined) {
-    if (value.recordVersion !== CUTNFLOW_EXPORT_RECORD_VERSION) {
+    if (value.recordVersion !== KYZA_EXPORT_RECORD_VERSION) {
       errors.push(`${path}.recordVersion is unsupported.`)
     }
     for (const field of ["exportTier", "filename", "mimeType", "generatorResult", "deliveryStatus", "deliveryMethod"] as const) {
@@ -500,7 +501,7 @@ const parsePackWorkspace = (value: unknown, errors: string[]) => {
     return
   }
   const validStates = ["missing", "proposed", "confirmed"]
-  const validSources = ["user", "flowai", "import", "cnf-tech", "preset"]
+  const validSources = ["user", "flowai", "import", "kyza-tech", "preset"]
   const validateField = (field: string, expected: "string" | "number" | "boolean", optional = false) => {
     const entry = value.fields[field]
     if (entry === undefined && optional) return
@@ -572,7 +573,7 @@ const parsePackWorkspace = (value: unknown, errors: string[]) => {
 const parseProjectDraft = (
   value: unknown,
   errors: string[]
-): CutNFlowProjectDraftV1 | undefined => {
+): KyzaProjectDraftV1 | undefined => {
   if (value === undefined) return undefined
   if (!isRecord(value)) {
     errors.push("projectDraft must be an object when provided.")
@@ -652,24 +653,24 @@ const parseProjectDraft = (
   )) {
     errors.push("projectDraft.history contains an invalid entry.")
   }
-  return cloneJson(value as CutNFlowProjectDraftV1)
+  return cloneJson(value as KyzaProjectDraftV1)
 }
 
-export const createCutNFlowProjectId = () => {
+export const createKyzaProjectId = () => {
   const randomUuid = globalThis.crypto?.randomUUID?.()
   if (randomUuid) {
-    return `cutnflow-project-${randomUuid}`
+    return `kyza-project-${randomUuid}`
   }
-  return `cutnflow-project-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`
+  return `kyza-project-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`
 }
 
-export const createCutNFlowProjectV1 = (
-  input: CreateCutNFlowProjectV1Input
-): CutNFlowProjectV1 => {
+export const createKyzaProjectV1 = (
+  input: CreateKyzaProjectV1Input
+): KyzaProjectV1 => {
   const now = new Date().toISOString()
   const createdAt = input.createdAt ?? now
   const updatedAt = input.updatedAt ?? createdAt
-  const id = input.id?.trim() || createCutNFlowProjectId()
+  const id = input.id?.trim() || createKyzaProjectId()
   const hasPackType = typeof input.packType === "string" && input.packType.trim().length > 0
   const hasLegacySpec = input.legacySpec !== undefined
   if (hasPackType !== hasLegacySpec) {
@@ -683,7 +684,7 @@ export const createCutNFlowProjectV1 = (
     : null
   if (identity && identity.errors.length > 0) throw new Error(identity.errors.join(" "))
   return {
-    schemaVersion: CUTNFLOW_PROJECT_SCHEMA_VERSION,
+    schemaVersion: KYZA_PROJECT_SCHEMA_VERSION,
     id,
     revision:
       Number.isInteger(input.revision) && (input.revision ?? 0) > 0
@@ -698,8 +699,8 @@ export const createCutNFlowProjectV1 = (
     ...(hasPackType && input.legacySpec && identity
       ? {
           cutter: {
-            units: CUTNFLOW_PROJECT_UNITS,
-            coordinateSpace: CUTNFLOW_PROJECT_COORDINATE_SPACE,
+            units: KYZA_PROJECT_UNITS,
+            coordinateSpace: KYZA_PROJECT_COORDINATE_SPACE,
             packType: input.packType!.trim(),
             legacySpec: cloneJson(input.legacySpec),
             identityMap: identity.identityMap
@@ -728,10 +729,10 @@ export const createCutNFlowProjectV1 = (
   }
 }
 
-export const normaliseCutNFlowProject = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 =>
-  createCutNFlowProjectV1({
+export const normaliseKyzaProject = (
+  project: KyzaProjectV1
+): KyzaProjectV1 =>
+  createKyzaProjectV1({
     id: project.id,
     revision: project.revision,
     name: project.name,
@@ -758,15 +759,15 @@ const parseProjectV1 = (
   value: unknown,
   allowMissingProjectId: boolean,
   allowMissingRevision: boolean
-): ParseResult<CutNFlowProjectV1> => {
+): ParseResult<KyzaProjectV1> => {
   if (!isRecord(value)) {
     return { ok: false, errors: ["Project must be an object."] }
   }
 
   const errors: string[] = []
   rejectUnknownFields(value, projectFields, "", errors)
-  if (value.schemaVersion !== CUTNFLOW_PROJECT_SCHEMA_VERSION) {
-    errors.push(`schemaVersion must be ${CUTNFLOW_PROJECT_SCHEMA_VERSION}.`)
+  if (value.schemaVersion !== KYZA_PROJECT_SCHEMA_VERSION) {
+    errors.push(`schemaVersion must be ${KYZA_PROJECT_SCHEMA_VERSION}.`)
   }
   if (!isNonEmptyString(value.id)) {
     if (!(allowMissingProjectId && value.id === undefined)) {
@@ -795,12 +796,12 @@ const parseProjectV1 = (
     errors.push("cutter must be an object.")
   } else if (isRecord(cutter)) {
     rejectUnknownFields(cutter, cutterFields, "cutter.", errors)
-    if (cutter.units !== CUTNFLOW_PROJECT_UNITS) {
-      errors.push(`cutter.units must be "${CUTNFLOW_PROJECT_UNITS}".`)
+    if (cutter.units !== KYZA_PROJECT_UNITS) {
+      errors.push(`cutter.units must be "${KYZA_PROJECT_UNITS}".`)
     }
-    if (cutter.coordinateSpace !== CUTNFLOW_PROJECT_COORDINATE_SPACE) {
+    if (cutter.coordinateSpace !== KYZA_PROJECT_COORDINATE_SPACE) {
       errors.push(
-        `cutter.coordinateSpace must be "${CUTNFLOW_PROJECT_COORDINATE_SPACE}".`
+        `cutter.coordinateSpace must be "${KYZA_PROJECT_COORDINATE_SPACE}".`
       )
     }
     if (!isNonEmptyString(cutter.packType)) {
@@ -858,7 +859,7 @@ const parseProjectV1 = (
   }
 
   try {
-    const project = createCutNFlowProjectV1({
+    const project = createKyzaProjectV1({
       id: isNonEmptyString(value.id) ? value.id : undefined,
       revision:
         Number.isInteger(value.revision) && (value.revision as number) > 0
@@ -896,16 +897,16 @@ const parseProjectV1 = (
   }
 }
 
-export const isCutNFlowProjectV1 = (value: unknown): value is CutNFlowProjectV1 =>
+export const isKyzaProjectV1 = (value: unknown): value is KyzaProjectV1 =>
   parseProjectV1(value, false, false).ok
 
-export const migrateCutNFlowProject = (
+export const migrateKyzaProject = (
   value: unknown
-): ParseResult<CutNFlowProjectV1> => {
+): ParseResult<KyzaProjectV1> => {
   if (!isRecord(value)) {
     return { ok: false, errors: ["Project must be an object."] }
   }
-  if (value.schemaVersion !== CUTNFLOW_PROJECT_SCHEMA_VERSION) {
+  if (value.schemaVersion !== KYZA_PROJECT_SCHEMA_VERSION) {
     return {
       ok: false,
       errors: [
@@ -915,42 +916,42 @@ export const migrateCutNFlowProject = (
       ]
     }
   }
-  return parseProjectV1(value, true, true)
+  return parseProjectV1(normaliseLegacyProjectBrand(value), true, true)
 }
 
-export const parseCutNFlowProject = (
+export const parseKyzaProject = (
   value: unknown
-): ParseResult<CutNFlowProjectV1> => migrateCutNFlowProject(value)
+): ParseResult<KyzaProjectV1> => migrateKyzaProject(value)
 
 export const projectFromLegacySpec = (
   packType: string,
   name: string,
   spec: FlowwrapSpec,
-  input: Omit<CreateCutNFlowProjectV1Input, "packType" | "name" | "legacySpec"> = {}
+  input: Omit<CreateKyzaProjectV1Input, "packType" | "name" | "legacySpec"> = {}
 ) =>
-  createCutNFlowProjectV1({
+  createKyzaProjectV1({
     ...input,
     packType,
     name,
     legacySpec: spec
-  }) as CutNFlowCutterProjectV1
+  }) as KyzaCutterProjectV1
 
 export const hasCutterDocument = (
-  project: CutNFlowProjectV1
-): project is CutNFlowCutterProjectV1 => Boolean(project.cutter)
+  project: KyzaProjectV1
+): project is KyzaCutterProjectV1 => Boolean(project.cutter)
 
-export const legacySpecFromProject = (project: CutNFlowProjectV1): FlowwrapSpec => {
+export const legacySpecFromProject = (project: KyzaProjectV1): FlowwrapSpec => {
   if (!project.cutter) {
     throw new Error("Project does not contain a Cutter Specification.")
   }
   return cloneJson(project.cutter.legacySpec)
 }
 
-export const touchCutNFlowProject = (
-  project: CutNFlowProjectV1,
+export const touchKyzaProject = (
+  project: KyzaProjectV1,
   updatedAt = new Date().toISOString()
-): CutNFlowProjectV1 =>
-  normaliseCutNFlowProject({
+): KyzaProjectV1 =>
+  normaliseKyzaProject({
     ...project,
     updatedAt
   })

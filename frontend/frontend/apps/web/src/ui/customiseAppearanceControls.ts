@@ -3,7 +3,7 @@ import { availableAppearanceTargets, resolveAppearance, type Appearance, type Ap
 import { createStudioIcon } from "./studioIcons"
 import "./customiseConcept.css"
 
-const RECENT_KEY = "klyro.customise.recentColours"
+const RECENT_KEY = "kyza.customise.recentColours"
 const DEFAULT_COLOURS = ["#000000", "#1d1d1d", "#9e1316", "#dbc8b6", "#ffffff", "#2eb774"]
 const validHex = (v: unknown): v is string => typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)
 export function readRecentColours(): string[] {

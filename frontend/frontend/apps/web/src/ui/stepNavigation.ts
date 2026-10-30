@@ -23,7 +23,7 @@ function attachSideSealPouchDock(container:HTMLElement,spec:FlowwrapSpec,commit:
   }
   const toggle=document.createElement("button");toggle.type="button";toggle.setAttribute("aria-label","Expand pouch seal tray");dock.append(toggle)
   const tray=document.createElement("div");tray.className="pouch-seal-dock-tray";dock.append(tray)
-  const key=`klyro.pouch-seal-tray.${pouch.sides}ss`;let open=false
+  const key=`kyza.pouch-seal-tray.${pouch.sides}ss`;let open=false
   try{open=sessionStorage.getItem(key)==="true"}catch{}
   const refresh=()=>{tray.hidden=!open;toggle.textContent=open?"⌃":"⌄";toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Collapse pouch seal tray":"Expand pouch seal tray")}
   toggle.addEventListener("click",()=>{open=!open;try{sessionStorage.setItem(key,String(open))}catch{}refresh()});refresh()
@@ -83,7 +83,7 @@ export function attachStepNavigation(container:HTMLElement,root:SVGSVGElement,sp
     tag.addEventListener("keydown",event=>{if(event.key==="Enter" || event.key===" "){event.preventDefault();event.stopPropagation();select(step,true)}})
     // Amends v11: no keyline around any step's cutter; the active tab below it marks selection.
   }
-  const expandedKey=`klyro.step-tray.${spec.sachet?(spec.sachet.stepPair?"4ss":"3ss"):"paper-strip"}`
+  const expandedKey=`kyza.step-tray.${spec.sachet?(spec.sachet.stepPair?"4ss":"3ss"):"paper-strip"}`
   let expanded=false
   try{expanded=sessionStorage.getItem(expandedKey)==="true"}catch{}
   if(!synced && list.children.length>4){

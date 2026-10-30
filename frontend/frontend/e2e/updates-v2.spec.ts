@@ -96,7 +96,7 @@ test('@beta Updates V2 live DOY dropdown and toolbar Legend with Customise setti
   await page.locator('.gusset-dock').getByLabel('Gusset (mm)',{exact:true}).press('Tab')
   await expect(page.locator('.floating-panel[data-panel="gusset-arch"]')).toHaveCount(0)
   await page.getByRole('button',{name:'Legend layouts',exact:true}).click()
-  await page.getByRole('menuitem',{name:'Portrait Klyro legend'}).click()
+  await page.getByRole('menuitem',{name:'Portrait Kyza legend'}).click()
   await expect(page.locator('#cutter_legend')).toBeVisible()
   await expect(page.locator('.cutter-legend-bar')).toHaveCount(0)
   await page.getByRole('button',{name:'Customise',exact:true}).click()

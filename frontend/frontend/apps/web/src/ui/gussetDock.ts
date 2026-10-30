@@ -16,7 +16,7 @@ export function attachGussetDock(container:HTMLElement,spec:FlowwrapSpec,commit:
   sync.addEventListener("click",()=>commit(updateGussetControl(spec,"sync",!synced)));dock.append(sync)
   const toggle=document.createElement("button");toggle.type="button";toggle.setAttribute("aria-label","Expand gusset tray");dock.append(toggle)
   const tray=document.createElement("div");tray.className="gusset-dock-tray";dock.append(tray)
-  const storageKey=`klyro.gusset-tray.${spec.kSealPouch?"kseal":"doy"}`;let open=false
+  const storageKey=`kyza.gusset-tray.${spec.kSealPouch?"kseal":"doy"}`;let open=false
   try{open=sessionStorage.getItem(storageKey)==="true"}catch{}
   const refresh=()=>{tray.hidden=!open;toggle.textContent=open?"⌃":"⌄";toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Collapse gusset tray":"Expand gusset tray")}
   toggle.addEventListener("click",()=>{open=!open;try{sessionStorage.setItem(storageKey,String(open))}catch{}refresh()});refresh()

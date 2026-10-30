@@ -1,11 +1,11 @@
 import type {
-  CutNFlowCutterProjectV1,
-  CutNFlowProjectV1,
+  KyzaCutterProjectV1,
+  KyzaProjectV1,
   ParseResult
 } from "../project"
 import { toPackSpecificationPackTypeId } from "../project"
 import {
-  CUTNFLOW_EXPORT_RECORD_VERSION,
+  KYZA_EXPORT_RECORD_VERSION,
   validationRunToLegacyResult,
   type CutterExportAuthorizationAudit,
   type CutterExportRecordV1,
@@ -14,7 +14,7 @@ import {
 } from "../validation"
 import {
   buildExportSvgDocument,
-  exportCutNFlowProject,
+  exportKyzaProject,
   type CutterExportFormat,
   type CutterExportOptions,
   type CutterExportSvgSource
@@ -23,9 +23,9 @@ import {
   createExportPackageDraft
 } from "./exportPackage"
 import {
-  buildCutNFlowJsonExport,
-  createCutNFlowJsonExportFilename,
-  serializeCutNFlowJsonExport
+  buildKyzaJsonExport,
+  createKyzaJsonExportFilename,
+  serializeKyzaJsonExport
 } from "./jsonExport"
 import { createRasterPreviewPdfFromSvg } from "./rasterPreviewPdf"
 import {
@@ -49,7 +49,7 @@ export type ProjectExportRequest = {
 }
 
 export type PreparedProjectExport = {
-  project: CutNFlowCutterProjectV1
+  project: KyzaCutterProjectV1
   validationRun: ValidationRun
   acknowledgement?: ValidationAcknowledgement
   capability: ExportCapability
@@ -99,7 +99,7 @@ export type ProjectExportServiceErrorCode =
 export type ProjectExportServiceResult =
   | {
       ok: true
-      project: CutNFlowProjectV1
+      project: KyzaProjectV1
       artifact: GeneratedProjectExport
       record: CutterExportRecordV1
       delivery: ProjectExportDelivery
@@ -138,13 +138,13 @@ const svgLayers = (markup: string) => {
   return { count: ids.length, ids, names }
 }
 
-const projectDimensions = (project: CutNFlowCutterProjectV1) => ({
+const projectDimensions = (project: KyzaCutterProjectV1) => ({
   widthMm: project.cutter.legacySpec.width,
   heightMm: project.cutter.legacySpec.height
 })
 
 export const prepareProjectExport = (input: {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validationRun: ValidationRun
   acknowledgement?: ValidationAcknowledgement
   request: ProjectExportRequest
@@ -183,7 +183,7 @@ export const prepareProjectExport = (input: {
   return {
     ok: true,
     prepared: {
-      project: input.project as CutNFlowCutterProjectV1,
+      project: input.project as KyzaCutterProjectV1,
       validationRun: input.validationRun,
       ...(input.acknowledgement ? { acknowledgement: input.acknowledgement } : {}),
       capability,
@@ -205,7 +205,7 @@ export const generatePreparedProjectExport = async (
   const options = defaultOptions(request)
   try {
     if (capability.generator === "editable-svg") {
-      const result = exportCutNFlowProject(project, options, request.source, {
+      const result = exportKyzaProject(project, options, request.source, {
         validationRun: prepared.validationRun,
         ...(prepared.acknowledgement ? { acknowledgement: prepared.acknowledgement } : {}),
         exportId: prepared.exportId,
@@ -261,14 +261,14 @@ export const generatePreparedProjectExport = async (
         createdAt: prepared.exportedAt,
         exportAudit: prepared.authorizationAudit
       })
-      const payload = buildCutNFlowJsonExport({ project, validation, exportPackage, exportedAt: prepared.exportedAt })
-      const blob = new Blob([serializeCutNFlowJsonExport(payload)], { type: capability.mimeType })
+      const payload = buildKyzaJsonExport({ project, validation, exportPackage, exportedAt: prepared.exportedAt })
+      const blob = new Blob([serializeKyzaJsonExport(payload)], { type: capability.mimeType })
       const layers = payload.layerManifest.layers.filter(layer => layer.exportable)
       return {
         ok: true,
         artifact: {
           prepared,
-          filename: createCutNFlowJsonExportFilename(payload),
+          filename: createKyzaJsonExportFilename(payload),
           mimeType: capability.mimeType,
           blob,
           page: projectDimensions(project),
@@ -295,7 +295,7 @@ export const createCompletedExportRecord = (
   const options = defaultOptions(prepared.request)
   return {
     ...authorizationAudit,
-    recordVersion: CUTNFLOW_EXPORT_RECORD_VERSION,
+    recordVersion: KYZA_EXPORT_RECORD_VERSION,
     exportTier: prepared.capability.tierId,
     filename: artifact.filename,
     mimeType: artifact.mimeType,
@@ -338,8 +338,8 @@ export const createCompletedExportRecord = (
 export const completePreparedProjectExport = async (input: {
   artifact: GeneratedProjectExport
   delivery: ProjectExportDelivery
-  latestProject: CutNFlowProjectV1
-  persistProject: (project: CutNFlowProjectV1, expectedRevision: number) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+  latestProject: KyzaProjectV1
+  persistProject: (project: KyzaProjectV1, expectedRevision: number) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
 }): Promise<ProjectExportServiceResult> => {
   const { prepared } = input.artifact
   if (input.latestProject.id !== prepared.project.id || input.latestProject.revision !== prepared.project.revision) {
@@ -370,8 +370,8 @@ export const completePreparedProjectExport = async (input: {
 }
 
 export const executeProjectExport = async (input: {
-  getLatestProject: () => CutNFlowProjectV1 | null | Promise<CutNFlowProjectV1 | null>
-  persistProject: (project: CutNFlowProjectV1, expectedRevision: number) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+  getLatestProject: () => KyzaProjectV1 | null | Promise<KyzaProjectV1 | null>
+  persistProject: (project: KyzaProjectV1, expectedRevision: number) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
   validationRun: ValidationRun
   acknowledgement?: ValidationAcknowledgement
   request: ProjectExportRequest

@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Database Schema
+document_name: Kyza Database Schema
 file_name: 06_Database_Schema.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces: 06_Database_Schema.md v1.0
 authority: Persistent entities, relationships, ownership, revisions, storage boundaries, migrations and data-integrity rules
@@ -17,11 +17,11 @@ related_sources:
   - 10_Testing_QA.md
 ---
 
-# Klyro Database Schema
+# Kyza Database Schema
 
 ## Document Purpose
 
-This document defines the intended persistent data model for the Klyro App.
+This document defines the intended persistent data model for the Kyza App.
 
 It establishes:
 
@@ -62,13 +62,13 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and Data Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the connected Project environment.
+The Kyza App is the connected Project environment.
 
 Its Beta Core includes:
 
@@ -79,9 +79,9 @@ Its Beta Core includes:
 - Export Release
 - Account & Specs essentials
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the deterministic packaging-engineering capability.
+Kyza/Kyza Tech is the deterministic packaging-engineering capability.
 
 It creates or manages structured:
 
@@ -276,7 +276,7 @@ The current app may use:
 - Mock repositories
 - A hosted API/database
 
-All persistence adapters should use Klyro-owned domain shapes.
+All persistence adapters should use Kyza-owned domain shapes.
 
 ---
 
@@ -417,7 +417,7 @@ The database must not require a full company hierarchy merely to save a Project.
 
 ## 9.2 Future Workspaces
 
-Future Klyro workspaces may support:
+Future Kyza workspaces may support:
 
 - Companies
 - Teams
@@ -1697,9 +1697,9 @@ The human-readable authority remains `04_Engineering_Knowledge_Base.md`.
 
 Structured rules should use stable IDs such as:
 
-- `CNF-SEAL-GLOBAL-001`
-- `CNF-KSL-GEOM-001`
-- `CNF-EYE-GLOBAL-001`
+- `KYZA-SEAL-GLOBAL-001`
+- `KYZA-KSL-GEOM-001`
+- `KYZA-EYE-GLOBAL-001`
 
 Arbitrary Markdown must not be parsed as executable engineering logic.
 
@@ -2005,7 +2005,7 @@ Recommended integrity rules:
 - Archived records remain traceable.
 - Active record references must belong to the same Project.
 
-Domain rules such as pack geometry remain in CnF Tech and Validation Service.
+Domain rules such as pack geometry remain in Kyza Tech and Validation Service.
 
 Database constraints support integrity but do not replace pack-specific engineering.
 
@@ -2469,16 +2469,16 @@ Existing database actions should be retained and reworded rather than duplicated
 
 Suggested mapping:
 
-- `CNF-1601` — Finalise Klyro Database Schema v2.1
-- `CNF-1602` — Define and implement canonical Project model
-- `CNF-1603` — Define and implement Cutter persistence model
-- `CNF-1604` — Define Pack Specification and pack-support model
-- `CNF-1605` — Define deterministic Validation Run and Issue persistence
-- `CNF-1606` — Define Export Record and asset persistence
-- `CNF-1607` — Define structured Engineering Rule storage route
-- `CNF-1608` — Define beta user ownership and future workspace model
-- `CNF-1609` — Implement Project revision and migration strategy
-- `CNF-1610` — Plan hosted PostgreSQL/Supabase migration
+- `KYZA-1601` — Finalise Kyza Database Schema v2.1
+- `KYZA-1602` — Define and implement canonical Project model
+- `KYZA-1603` — Define and implement Cutter persistence model
+- `KYZA-1604` — Define Pack Specification and pack-support model
+- `KYZA-1605` — Define deterministic Validation Run and Issue persistence
+- `KYZA-1606` — Define Export Record and asset persistence
+- `KYZA-1607` — Define structured Engineering Rule storage route
+- `KYZA-1608` — Define beta user ownership and future workspace model
+- `KYZA-1609` — Implement Project revision and migration strategy
+- `KYZA-1610` — Plan hosted PostgreSQL/Supabase migration
 
 Planning completion of this document does not mean physical database tables are built.
 
@@ -2585,7 +2585,7 @@ Where this schema conflicts with a validated engineering rule, the Engineering K
 
 # 60. Final Database Rule
 
-The Klyro data model must preserve one connected engineering Project from first requirement to validated export.
+The Kyza data model must preserve one connected engineering Project from first requirement to validated export.
 
 It must remain:
 
@@ -2621,7 +2621,7 @@ The product should not be distorted merely to fit an early temporary persistence
 
 ## Version 2.1 — 19 July 2026
 
-- Reframed the schema from CutNFlow platform storage to Klyro App persistence with CnF Tech engineering data.
+- Reframed the schema from Kyza platform storage to Kyza App persistence with Kyza Tech engineering data.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Aligned the schema with Product Architecture, API Architecture, Engineering Knowledge Base and FlowAI Architecture v2.1.
 - Separated Beta Core, Beta Supporting and Post-Beta entities.

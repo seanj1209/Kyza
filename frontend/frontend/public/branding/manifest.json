@@ -1,0 +1,10 @@
+{
+  "description": "Unmodified owner-supplied Kyza PNG assets",
+  "sha256": {
+    "kyza-horizontal-dark.png": "755abd45ceb6ec50e57cbfe68e40a3a85b97d58406e905d90191a572887528d8",
+    "kyza-horizontal-light.png": "66d3f632031c9ef6b444570fd31f89c2debc4149681594797cce2a6fce9068e7",
+    "kyza-symbol-dark.png": "14e232dc361cc6db85bb30b8d6c608d2a68f1d5e5a703da360bca92610382ae8",
+    "kyza-symbol.png": "584866b8fba3951d281f9c4c131821f3c5b3baf8c61ef2b015b988acc5b3c7ff",
+    "kyza-wordmark.png": "940a485689a99a9947af0cad1d9b5e85551ea1d6d3801cb23d748bfbbffe6fc7"
+  }
+}

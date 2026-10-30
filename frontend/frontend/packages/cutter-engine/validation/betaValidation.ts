@@ -12,9 +12,9 @@ import {
 } from "../../../apps/web/src/rules/kSealEyemarkRules"
 import {
   getEyemarkElementRefs,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  saveKyzaProject,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
   type EyemarkElementRef
 } from "../project"
 import { validateForExport } from "./projectValidation"
@@ -556,7 +556,7 @@ export type ValidateProjectCutterOptions = {
 }
 
 export const createValidationContext = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   trigger: ValidationTrigger = "manual",
   requestedAt = new Date().toISOString()
 ): ValidationContext => ({
@@ -579,7 +579,7 @@ const dedupeIssues = (issues: ValidationIssue[]) => {
 }
 
 export const validateProjectCutter = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: ValidateProjectCutterOptions = {}
 ): ValidationRun => {
   const startedAt = (options.now ?? (() => new Date().toISOString()))()
@@ -639,9 +639,9 @@ export const getEffectiveValidationStatus = (
 }
 
 export const withLatestValidationRun = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   run: ValidationRun
-): CutNFlowProjectV1 => ({
+): KyzaProjectV1 => ({
   ...project,
   latestValidationRun: run,
   validationRuns: [
@@ -653,16 +653,16 @@ export const withLatestValidationRun = (
 })
 
 export type PersistValidationRunResult =
-  | { ok: true; project: CutNFlowProjectV1; run: ValidationRun }
-  | { ok: false; project: CutNFlowProjectV1; run: ValidationRun; errors: string[] }
+  | { ok: true; project: KyzaProjectV1; run: ValidationRun }
+  | { ok: false; project: KyzaProjectV1; run: ValidationRun; errors: string[] }
 
 export const validateAndPersistProjectCutter = (
-  project: CutNFlowProjectV1,
-  options: ValidateProjectCutterOptions & { storage?: CutNFlowProjectStorage } = {}
+  project: KyzaProjectV1,
+  options: ValidateProjectCutterOptions & { storage?: KyzaProjectStorage } = {}
 ): PersistValidationRunResult => {
   const run = validateProjectCutter(project, options)
   const nextProject = withLatestValidationRun(project, run)
-  const saved = saveCutNFlowProject(
+  const saved = saveKyzaProject(
     nextProject,
     options.storage,
     { expectedRevision: project.revision }
@@ -672,7 +672,7 @@ export const validateAndPersistProjectCutter = (
 }
 
 export const getPreExportValidationRun = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: Omit<ValidateProjectCutterOptions, "trigger"> = {}
 ): { run: ValidationRun; reused: boolean } => {
   const current = project.latestValidationRun
