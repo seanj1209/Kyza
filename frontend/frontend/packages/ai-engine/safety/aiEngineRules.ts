@@ -1,4 +1,4 @@
-// AI safety rules for the CutNFlow pre-Gemini scaffold.
+// AI safety rules for the Kyza pre-Gemini scaffold.
 // AI may assist with pack auto-generation only at this stage.
 // AI must output structured engine requests.
 // AI must not directly edit cutter geometry.

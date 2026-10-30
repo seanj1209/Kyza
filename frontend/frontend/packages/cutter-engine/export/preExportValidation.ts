@@ -1,5 +1,5 @@
 import type {
-  CutNFlowProjectV1,
+  KyzaProjectV1,
   ParseResult
 } from "../project"
 import {
@@ -24,7 +24,7 @@ export type PreExportValidationErrorCode =
 export type PreExportValidationResult =
   | {
       ok: true
-      project: CutNFlowProjectV1
+      project: KyzaProjectV1
       run: ValidationRun
       reused: boolean
     }
@@ -35,12 +35,12 @@ export type PreExportValidationResult =
     }
 
 export type PreExportValidationOptions = {
-  getLatestProject: () => CutNFlowProjectV1 | null | Promise<CutNFlowProjectV1 | null>
+  getLatestProject: () => KyzaProjectV1 | null | Promise<KyzaProjectV1 | null>
   persistProject: (
-    project: CutNFlowProjectV1
-  ) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+    project: KyzaProjectV1
+  ) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
   validate?: (
-    project: CutNFlowProjectV1,
+    project: KyzaProjectV1,
     options: ValidateProjectCutterOptions
   ) => ValidationRun | Promise<ValidationRun>
   now?: () => string
@@ -48,7 +48,7 @@ export type PreExportValidationOptions = {
 }
 
 const sameRevision = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   run: ValidationRun
 ) => project.id === run.projectId && String(project.revision) === String(run.projectRevision)
 
@@ -103,7 +103,7 @@ export const runPreExportValidation = async (
         ...(options.now ? { now: options.now } : {})
       })
     } catch (error) {
-      console.error("[CutNFlow][Pre-export validation] Validation execution failed.", error)
+      console.error("[Kyza][Pre-export validation] Validation execution failed.", error)
       return {
         ok: false,
         code: "validation_failed",
@@ -177,7 +177,7 @@ export const createExportRecordId = (projectId: string) => {
 }
 
 export const createValidationAcknowledgement = (input: {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validationRun: ValidationRun
   acknowledgedIssueIds: string[]
   acknowledgedAt?: string
@@ -247,7 +247,7 @@ export type ExportAuthorizationResult =
   | { ok: false; code: ExportAuthorizationErrorCode; errors: string[] }
 
 export const authorizeProjectExport = (input: {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validationRun: ValidationRun
   acknowledgement?: ValidationAcknowledgement
   exportFormat: string
@@ -346,10 +346,10 @@ export const authorizeProjectExport = (input: {
 }
 
 export const withCompletedExportEvidence = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   audit: CutterExportRecordV1,
   acknowledgement?: ValidationAcknowledgement
-): ParseResult<CutNFlowProjectV1> => {
+): ParseResult<KyzaProjectV1> => {
   if (audit.projectId !== project.id || String(audit.projectRevision) !== String(project.revision)) {
     return {
       ok: false,

@@ -24,7 +24,7 @@ const createKSeal = (page: Page, name: string, eyemarkCount: 1 | 2 = 1) =>
   })
 
 const setEyemarkWidth = async (page: Page, width: number) => {
-  const closeValidation = page.getByRole("button", { name: "Collapse Flow", exact: true })
+  const closeValidation = page.getByRole("button", { name: "Collapse Kyza", exact: true })
   if (await closeValidation.isVisible()) await closeValidation.click()
   const input = page.getByRole("spinbutton", { name: /^Width/ })
   if (!await input.isVisible()) {

@@ -3,7 +3,7 @@ import type {
   CutterElementRef,
   CutterElementType,
   CutterIdentityMapV1,
-  CutNFlowProjectV1,
+  KyzaProjectV1,
   EyemarkElementRef,
   PerfLaneElementRef,
   TearNotchElementRef
@@ -102,9 +102,9 @@ const isTearNotchElementRef = (value: unknown): value is TearNotchElementRef => 
 export const createCutterElementId = (type: CutterElementType) => {
   const randomUuid = globalThis.crypto?.randomUUID?.()
   if (randomUuid) {
-    return `cutnflow-element-${type}-${randomUuid}`
+    return `kyza-element-${type}-${randomUuid}`
   }
-  return `cutnflow-element-${type}-${Date.now()}-${Math.random()
+  return `kyza-element-${type}-${Date.now()}-${Math.random()
     .toString(36)
     .slice(2, 12)}`
 }
@@ -540,7 +540,7 @@ export const normaliseElementIdentityMap = (
 }
 
 export const getEyemarkElementRefs = (
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
 ): EyemarkElementRef[] =>
   project.cutter.identityMap.elements
     .filter(isEyemarkElementRef)
@@ -548,8 +548,8 @@ export const getEyemarkElementRefs = (
     .map(cloneJson)
 
 export const normaliseEyemarkElementRefs = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 => {
+  project: KyzaProjectV1
+): KyzaProjectV1 => {
   const normalised = normaliseElementIdentityMap(
     project.cutter.legacySpec,
     project.cutter.identityMap,
@@ -570,13 +570,13 @@ export const syncEyemarkRefsFromLegacySpec = normaliseEyemarkElementRefs
 export const syncElementRefsFromLegacySpec = normaliseCutterElementRefs
 
 export const resolveEyemarkById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string
 ): EyemarkElementRef | undefined =>
   getEyemarkElementRefs(project).find(element => element.id === elementId)
 
 export const getPerfLaneElementRefs = (
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
 ): PerfLaneElementRef[] =>
   project.cutter.identityMap.elements
     .filter(isPerfLaneElementRef)
@@ -584,13 +584,13 @@ export const getPerfLaneElementRefs = (
     .map(cloneJson)
 
 export const resolvePerfLaneById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string
 ): PerfLaneElementRef | undefined =>
   getPerfLaneElementRefs(project).find(element => element.id === elementId)
 
 export const getTearNotchElementRefs = (
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
 ): TearNotchElementRef[] =>
   project.cutter.identityMap.elements
     .filter(isTearNotchElementRef)
@@ -598,14 +598,14 @@ export const getTearNotchElementRefs = (
     .map(cloneJson)
 
 export const resolveTearNotchById = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elementId: string
 ): TearNotchElementRef | undefined =>
   getTearNotchElementRefs(project).find(element => element.id === elementId)
 
 export const syncLegacySpecFromEyemarkRefs = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 => {
+  project: KyzaProjectV1
+): KyzaProjectV1 => {
   const eyeMarks = project.cutter.legacySpec.eyeMarks
   if (!eyeMarks) {
     return project
@@ -645,8 +645,8 @@ export const syncLegacySpecFromEyemarkRefs = (
 }
 
 export const syncLegacySpecFromPerfLaneRefs = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 => {
+  project: KyzaProjectV1
+): KyzaProjectV1 => {
   const perfs = project.cutter.legacySpec.perfs
   if (!perfs) {
     return project
@@ -687,8 +687,8 @@ export const syncLegacySpecFromPerfLaneRefs = (
 }
 
 export const syncLegacySpecFromTearNotchRefs = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 => {
+  project: KyzaProjectV1
+): KyzaProjectV1 => {
   const refs = getTearNotchElementRefs(project)
   const doy = refs.find(ref => ref.construction === "doy")
   const sachet = refs.find(ref => ref.construction === "sachet")
@@ -729,8 +729,8 @@ export const syncLegacySpecFromTearNotchRefs = (
 }
 
 export const syncLegacySpecFromElementRefs = (
-  project: CutNFlowProjectV1
-): CutNFlowProjectV1 =>
+  project: KyzaProjectV1
+): KyzaProjectV1 =>
   syncLegacySpecFromTearNotchRefs(
     syncLegacySpecFromPerfLaneRefs(syncLegacySpecFromEyemarkRefs(project))
   )

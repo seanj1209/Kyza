@@ -6,7 +6,7 @@
 
 ## Context
 
-Klyro is being used for live cutter work while beta validation coverage is still incomplete for some pack types. A Critical result must remain visible and block export by default, but an operator needs a direct way to export a known cutter without pretending the validation passed.
+Kyza is being used for live cutter work while beta validation coverage is still incomplete for some pack types. A Critical result must remain visible and block export by default, but an operator needs a direct way to export a known cutter without pretending the validation passed.
 
 ## Decision
 

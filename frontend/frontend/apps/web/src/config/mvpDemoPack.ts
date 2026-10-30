@@ -1,4 +1,4 @@
-import type { CutNFlowProjectDraftV1 } from "../../../../packages/cutter-engine/project"
+import type { KyzaProjectDraftV1 } from "../../../../packages/cutter-engine/project"
 
 export const MVP_DEMO_PACK = {
   prompt: "400g frozen mixed fruit",
@@ -13,11 +13,11 @@ export const MVP_DEMO_PACK = {
 
 export const CURRENT_PROJECT_SCHEMA_VERSION = "mvp-demo-001" as const
 
-export const CURRENT_PROJECT_STORAGE_KEY = "cutnflow.currentProject"
+export const CURRENT_PROJECT_STORAGE_KEY = "kyza.currentProject"
 
 export type CurrentProject = {
   projectId?: string
-  projectDraft?: CutNFlowProjectDraftV1
+  projectDraft?: KyzaProjectDraftV1
   productName: string
   displayName: string
   prompt: string

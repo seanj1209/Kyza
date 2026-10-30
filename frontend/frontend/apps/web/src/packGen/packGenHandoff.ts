@@ -102,7 +102,7 @@ export function normalizePackGenEyeMarks(
   }
 }
 
-export function getCnFTechPackSpecificationDefaults(packType: string, projectId: string) {
+export function getKyzaTechPackSpecificationDefaults(packType: string, projectId: string) {
   const generated = runPackGenerateRequest({
     requestId: `pack-gen-defaults-${projectId}`,
     projectId,
@@ -139,7 +139,7 @@ export function createCutterSpecFromConfirmedPackValues(
       ok: false,
       errors: generated.errors.map((error) => error.message).concat(
         generated.errors.length === 0
-          ? ["CnF Tech could not create a deterministic Cutter for this pack type."]
+          ? ["Kyza Tech could not create a deterministic Cutter for this pack type."]
           : [],
       ),
     }

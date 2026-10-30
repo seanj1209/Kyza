@@ -1,9 +1,9 @@
 import { createManualProjectFromDashboard, expect, test, readCurrentProject } from "./helpers/testState"
 
-test("Flow retains the collapsed prompt and conversation while live QC remains accessible", async ({ page }) => {
+test("Kyza retains the collapsed prompt and conversation while live QC remains accessible", async ({ page }) => {
   await createManualProjectFromDashboard(page, { name: "Flow reconciliation", packLabel: "Flowwrap" })
   const dock = page.locator("#flow-assistant-dock")
-  const input = dock.getByRole("textbox", { name: "Ask Flow a question" })
+  const input = dock.getByRole("textbox", { name: "Ask Kyza a question" })
   await expect(dock).toHaveAttribute("data-state", "collapsed")
   await expect(input).toBeVisible()
   for (const question of ["How do I rotate an element?", "How do I export a PDF?"]) {
@@ -76,12 +76,12 @@ test("Loading an old automatic hanger position repairs and saves the canonical p
   await page.goto("/")
   const id = await page.evaluate(async () => {
     const { getPackModule } = await import("/apps/web/src/packs/index.ts")
-    const { projectFromLegacySpec, saveCutNFlowProject } = await import("/packages/cutter-engine/project/index.ts")
+    const { projectFromLegacySpec, saveKyzaProject } = await import("/packages/cutter-engine/project/index.ts")
     const spec = { ...getPackModule("flowwrap")!.getDefaults(), width: 530, height: 210, seal: 10,
       seals: { top: 10, bottom: 10, left: 10, right: 10 },
       hangerSlots: [{ id: "legacy-auto", type: "hanger-slot", subtype: "standard-euro-slot", diameter: 10, width: 30, height: 10, centerX: 127.5, centerY: 28.5, mirrored: true }] }
     const project = projectFromLegacySpec("flowwrap", "Legacy hanger restoration fixture", spec as any)
-    saveCutNFlowProject(project)
+    saveKyzaProject(project)
     return project.id
   })
   await page.goto(`/cutter?projectId=${id}`)
@@ -124,7 +124,7 @@ test("Legend menu opens directly below its trigger", async ({ page }) => {
     expect(Math.abs(a.x - b.x)).toBeLessThan(2)
     expect(b.y).toBeGreaterThanOrEqual(a.y + a.height)
     expect(b.x + b.width).toBeLessThanOrEqual(width + 1)
-    await menu.getByRole("menuitem", { name: "Landscape Klyro legend", exact: true }).click()
+    await menu.getByRole("menuitem", { name: "Landscape Kyza legend", exact: true }).click()
     await expect(menu).toBeHidden()
   }
 })

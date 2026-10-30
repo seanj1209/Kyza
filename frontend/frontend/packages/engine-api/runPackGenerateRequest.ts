@@ -1,7 +1,7 @@
 import { getPackModule } from "../../apps/web/src/packs"
 import type { FlowwrapSpec } from "../../apps/web/src/types/flowwrap"
 import { projectFromLegacySpec } from "../cutter-engine/project"
-import { validateCutNFlowProject } from "../cutter-engine/validation"
+import { validateKyzaProject } from "../cutter-engine/validation"
 import type {
   EngineApiResponse,
   EngineError,
@@ -129,7 +129,7 @@ export const runPackGenerateRequest = (
       updatedAt: now
     }
   )
-  const validation = validateCutNFlowProject(project)
+  const validation = validateKyzaProject(project)
   const toMeta = (message: (typeof validation.messages)[number]) => ({
     packId: packModule.id,
     packType: message.packType,

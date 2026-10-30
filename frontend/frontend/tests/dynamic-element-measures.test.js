@@ -152,7 +152,7 @@ const transformed = attachmentModule.renderedBounds(svgFixture,rotated)
 assert.equal(transformed.x,80);assert.equal(transformed.y,380);assert.equal(transformed.width,30);assert.equal(transformed.height,40)
 attachmentApi.destroy();assert(removed);assert.equal(svgFixture.listeners.size,0);assert.equal(win.listeners.size,0);assert(cleared>0)
 // AMENDS 6.1: perf lanes use the real quarter-millimetre movement grid.
-const movementSnap = await load(root+'ui/movementSnap.ts',{'../klyro/account/preferenceService':await load(root+'klyro/account/preferenceService.ts')})
+const movementSnap = await load(root+'ui/movementSnap.ts',{'../kyza/account/preferenceService':await load(root+'kyza/account/preferenceService.ts')})
 const perfAttachment = await load(root+'ui/perfInteractions.ts',{
   '../renderers/svgPerfs':{renderPerfs(){}},
   '../geometry/perfs':{buildPerfCenters:()=>[]},

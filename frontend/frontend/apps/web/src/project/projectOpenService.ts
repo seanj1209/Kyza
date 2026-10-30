@@ -1,14 +1,14 @@
 import {
   legacySpecFromProject,
-  loadCutNFlowProject,
+  loadKyzaProject,
   hasCutterDocument,
-  type CutNFlowProjectStorage,
-  type CutNFlowCutterProjectV1,
+  type KyzaProjectStorage,
+  type KyzaCutterProjectV1,
 } from "../../../../packages/cutter-engine/project"
 import type { FlowwrapSpec } from "../types/flowwrap"
 
 export type LoadedCutterProject = {
-  project: CutNFlowCutterProjectV1
+  project: KyzaCutterProjectV1
   spec: FlowwrapSpec
 }
 
@@ -17,7 +17,7 @@ export type CutterProjectPresentationCard = {
   name: string
   packId: string
   spec: FlowwrapSpec
-  project: CutNFlowCutterProjectV1
+  project: KyzaCutterProjectV1
   updatedAt: string
 }
 
@@ -25,7 +25,7 @@ type ProjectOpenResult =
   | { ok: true; value: LoadedCutterProject }
   | { ok: false; errors: string[] }
 
-const resolveStorage = (storage?: CutNFlowProjectStorage): CutNFlowProjectStorage | null => {
+const resolveStorage = (storage?: KyzaProjectStorage): KyzaProjectStorage | null => {
   if (storage) return storage
   try {
     return globalThis.localStorage ?? null
@@ -36,12 +36,12 @@ const resolveStorage = (storage?: CutNFlowProjectStorage): CutNFlowProjectStorag
 
 export function loadRequestedProject(
   projectId: string,
-  storage?: CutNFlowProjectStorage,
+  storage?: KyzaProjectStorage,
 ): ProjectOpenResult {
   const source = resolveStorage(storage)
   if (!source) return { ok: false, errors: ["Project storage is unavailable."] }
 
-  const loaded = loadCutNFlowProject(projectId, source)
+  const loaded = loadKyzaProject(projectId, source)
   if (loaded.ok === false) return { ok: false, errors: loaded.errors }
   if (!hasCutterDocument(loaded.value)) {
     return {
@@ -75,7 +75,7 @@ const nextPresentationCardId = (
 
 export function prepareProjectPresentationCard(
   cards: readonly CutterProjectPresentationCard[],
-  project: CutNFlowCutterProjectV1,
+  project: KyzaCutterProjectV1,
   spec: FlowwrapSpec,
 ) {
   const existingIndex = cards.findIndex((card) => card.project.id === project.id)

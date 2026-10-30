@@ -26,7 +26,7 @@ function cleanRouteEntryPlugin(): Plugin {
   }
 
   return {
-    name: "klyro-clean-route-entries",
+    name: "kyza-clean-route-entries",
     configureServer(server) {
       installRewrites(server.middlewares)
     },

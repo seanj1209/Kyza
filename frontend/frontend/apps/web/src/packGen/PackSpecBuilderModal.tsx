@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react"
 import "../packGen.css"
 import type {
-  CutNFlowProjectDraftV1,
-  CutNFlowProjectV1,
+  KyzaProjectDraftV1,
+  KyzaProjectV1,
 } from "../../../../packages/cutter-engine/project"
 import { toPackSpecificationPackTypeId } from "../../../../packages/cutter-engine/project"
 import { packModules } from "../packs"
@@ -24,8 +24,8 @@ import {
 } from "./packGenProjectService"
 
 export type PackSpecBuilderSession = {
-  project?: CutNFlowProjectV1
-  draft: CutNFlowProjectDraftV1
+  project?: KyzaProjectV1
+  draft: KyzaProjectDraftV1
 }
 
 type PackSpecBuilderModalProps = {
@@ -43,8 +43,8 @@ const hasValue = (value: unknown) => value !== undefined && value !== ""
 
 const provenanceLabel = (source: string) => {
   if (source === "user") return "User"
-  if (source === "flowai") return "Flow"
-  if (source === "cnf-tech") return "CnF Tech"
+  if (source === "flowai") return "Kyza"
+  if (source === "kyza-tech") return "Kyza Tech"
   return "Engine default"
 }
 
@@ -135,7 +135,7 @@ export function PackSpecBuilderModal({
     incompleteBadgeLabel: completion?.status ?? "Empty",
   })
 
-  const publish = (nextDraft: CutNFlowProjectDraftV1, nextProject = project) => {
+  const publish = (nextDraft: KyzaProjectDraftV1, nextProject = project) => {
     setDraft(nextDraft)
     setDirty(true)
     onSessionChange({ draft: nextDraft, ...(nextProject ? { project: nextProject } : {}) })
@@ -146,7 +146,7 @@ export function PackSpecBuilderModal({
   }
 
   const friendlySaveFailure = () => {
-    setError("Klyro could not save this Project. Your entries are still here; please try again.")
+    setError("Kyza could not save this Project. Your entries are still here; please try again.")
   }
 
   const connectProject = (createCutter: boolean) => {
@@ -169,7 +169,7 @@ export function PackSpecBuilderModal({
     if (connected.ok === false) {
       setError(connected.errors[0] ?? (createCutter
         ? "Complete the required pack size and type before creating the Cutter."
-        : "Klyro could not create this Project. Your entries are still here; please try again."))
+        : "Kyza could not create this Project. Your entries are still here; please try again."))
       return undefined
     }
     setProject(connected.project)
@@ -225,7 +225,7 @@ export function PackSpecBuilderModal({
       setBusy(false)
       setError(result.errors[0]
         ? `The Cutter could not be created: ${result.errors[0]}`
-        : "Klyro could not create the Cutter from this starting specification. Review the required fields and try again.")
+        : "Kyza could not create the Cutter from this starting specification. Review the required fields and try again.")
       return
     }
     setProject(result.project)
@@ -394,7 +394,7 @@ export function PackSpecBuilderModal({
         <header className="pack-gen-builder-header">
           <div>
             <h2 id="pack-spec-builder-title">Pack Spec Builder</h2>
-            <p className="pack-gen-help" id="pack-spec-builder-description">Build a useful starting specification. CnF Tech remains responsible for geometry and validation.</p>
+            <p className="pack-gen-help" id="pack-spec-builder-description">Build a useful starting specification. Kyza Tech remains responsible for geometry and validation.</p>
           </div>
           <button className="pack-gen-modal-close" type="button" onClick={requestClose} aria-label="Close Pack Spec Builder" disabled={busy}>×</button>
         </header>

@@ -4,7 +4,7 @@ test("@beta Account auto-saves preferences and keeps the selected theme across r
   await page.goto("/account")
   await expect(page.getByRole("button", { name: "Save preferences" })).toHaveCount(0)
 
-  await page.getByRole("textbox", { name: "Name", exact: true }).fill("Klyro UI review")
+  await page.getByRole("textbox", { name: "Name", exact: true }).fill("Kyza UI review")
   await page.getByRole("textbox", { name: "Email", exact: true }).fill("ui-review@example.test")
   await page.getByRole("textbox", { name: "Company", exact: true }).fill("Packaging studio")
   await expect(page.getByRole("status")).toHaveText("Saved on this device.")
@@ -19,11 +19,11 @@ test("@beta Account auto-saves preferences and keeps the selected theme across r
   await page.getByRole("radio", { name: "Dark", exact: true }).focus()
   await page.keyboard.press("ArrowLeft")
   await expect(page.getByRole("radio", { name: "Light", exact: true })).toBeChecked()
-  await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "light")
+  await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "light")
   await page.getByRole("link", { name: "Dashboard", exact: true }).click()
-  await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "light")
+  await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "light")
   await page.getByRole("link", { name: "Accounts & Preferences", exact: true }).click()
-  await expect(page.getByRole("textbox", { name: "Name", exact: true })).toHaveValue("Klyro UI review")
+  await expect(page.getByRole("textbox", { name: "Name", exact: true })).toHaveValue("Kyza UI review")
   await page.getByRole("navigation", { name: "Settings sections" }).getByRole("button", { name: "Cutter preferences" }).click()
   await expect(page.getByLabel("Units of measure")).toHaveValue("in")
   await expect(page.getByRole("combobox", { name: "Quick Export", exact: true })).toHaveCount(0)
@@ -33,7 +33,7 @@ test("@beta Account auto-saves preferences and keeps the selected theme across r
   await page.getByRole("button", { name: "Switch to dark theme" }).click()
   await expect(page.getByRole("radio", { name: "Dark", exact: true })).toBeChecked()
   await page.reload()
-  await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "dark")
+  await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "dark")
 })
 
 test("@beta Cutter preference and legend configuration persist locally", async ({ page }) => {

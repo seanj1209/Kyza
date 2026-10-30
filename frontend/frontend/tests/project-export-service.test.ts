@@ -3,12 +3,12 @@ import { authorizeProjectExport } from "../packages/cutter-engine/export/preExpo
 import { getPackModule } from "../apps/web/src/packs"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  loadCutNFlowProject,
-  parseCutNFlowProject,
+  loadKyzaProject,
+  parseKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  saveKyzaProject,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
   type ParseResult
 } from "../packages/cutter-engine/project"
 import {
@@ -38,7 +38,7 @@ function assert(condition: boolean, message: string): asserts condition {
   if (!condition) throw new Error(message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
   getItem(key: string) { return this.values.get(key) ?? null }
   setItem(key: string, value: string) { this.values.set(key, value) }
@@ -72,15 +72,15 @@ const svgSource = [
 ].join("")
 
 const executeSvg = (
-  holder: { project: CutNFlowProjectV1 },
+  holder: { project: KyzaProjectV1 },
   exportId: string,
   overrides: {
     run?: ValidationRun
     deliver?: (artifact: GeneratedProjectExport) =>
       ProjectExportDelivery | ProjectExportCancellation |
       Promise<ProjectExportDelivery | ProjectExportCancellation>
-    persist?: (project: CutNFlowProjectV1, expectedRevision: number) => ParseResult<CutNFlowProjectV1>
-    getLatest?: () => CutNFlowProjectV1 | null
+    persist?: (project: KyzaProjectV1, expectedRevision: number) => ParseResult<KyzaProjectV1>
+    getLatest?: () => KyzaProjectV1 | null
   } = {}
 ) => executeProjectExport({
   getLatestProject: overrides.getLatest ?? (() => holder.project),
@@ -136,7 +136,7 @@ const executePdfWithMockBrowser = async (exportId: string) => {
   replaceGlobal("DOMParser", MockDomParser)
   replaceGlobal("XMLSerializer", MockXmlSerializer)
   replaceGlobal("Image", MockImage)
-  const holder: { project: CutNFlowProjectV1 } = { project }
+  const holder: { project: KyzaProjectV1 } = { project }
   try {
     const result = await executeProjectExport({
       getLatestProject: () => holder.project,
@@ -257,7 +257,7 @@ const main = async () => {
     })
     assert(override.ok, `${request.format} must create an exact Critical override.`)
     if (!override.ok) return
-    let persisted: CutNFlowProjectV1 | undefined
+    let persisted: KyzaProjectV1 | undefined
     const exported = await executeProjectExport({
       getLatestProject: () => project,
       persistProject: next => {
@@ -286,7 +286,7 @@ const main = async () => {
     assert(persisted?.exportAuditRecords?.some(record => record.id === exportId), "Every completed overridden export must be captured in Project history.")
   }
 
-  const holder: { project: CutNFlowProjectV1 } = { project }
+  const holder: { project: KyzaProjectV1 } = { project }
   const first = await executeSvg(holder, "export-record-one")
   assert(first.ok, "A policy-authorized generated and saved SVG must complete.")
   if (!first.ok) return
@@ -307,7 +307,7 @@ const main = async () => {
   const firstSvgMarkup = await first.artifact.blob.text()
   assert(firstSvgMarkup.startsWith("<?xml") && firstSvgMarkup.includes("<path"), "Delivered SVG must be parseable vector markup.")
   assert(firstSvgMarkup.includes('width="460mm"') && firstSvgMarkup.includes('height="200mm"'), "Delivered SVG must preserve 1:1 mm dimensions.")
-  assert(firstSvgMarkup.includes(`data-cutnflow-project-id="${project.id}"`) && firstSvgMarkup.includes(`data-cutnflow-revision="${project.revision}"`), "Delivered SVG metadata must identify the exact Project revision.")
+  assert(firstSvgMarkup.includes(`data-kyza-project-id="${project.id}"`) && firstSvgMarkup.includes(`data-kyza-revision="${project.revision}"`), "Delivered SVG metadata must identify the exact Project revision.")
   assert(["seal-areas", "fold-lines", "eyemarks"].every(layerId => firstSvgMarkup.includes(`data-layer-id="${layerId}"`)), "Delivered SVG must preserve technical Cutter groups.")
   assert(!firstSvgMarkup.includes("selection_overlay") && !firstSvgMarkup.includes("selection-handle") && !firstSvgMarkup.includes("<image"), "Delivered SVG must exclude Cutter Studio overlays and unintended rasters.")
 
@@ -329,7 +329,7 @@ const main = async () => {
       }
     })
   } as unknown as FileSystemFileHandle
-  const nativeHolder: { project: CutNFlowProjectV1 } = { project }
+  const nativeHolder: { project: KyzaProjectV1 } = { project }
   let nativeSettled = false
   const nativeExecution = executeSvg(nativeHolder, "export-native-picker", {
     deliver: artifact => deliverProjectExportLocally(artifact, {
@@ -354,7 +354,7 @@ const main = async () => {
   assert(nativeHolder.project.exportAuditRecords?.length === 1, "Native picker success must append exactly one Export Record.")
 
   // Picker cancellation is a typed neutral outcome with no fallback or history.
-  const cancelledHolder: { project: CutNFlowProjectV1 } = { project }
+  const cancelledHolder: { project: KyzaProjectV1 } = { project }
   let cancellationFallbackClicks = 0
   const cancelled = await executeSvg(cancelledHolder, "export-cancelled", {
     deliver: artifact => deliverProjectExportLocally(artifact, {
@@ -375,7 +375,7 @@ const main = async () => {
   assert(cancelledPresentation.state === "cancelled" && !cancelledPresentation.announceAsError, "Cancellation must not be presented as an application error.")
 
   // Picker-unavailable fallback initiates one download and records that weaker truth.
-  const fallbackHolder: { project: CutNFlowProjectV1 } = { project }
+  const fallbackHolder: { project: KyzaProjectV1 } = { project }
   let fallbackClicks = 0
   let createdUrl = ""
   let revokedUrl = ""
@@ -411,7 +411,7 @@ const main = async () => {
 
   // Native write and close failures remain delivery failures with no history.
   for (const failureStage of ["write", "close"] as const) {
-    const failedNativeHolder: { project: CutNFlowProjectV1 } = { project }
+    const failedNativeHolder: { project: KyzaProjectV1 } = { project }
     const failedNative = await executeSvg(failedNativeHolder, `export-native-${failureStage}-failure`, {
       deliver: artifact => deliverProjectExportLocally(artifact, {
         showSaveFilePicker: async () => ({
@@ -433,7 +433,7 @@ const main = async () => {
   const second = await executeSvg(holder, "export-record-two")
   assert(second.ok && holder.project.exportAuditRecords?.length === 2, "Repeated intentional exports must append immutable history.")
   assert(JSON.stringify(holder.project.exportAuditRecords?.[0]) === firstRecordSnapshot, "Appending export history must not alter prior records.")
-  const duplicateProjectRecord = parseCutNFlowProject({
+  const duplicateProjectRecord = parseKyzaProject({
     ...holder.project,
     exportAuditRecords: [first.record, first.record]
   })
@@ -443,7 +443,7 @@ const main = async () => {
   assert(holder.project.exportAuditRecords?.length === 2, "Duplicate rejection must not mutate history.")
 
   let delivered = false
-  const writeFailureHolder: { project: CutNFlowProjectV1 } = { project }
+  const writeFailureHolder: { project: KyzaProjectV1 } = { project }
   const writeFailure = await executeSvg(writeFailureHolder, "export-write-failure", {
     deliver: () => {
       delivered = true
@@ -454,7 +454,7 @@ const main = async () => {
   assert(!writeFailureHolder.project.exportAuditRecords?.length, "A delivery failure must not create successful history.")
 
   for (const request of supportedRouteRequests) {
-    const failedRouteHolder: { project: CutNFlowProjectV1 } = { project }
+    const failedRouteHolder: { project: KyzaProjectV1 } = { project }
     const failedRoute = await executeProjectExport({
       getLatestProject: () => failedRouteHolder.project,
       persistProject: next => {
@@ -474,7 +474,7 @@ const main = async () => {
     assert(!failedRouteHolder.project.exportAuditRecords?.length, `${request.format} delivery failure must not append history.`)
   }
 
-  const persistenceHolder: { project: CutNFlowProjectV1 } = { project }
+  const persistenceHolder: { project: KyzaProjectV1 } = { project }
   const persistenceFailure = await executeSvg(persistenceHolder, "export-history-failure", {
     persist: () => ({ ok: false, errors: ["storage unavailable"] })
   })
@@ -544,7 +544,7 @@ const main = async () => {
   assert(
     (pdfText.match(/\/Subtype \/Image/g) ?? []).length === 1 &&
       pdfText.includes("/Filter /DCTDecode") &&
-      pdfText.includes("/Subject (CutNFlow raster proof; not editable vector)"),
+      pdfText.includes("/Subject (Kyza raster proof; not editable vector)"),
     "PDF rasterisation and flattened-layer limitations must be intentional and recorded."
   )
   const xrefOffset = pdfText.indexOf("xref\n")
@@ -568,7 +568,7 @@ const main = async () => {
   })
   assert(generationFailure.ok === false && generationFailure.code === "generation_failed", "Generator exceptions must fail without delivery or evidence.")
 
-  const jsonHolder: { project: CutNFlowProjectV1 } = { project }
+  const jsonHolder: { project: KyzaProjectV1 } = { project }
   const json = await executeProjectExport({
     getLatestProject: () => jsonHolder.project,
     persistProject: next => {
@@ -612,8 +612,8 @@ const main = async () => {
   assert(json.record.projectId === project.id && json.record.projectRevision === project.revision, "JSON history must retain the exact exported Project revision.")
 
   const storage = new MemoryStorage()
-  assert(saveCutNFlowProject(holder.project, storage).ok, "Complete export records must save through canonical Project storage.")
-  const reopened = loadCutNFlowProject(project.id, storage)
+  assert(saveKyzaProject(holder.project, storage).ok, "Complete export records must save through canonical Project storage.")
+  const reopened = loadKyzaProject(project.id, storage)
   assert(reopened.ok && reopened.value.exportAuditRecords?.length === 2, "Complete append-only history must survive reopen.")
   const legacyRecord = {
     id: "legacy-export-record",
@@ -632,7 +632,7 @@ const main = async () => {
     exportedAt: timestamp,
     exportFormat: "svg"
   }
-  assert(parseCutNFlowProject({ ...project, exportAuditRecords: [legacyRecord] }).ok, "Saved V1 validation-only export audit records must remain readable without rewrite.")
+  assert(parseKyzaProject({ ...project, exportAuditRecords: [legacyRecord] }).ok, "Saved V1 validation-only export audit records must remain readable without rewrite.")
 
   let unavailableDeliveryFailed = false
   try {
@@ -654,9 +654,9 @@ const main = async () => {
   assert(snapshot.validationRun.status === "failed", "A beta override must never convert failed validation into a pass.")
   assert(JSON.stringify(project) === unchanged, "Snapshot capture must not mutate its source Project.")
   const audit = betaReviewAudit(snapshot)
-  const restoredReview = parseCutNFlowProject({ ...project, exportAuditRecords: [audit] })
+  const restoredReview = parseKyzaProject({ ...project, exportAuditRecords: [audit] })
   assert(restoredReview.ok && restoredReview.value.exportAuditRecords?.[0]?.betaReview?.reason === reviewInput.reason, "Reviewer decision must round-trip through Project storage.")
-  assert(!parseCutNFlowProject({ ...project, exportAuditRecords: [{ ...audit, betaReview: { ...audit.betaReview, productionApproved: true } }] }).ok, "Beta review evidence cannot claim production approval.")
+  assert(!parseKyzaProject({ ...project, exportAuditRecords: [{ ...audit, betaReview: { ...audit.betaReview, productionApproved: true } }] }).ok, "Beta review evidence cannot claim production approval.")
   assert(!authorizeProjectExport({ project, validationRun: criticalRun, exportFormat: "svg" }).ok, "Normal release remains blocked by critical validation; only explicit beta review output is permitted.")
   for (const invalid of [
     { ...reviewInput, reason: " " }, { ...reviewInput, reviewer: " " }, { ...reviewInput, acknowledgedIssueIds: [] },

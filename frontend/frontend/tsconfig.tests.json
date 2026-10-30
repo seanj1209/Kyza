@@ -9,6 +9,7 @@
     "verbatimModuleSyntax": false
   },
   "include": [
+    "tests/brand-compatibility.test.ts",
     "tests/flowwrap-constraints.test.ts",
     "tests/kseal-validation-fixtures.ts",
     "tests/kseal-validation.test.ts",
@@ -24,8 +25,8 @@
     "tests/packgen-benchmark.test.ts",
     "tests/selection-transforms.test.ts",
     "tests/metric-formatting.test.ts",
-    "tests/klyro-project-adapter.test.ts",
-    "tests/klyro-new-project-form.test.ts",
+    "tests/kyza-project-adapter.test.ts",
+    "tests/kyza-new-project-form.test.ts",
     "tests/project-open-handoff.test.ts",
     "tests/project-creation.test.ts",
     "tests/beta-validation-core.test.ts",

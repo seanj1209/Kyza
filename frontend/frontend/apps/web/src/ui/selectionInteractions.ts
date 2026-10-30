@@ -714,7 +714,7 @@ function drawOverlayForElement(svg: SVGSVGElement, id: string, store: SelectionS
         else if(role==="kseal-arm"){moveRole="kseal-arm-move";handle.setAttribute("data-corner",side)}
         else if(role==="kseal-center-line"){moveRole="kseal-side-handle";handle.setAttribute("data-side","right")}
         handle.setAttribute("data-role",moveRole);handle.setAttribute("data-handle","move");handle.style.cursor="move"
-        const circle=document.createElementNS(SVG_NS,"circle");circle.setAttribute("r","11");circle.setAttribute("fill","var(--klyro-surface,#faf7f3)");circle.setAttribute("stroke",SELECTION_COLOR);circle.setAttribute("stroke-width","1")
+        const circle=document.createElementNS(SVG_NS,"circle");circle.setAttribute("r","11");circle.setAttribute("fill","var(--kyza-surface,#faf7f3)");circle.setAttribute("stroke",SELECTION_COLOR);circle.setAttribute("stroke-width","1")
         const icon=document.createElementNS(SVG_NS,"path");icon.setAttribute("d","M-6 0H6M0-6V6M-3-3 0-6 3-3M-3 3 0 6 3 3M-3-3-6 0-3 3M3-3 6 0 3 3");icon.setAttribute("fill","none");icon.setAttribute("stroke",SELECTION_COLOR);icon.setAttribute("stroke-width","1.3");icon.setAttribute("pointer-events","none")
         handle.append(circle,icon);group.append(handle)
       }

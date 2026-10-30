@@ -4,7 +4,7 @@ test("V3 Flow uses the shared mark, arrow submit and compact switches above inpu
   await createManualProjectFromDashboard(page, { name: "V3 Flow" })
   const dock = page.locator("#flow-assistant-dock")
   await expect(dock.locator(".flow-assistant-brand .flow-mark")).toHaveCount(1)
-  await dock.getByRole("textbox", { name: "Ask Flow a question" }).fill("How do I measure?")
+  await dock.getByRole("textbox", { name: "Ask Kyza a question" }).fill("How do I measure?")
   await dock.getByRole("button", { name: "Send message", exact: true }).click()
   await expect(dock.locator(".flow-assistant-question")).toContainText("How do I measure?")
   const tabs = (await dock.locator(".flow-assistant-top").boundingBox())!

@@ -1,13 +1,13 @@
 import { runPackGenerateRequest } from "../../../../packages/engine-api/runPackGenerateRequest"
 import {
-  createCutNFlowProjectId,
-  createCutNFlowProjectV1,
-  listCutNFlowProjects,
-  loadCutNFlowProject,
-  saveCutNFlowProject,
-  type CutNFlowProjectDraftV1,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  createKyzaProjectId,
+  createKyzaProjectV1,
+  listKyzaProjects,
+  loadKyzaProject,
+  saveKyzaProject,
+  type KyzaProjectDraftV1,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
   type ProjectMetadataV1,
 } from "../../../../packages/cutter-engine/project"
 import type { FlowwrapSpec } from "../types/flowwrap"
@@ -24,11 +24,11 @@ export type CreateProjectRequest = {
   startingRoute: "pack-gen" | "cutter-studio"
   packType?: string
   projectId?: string
-  projectDraft?: CutNFlowProjectDraftV1
+  projectDraft?: KyzaProjectDraftV1
 }
 
 export type CreateProjectResult =
-  | { ok: true; project: CutNFlowProjectV1; destinationUrl: string }
+  | { ok: true; project: KyzaProjectV1; destinationUrl: string }
   | { ok: false; errors: string[] }
 
 export const PROJECT_CREATION_FIELD_LIMITS = {
@@ -40,7 +40,7 @@ export const PROJECT_CREATION_FIELD_LIMITS = {
   notes: 1000,
 } as const
 
-export const createProjectSubmissionId = () => createCutNFlowProjectId()
+export const createProjectSubmissionId = () => createKyzaProjectId()
 
 type GeneratedPackDefaults = {
   packId: string
@@ -48,7 +48,7 @@ type GeneratedPackDefaults = {
 }
 
 type ProjectCreationDependencies = {
-  storage?: CutNFlowProjectStorage
+  storage?: KyzaProjectStorage
   createProjectId?: () => string
   generatePackDefaults?: (packType: string, projectId: string) =>
     | { ok: true; value: GeneratedPackDefaults }
@@ -110,7 +110,7 @@ const generatePackDefaults = (packType: string, projectId: string) => {
     engine: "pack-generator",
     action: "generatePack",
     payload: { packId: packType },
-    meta: { source: "klyro-project-creation" },
+    meta: { source: "kyza-project-creation" },
   })
   const state = response.updatedState as GeneratedPackDefaults | undefined
   if (!response.success || response.errors.length > 0 || !state?.spec || !state.packId) {
@@ -131,7 +131,7 @@ const destinationFor = (request: CreateProjectRequest, projectId: string) => (
 )
 
 const matchesSubmission = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   request: CreateProjectRequest,
   metadata: ProjectMetadataV1 | undefined,
 ) => (
@@ -151,7 +151,7 @@ export function createCanonicalProject(
   if (requestErrors.length > 0) return { ok: false, errors: requestErrors }
 
   const projectId = normalizeOptional(request.projectId)
-    ?? (dependencies.createProjectId ?? createCutNFlowProjectId)()
+    ?? (dependencies.createProjectId ?? createKyzaProjectId)()
   const metadata = projectMetadataFromRequest(request)
   if (request.projectDraft && (
     request.projectDraft.id !== projectId
@@ -168,7 +168,7 @@ export function createCanonicalProject(
       errors: [error instanceof Error ? error.message : "The Project route could not be created safely."],
     }
   }
-  const listed = listCutNFlowProjects(dependencies.storage)
+  const listed = listKyzaProjects(dependencies.storage)
   if (listed.ok === false) return { ok: false, errors: listed.errors }
 
   const existing = listed.value.find((project) => project.id === projectId)
@@ -179,14 +179,14 @@ export function createCanonicalProject(
   }
 
   try {
-    let project: CutNFlowProjectV1
+    let project: KyzaProjectV1
     if (request.startingRoute === "cutter-studio") {
       const generated = (dependencies.generatePackDefaults ?? generatePackDefaults)(
         normalizeOptional(request.packType)!,
         projectId,
       )
       if (generated.ok === false) return { ok: false, errors: generated.errors }
-      project = createCutNFlowProjectV1({
+      project = createKyzaProjectV1({
         id: projectId,
         name: request.projectName,
         metadata,
@@ -194,7 +194,7 @@ export function createCanonicalProject(
         legacySpec: generated.value.spec,
       })
     } else {
-      project = createCutNFlowProjectV1({
+      project = createKyzaProjectV1({
         id: projectId,
         name: request.projectName,
         metadata,
@@ -202,9 +202,9 @@ export function createCanonicalProject(
       })
     }
 
-    const saved = saveCutNFlowProject(project, dependencies.storage)
+    const saved = saveKyzaProject(project, dependencies.storage)
     if (saved.ok === false) return { ok: false, errors: saved.errors }
-    const verified = loadCutNFlowProject(project.id, dependencies.storage)
+    const verified = loadKyzaProject(project.id, dependencies.storage)
     if (verified.ok === false) {
       return { ok: false, errors: ["The Project was not confirmed after saving.", ...verified.errors] }
     }

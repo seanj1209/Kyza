@@ -8,7 +8,7 @@
   --shadow: 0 18px 50px rgba(71,52,40,.12);
   color: var(--text); font-family: "Segoe UI Variable", "Trebuchet MS", Verdana, sans-serif;
 }
-:root[data-klyro-theme="dark"] body #start-overlay .start-pack-canvas {
+:root[data-kyza-theme="dark"] body #start-overlay .start-pack-canvas {
   --canvas: #201f1e; --raised: #292725; --soft: #262422;
   --text: #faf7f4; --muted: #c3b4a7; --subtle: #978b81;
   --border: rgba(219,200,182,.19); --border-strong: rgba(219,200,182,.32);
@@ -59,7 +59,7 @@
 }
 :root body #start-overlay .pic svg { width: 200px; height: auto; display: block; overflow: visible; }
 :root body #start-overlay .pic svg { color: #151515; }
-:root[data-klyro-theme="dark"] body #start-overlay .pic svg { color: #fff; }
+:root[data-kyza-theme="dark"] body #start-overlay .pic svg { color: #fff; }
 :root body #start-overlay .slide[data-pack-id="plain-film"] .pic svg { color: #b9181c; }
 :root body #start-overlay .pic svg :is(path, rect, ellipse, text):not(.sl) { fill: currentColor; }
 :root body #start-overlay .pic svg [fill="none"]:not(.sl) { fill: none; }
@@ -167,7 +167,7 @@
 }
 
 /* The app retains its guide sidebar and recent projects around the concept. */
-:root body.start-mode .cutter-klyro-app :is(#preview, #start-overlay) { background: var(--klyro-canvas); }
+:root body.start-mode .cutter-kyza-app :is(#preview, #start-overlay) { background: var(--kyza-canvas); }
 :root body #start-overlay .start-main {
   min-width: 0; padding: 24px;
   overflow: visible;
@@ -177,7 +177,7 @@
 :root body #start-overlay .start-body {
   display: grid; grid-template-columns: 432px minmax(0, 1fr); align-content: start;
   overflow-x: hidden; overflow-y: auto; align-items: stretch; scrollbar-width: thin;
-  background: var(--klyro-page-texture), var(--klyro-canvas);
+  background: var(--kyza-page-texture), var(--kyza-canvas);
 }
 :root body #start-overlay .start-sidebar { flex-shrink: 0; overflow: visible; align-self: stretch; }
 :root body #start-overlay .start-pack-canvas { grid-template-columns: minmax(0, 1fr) minmax(220px, .78fr); gap: 24px; padding: 24px; margin: 0 0 26px; }

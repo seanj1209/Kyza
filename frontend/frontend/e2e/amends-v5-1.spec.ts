@@ -63,7 +63,7 @@ test("@beta V5.1 legend starts on the right and samples actual seal, cutter and 
 test("@beta V5.1 legend key remains inside its card in Studio", async ({ page }) => {
   await createManualProjectFromDashboard(page,{name:"V5.1 key",packLabel:"K Seal Pouch"})
   await page.getByRole("button",{name:"Legend layouts",exact:true}).click()
-  await page.getByRole("menuitem",{name:"Portrait Klyro legend"}).click()
+  await page.getByRole("menuitem",{name:"Portrait Kyza legend"}).click()
   const legend=page.locator("#cutter_legend")
   await expect(legend).toBeVisible()
   await page.screenshot({path:"test-results/v5-1-legend.png",fullPage:true})

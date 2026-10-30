@@ -2,8 +2,8 @@
 .beta-review-body { display: grid; gap: 16px; overflow-y: auto; }
 .beta-review-body p { margin: 0; line-height: 1.6; }
 .beta-review-field { display: grid; gap: 8px; }
-.beta-review-field input, .beta-review-field textarea { width: 100%; box-sizing: border-box; padding: 11px; border: 1px solid var(--klyro-border-strong); border-radius: 9px; color: var(--klyro-text); background: var(--klyro-panel); font: inherit; }
+.beta-review-field input, .beta-review-field textarea { width: 100%; box-sizing: border-box; padding: 11px; border: 1px solid var(--kyza-border-strong); border-radius: 9px; color: var(--kyza-text); background: var(--kyza-panel); font: inherit; }
 .beta-review-acknowledgement { display: flex; align-items: start; gap: 10px; line-height: 1.5; }.beta-review-acknowledgement input { flex: 0 0 auto; margin-top: 4px; }
 .beta-review-findings { margin: 0; padding-left: 22px; display: grid; gap: 8px; }.beta-review-findings li { overflow-wrap: anywhere; }
-.beta-review-entry { width: 100%; margin-top: 14px; padding: 12px; border: 1px solid var(--klyro-border-strong); border-radius: 12px; background: var(--klyro-panel-raised); color: var(--klyro-text); font: inherit; cursor: pointer; }
-.beta-review-entry:focus-visible, .beta-review-field :focus-visible { outline: 2px solid var(--klyro-focus); outline-offset: 3px; }
+.beta-review-entry { width: 100%; margin-top: 14px; padding: 12px; border: 1px solid var(--kyza-border-strong); border-radius: 12px; background: var(--kyza-panel-raised); color: var(--kyza-text); font: inherit; cursor: pointer; }
+.beta-review-entry:focus-visible, .beta-review-field :focus-visible { outline: 2px solid var(--kyza-focus); outline-offset: 3px; }

@@ -17,7 +17,7 @@ test("pack icons keep red seals in both themes", async ({ page }) => {
   await expect(seal).toHaveCount(1)
   await expect(page.locator('.studio-pack-carousel .slide[data-pack-id="plain-film"] .pic svg rect')).toHaveCSS("fill", "none")
   for (const theme of ["light", "dark"]) {
-    await page.evaluate(value => document.documentElement.setAttribute("data-klyro-theme", value), theme)
+    await page.evaluate(value => document.documentElement.setAttribute("data-kyza-theme", value), theme)
     const colors = await icon.evaluate(svg => ({
       body: getComputedStyle(svg.querySelector("text")!).fill,
       seal: getComputedStyle(svg.querySelector(".sl")!).stroke,

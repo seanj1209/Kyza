@@ -13,7 +13,7 @@ const openPack = async (page: Page, name: string) => {
 
 test('v12 landing tagline, FlowAI mark and Strip Laminate naming', async ({ page }) => {
   await page.goto('/cutter')
-  await expect(page.locator('.klyro-brand-product').first()).toHaveText('Workflows built on Intelligence')
+  await expect(page.locator('.kyza-brand-product').first()).toHaveText('Workflows built on Intelligence')
   const help = page.getByRole('button', { name: /Help Me Choose/ })
   await expect(help.locator('svg.flow-mark path')).toHaveCount(3)
   await expect(help.locator('svg.flow-mark text')).toHaveCount(0)
@@ -90,15 +90,15 @@ test('v12 seal labels Place after the shared delay and never share a seal', asyn
 
 test('v12 dashboard news distinguishes available from planned', async ({ page }) => {
   await page.goto('/')
-  const tabs = page.locator('.klyro-feature-tabs button')
+  const tabs = page.locator('.kyza-feature-tabs button')
   await expect(tabs).toHaveCount(5)
   expect(await tabs.evaluateAll(nodes => nodes.map(node => node.getAttribute('aria-label')))).toEqual([
     'How it works (Available now)', 'Sandbox Mode (Available now)', 'Legends (Coming soon)', 'Artwork (Coming soon)', 'Roadmap (Coming soon)',
   ])
   await tabs.nth(4).click()
-  const active = page.locator('.klyro-feature-slide.is-active')
-  await expect(active.locator('.klyro-feature-status')).toHaveText('Coming soon')
-  await expect(active.locator('.klyro-feature-body')).toContainText('None of these are released yet')
+  const active = page.locator('.kyza-feature-slide.is-active')
+  await expect(active.locator('.kyza-feature-status')).toHaveText('Coming soon')
+  await expect(active.locator('.kyza-feature-body')).toContainText('None of these are released yet')
   await tabs.nth(1).click()
-  await expect(active.locator('.klyro-feature-action')).toHaveAttribute('href', '/cutter?studio=start')
+  await expect(active.locator('.kyza-feature-action')).toHaveAttribute('href', '/cutter?studio=start')
 })

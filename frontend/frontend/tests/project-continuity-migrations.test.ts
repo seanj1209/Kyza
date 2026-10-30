@@ -1,23 +1,23 @@
 import { createOrUpdateCutterFromPackGen, createEmptyPackGenDraft, setPackGenField } from "../apps/web/src/packGen/packGenProjectService"
 import { getPackModule } from "../apps/web/src/packs"
 import { loadRequestedProject } from "../apps/web/src/project/projectOpenService"
-import { updateCutNFlowProject } from "../apps/web/src/project/projectUpdateService"
+import { updateKyzaProject } from "../apps/web/src/project/projectUpdateService"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  CUTNFLOW_PROJECT_MIGRATION_ORDER,
-  CUTNFLOW_PROJECT_STORAGE_KEY,
-  CUTNFLOW_PROJECT_UNKNOWN_FIELD_POLICY,
-  createCutNFlowProjectV1,
-  duplicateCutNFlowProject,
+  KYZA_PROJECT_MIGRATION_ORDER,
+  KYZA_PROJECT_STORAGE_KEY,
+  KYZA_PROJECT_UNKNOWN_FIELD_POLICY,
+  createKyzaProjectV1,
+  duplicateKyzaProject,
   getEyemarkElementRefs,
-  listCutNFlowProjects,
-  listCutNFlowProjectsStrict,
-  loadCutNFlowProject,
-  parseCutNFlowProject,
-  readCutNFlowProjectCollection,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  listKyzaProjects,
+  listKyzaProjectsStrict,
+  loadKyzaProject,
+  parseKyzaProject,
+  readKyzaProjectCollection,
+  saveKyzaProject,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
 } from "../packages/cutter-engine/project"
 import {
   getEffectiveValidationStatus,
@@ -34,7 +34,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message: string) {
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   readonly values = new Map<string, string>()
   writes = 0
   failWrites = false
@@ -83,7 +83,7 @@ const extendedSpec: ExtendedFlowwrapSpec = {
   futureEngineering,
 }
 
-const shell = createCutNFlowProjectV1({
+const shell = createKyzaProjectV1({
   id: "continuity-kseal-project",
   name: "Continuity K-Seal",
   packType: "k-seal-pouch",
@@ -107,7 +107,7 @@ for (const [field, value] of [
   draft = setPackGenField(draft, field, value)
 }
 
-const project = createCutNFlowProjectV1({
+const project = createKyzaProjectV1({
   id: shell.id,
   revision: shell.revision,
   name: shell.name,
@@ -121,9 +121,9 @@ const project = createCutNFlowProjectV1({
 assert(project.cutter, "Continuity fixture must contain a Cutter Specification.")
 
 const storage = new MemoryStorage()
-const initialSave = saveCutNFlowProject(project, storage)
+const initialSave = saveKyzaProject(project, storage)
 assert(initialSave.ok, "Current-schema K-Seal Project must save.")
-const reopened = loadCutNFlowProject(project.id, storage)
+const reopened = loadKyzaProject(project.id, storage)
 assert(reopened.ok, "Current-schema K-Seal Project must reopen.")
 assert(reopened.value !== project, "Reopen assertions must use the deserialised Project rather than the in-memory source.")
 assert(reopened.value.cutter, "Reopened Project must retain its Cutter Specification.")
@@ -140,11 +140,11 @@ assertJsonEqual(
   "Unknown engineering fields must survive the canonical parse/save boundary.",
 )
 const writesAfterInitialSave = storage.writes
-const currentNoOp = listCutNFlowProjects(storage)
+const currentNoOp = listKyzaProjects(storage)
 assert(currentNoOp.ok, "A current-schema Project must pass the migration dispatcher.")
 assert(storage.writes === writesAfterInitialSave, "Current-schema migration must be a no-op without a storage rewrite.")
 assertJsonEqual(
-  CUTNFLOW_PROJECT_MIGRATION_ORDER,
+  KYZA_PROJECT_MIGRATION_ORDER,
   [
     "identify-record-shape",
     "apply-v1-envelope-defaults",
@@ -153,7 +153,7 @@ assertJsonEqual(
   ],
   "Project migrations must execute in the documented order.",
 )
-assert(CUTNFLOW_PROJECT_UNKNOWN_FIELD_POLICY === "reject", "Unknown Project data must use the documented reject policy.")
+assert(KYZA_PROJECT_UNKNOWN_FIELD_POLICY === "reject", "Unknown Project data must use the documented reject policy.")
 const stableEyemarkIds = getEyemarkElementRefs(reopened.value).map(({ id }) => id)
 assert(stableEyemarkIds.length === 2, "Both K-Seal eyemarks must have stable element IDs.")
 
@@ -201,12 +201,12 @@ const exportAudit: CutterExportAuditRecord = {
   exportedAt: laterTimestamp,
   exportFormat: "svg",
 }
-const withEvidence: CutNFlowProjectV1 = {
+const withEvidence: KyzaProjectV1 = {
   ...validation.project,
   validationAcknowledgements: [acknowledgement],
   exportAuditRecords: [exportAudit],
 }
-const evidenceSave = saveCutNFlowProject(withEvidence, storage, {
+const evidenceSave = saveKyzaProject(withEvidence, storage, {
   expectedRevision: validation.project.revision,
 })
 assert(evidenceSave.ok, "Warning acknowledgement and export evidence must persist.")
@@ -246,9 +246,9 @@ assert(
   "Revalidation must match the current Project revision.",
 )
 
-const conflictBase = loadCutNFlowProject(project.id, storage)
+const conflictBase = loadKyzaProject(project.id, storage)
 assert(conflictBase.ok && conflictBase.value.cutter, "Conflict fixture must reopen from persisted state.")
-const firstEditor = updateCutNFlowProject({
+const firstEditor = updateKyzaProject({
   project: conflictBase.value,
   reason: "controls-edit",
   expectedRevision: conflictBase.value.revision,
@@ -257,7 +257,7 @@ const firstEditor = updateCutNFlowProject({
     patch: { width: conflictBase.value.cutter.legacySpec.width + 10 },
   },
 })
-const staleEditor = updateCutNFlowProject({
+const staleEditor = updateKyzaProject({
   project: conflictBase.value,
   reason: "controls-edit",
   expectedRevision: conflictBase.value.revision,
@@ -268,16 +268,16 @@ const staleEditor = updateCutNFlowProject({
 })
 assert(firstEditor.ok && firstEditor.project, "First concurrent editor must create a valid candidate.")
 assert(staleEditor.ok && staleEditor.project, "Second concurrent editor must create a valid local candidate.")
-const firstPersist = saveCutNFlowProject(firstEditor.project, storage, {
+const firstPersist = saveKyzaProject(firstEditor.project, storage, {
   expectedRevision: conflictBase.value.revision,
 })
 assert(firstPersist.ok, "First editor must persist against the expected revision.")
-const stalePersist = saveCutNFlowProject(staleEditor.project, storage, {
+const stalePersist = saveKyzaProject(staleEditor.project, storage, {
   expectedRevision: conflictBase.value.revision,
 })
 assert(stalePersist.ok === false, "A stale editor must not overwrite the newer persisted revision.")
 assert(stalePersist.errors.some((error) => error.includes("PROJECT_REVISION_CONFLICT")), "Conflict must use the standard Project revision code.")
-const conflictReload = loadCutNFlowProject(project.id, storage)
+const conflictReload = loadKyzaProject(project.id, storage)
 assert(conflictReload.ok && conflictReload.value.cutter, "Project must remain readable after conflict rejection.")
 assert(
   conflictReload.value.cutter.legacySpec.width === firstEditor.project.cutter!.legacySpec.width,
@@ -288,66 +288,66 @@ const missingOptional = JSON.parse(JSON.stringify(project)) as Record<string, un
 const optionalDraft = missingOptional.projectDraft as { workspace?: { fields?: Record<string, unknown> } }
 delete optionalDraft.workspace?.fields?.trimMm
 delete optionalDraft.workspace?.fields?.zipEnabled
-assert(parseCutNFlowProject(missingOptional).ok, "Missing optional Pack fields must remain compatible.")
+assert(parseKyzaProject(missingOptional).ok, "Missing optional Pack fields must remain compatible.")
 
 const migrationSource = JSON.parse(JSON.stringify(project)) as Record<string, unknown>
 delete migrationSource.revision
 const migrationStorage = new MemoryStorage()
-migrationStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([migrationSource]))
-const migrated = listCutNFlowProjects(migrationStorage)
+migrationStorage.seed(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([migrationSource]))
+const migrated = listKyzaProjects(migrationStorage)
 assert(migrated.ok && migrated.value[0]?.revision === 1, "A legacy Project without revision must migrate to revision 1.")
 assert(migrationStorage.writes === 1, "A successful revision migration must be persisted exactly once.")
-const migratedAgain = listCutNFlowProjects(migrationStorage)
+const migratedAgain = listKyzaProjects(migrationStorage)
 assert(migratedAgain.ok && migrationStorage.writes === 1, "A persisted migration must not repeat on every reopen.")
 
 const futureStorage = new MemoryStorage()
 const futureProject = { ...project, schemaVersion: 999 }
 const futureRaw = JSON.stringify([futureProject])
-futureStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, futureRaw)
-const futureLoad = listCutNFlowProjects(futureStorage)
+futureStorage.seed(KYZA_PROJECT_STORAGE_KEY, futureRaw)
+const futureLoad = listKyzaProjects(futureStorage)
 assert(futureLoad.ok && futureLoad.value.length === 0, "Tolerant listing must isolate an unsupported future schema.")
-const futureStrictLoad = listCutNFlowProjectsStrict(futureStorage)
+const futureStrictLoad = listKyzaProjectsStrict(futureStorage)
 assert(futureStrictLoad.ok === false, "Strict listing must fail safely for an unsupported future schema.")
 assert(futureStrictLoad.errors.some((error) => error.includes("Unsupported project schemaVersion: 999")), "Future schema failure must be explicit.")
-assert(futureStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) === futureRaw, "Future-version data must not be rewritten.")
+assert(futureStorage.getItem(KYZA_PROJECT_STORAGE_KEY) === futureRaw, "Future-version data must not be rewritten.")
 assert(futureStorage.writes === 0, "Future-version failure must remain read-only.")
 
 const corruptStorage = new MemoryStorage()
 const corruptRaw = "{partially-written"
-corruptStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, corruptRaw)
-const corruptLoad = listCutNFlowProjects(corruptStorage)
+corruptStorage.seed(KYZA_PROJECT_STORAGE_KEY, corruptRaw)
+const corruptLoad = listKyzaProjects(corruptStorage)
 assert(corruptLoad.ok === false, "Partially written JSON must return a controlled failure.")
-assert(corruptStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) === corruptRaw, "Corrupt data must remain available for recovery.")
+assert(corruptStorage.getItem(KYZA_PROJECT_STORAGE_KEY) === corruptRaw, "Corrupt data must remain available for recovery.")
 assert(corruptStorage.writes === 0, "Corrupt data must never be rewritten during load.")
 
 const atomicStorage = new MemoryStorage()
 const atomicRaw = JSON.stringify([migrationSource, futureProject])
-atomicStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, atomicRaw)
-const atomicFailure = listCutNFlowProjects(atomicStorage)
+atomicStorage.seed(KYZA_PROJECT_STORAGE_KEY, atomicRaw)
+const atomicFailure = listKyzaProjects(atomicStorage)
 assert(atomicFailure.ok && atomicFailure.value.length === 1, "A collection containing a failed migration must expose its valid Project.")
-assert(atomicStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) === atomicRaw, "Failed collection migration must preserve the original payload.")
+assert(atomicStorage.getItem(KYZA_PROJECT_STORAGE_KEY) === atomicRaw, "Failed collection migration must preserve the original payload.")
 assert(atomicStorage.writes === 0, "Failed collection migration must not partially persist earlier items.")
 
 const writeFailureStorage = new MemoryStorage()
 const writeFailureRaw = JSON.stringify([migrationSource])
-writeFailureStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, writeFailureRaw)
+writeFailureStorage.seed(KYZA_PROJECT_STORAGE_KEY, writeFailureRaw)
 writeFailureStorage.failWrites = true
-const writeFailure = listCutNFlowProjects(writeFailureStorage)
+const writeFailure = listKyzaProjects(writeFailureStorage)
 assert(writeFailure.ok === false, "Migration write failure must be controlled.")
-assert(writeFailureStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) === writeFailureRaw, "Migration write failure must leave the original payload intact.")
+assert(writeFailureStorage.getItem(KYZA_PROJECT_STORAGE_KEY) === writeFailureRaw, "Migration write failure must leave the original payload intact.")
 
 const mixedCorruptStorage = new MemoryStorage()
 const corruptRecord = { schemaVersion: 1, id: "corrupt-record", revision: 1 }
-mixedCorruptStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([project, corruptRecord]))
-const mixedCorrupt = readCutNFlowProjectCollection(mixedCorruptStorage)
+mixedCorruptStorage.seed(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([project, corruptRecord]))
+const mixedCorrupt = readKyzaProjectCollection(mixedCorruptStorage)
 assert(mixedCorrupt.ok, "A mixed collection must return a recovery result.")
 assert(mixedCorrupt.value.projects.some(({ id }) => id === project.id), "A valid Project must remain available beside a corrupt record.")
 assert(mixedCorrupt.value.rejectedRecords.length === 1, "A corrupt record must be reported exactly once.")
 assert(mixedCorrupt.value.rejectedRecords[0]?.index === 1, "Recovery diagnostics must identify the corrupt record index.")
 assertJsonEqual(mixedCorrupt.value.rejectedRecords[0]?.rawRecord, corruptRecord, "Recovery diagnostics must retain the raw corrupt record.")
-const mixedCorruptList = listCutNFlowProjects(mixedCorruptStorage)
+const mixedCorruptList = listKyzaProjects(mixedCorruptStorage)
 assert(mixedCorruptList.ok && mixedCorruptList.value.length === 1, "The normal Project list must tolerate isolated corrupt records.")
-assert(listCutNFlowProjectsStrict(mixedCorruptStorage).ok === false, "Strict callers must be able to reject a mixed corrupt collection.")
+assert(listKyzaProjectsStrict(mixedCorruptStorage).ok === false, "Strict callers must be able to reject a mixed corrupt collection.")
 const mixedValid = mixedCorruptList.value[0]
 assert(mixedValid, "Mixed collection update requires its valid Project.")
 const mixedUpdated = {
@@ -356,27 +356,27 @@ const mixedUpdated = {
   updatedAt: laterTimestamp,
 }
 assert(
-  saveCutNFlowProject(mixedUpdated, mixedCorruptStorage, { expectedRevision: mixedValid.revision }).ok,
+  saveKyzaProject(mixedUpdated, mixedCorruptStorage, { expectedRevision: mixedValid.revision }).ok,
   "A valid Project in a mixed collection must remain editable.",
 )
-const mixedAfterSave = JSON.parse(mixedCorruptStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY)!) as unknown[]
+const mixedAfterSave = JSON.parse(mixedCorruptStorage.getItem(KYZA_PROJECT_STORAGE_KEY)!) as unknown[]
 assertJsonEqual(mixedAfterSave[0], corruptRecord, "Saving a valid Project must preserve an isolated rejected record unchanged.")
 
 const mixedFutureStorage = new MemoryStorage()
 const futureMixedRecord = { ...project, id: "future-project", schemaVersion: 2 }
 const mixedFutureRaw = JSON.stringify([project, futureMixedRecord])
-mixedFutureStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, mixedFutureRaw)
-const mixedFuture = readCutNFlowProjectCollection(mixedFutureStorage)
+mixedFutureStorage.seed(KYZA_PROJECT_STORAGE_KEY, mixedFutureRaw)
+const mixedFuture = readKyzaProjectCollection(mixedFutureStorage)
 assert(mixedFuture.ok, "A future-version record must produce a recovery result.")
 assert(mixedFuture.value.projects.length === 1, "A current V1 Project must remain available beside a future record.")
 assert(mixedFuture.value.rejectedRecords[0]?.reason === "unsupported_schema", "Future schema diagnostics must be typed.")
-assert(mixedFutureStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) === mixedFutureRaw, "A future-version record must remain stored unchanged.")
+assert(mixedFutureStorage.getItem(KYZA_PROJECT_STORAGE_KEY) === mixedFutureRaw, "A future-version record must remain stored unchanged.")
 assert(mixedFutureStorage.writes === 0, "Reading a future-version record must not rewrite the collection.")
 
 const normalisingOpenStorage = new MemoryStorage()
 const missingIdentity = JSON.parse(JSON.stringify(project)) as Record<string, unknown>
 delete (missingIdentity.cutter as Record<string, unknown>).identityMap
-normalisingOpenStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([missingIdentity]))
+normalisingOpenStorage.seed(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([missingIdentity]))
 const normalisingOpen = loadRequestedProject(project.id, normalisingOpenStorage)
 assert(normalisingOpen.ok, "Project Open must allow the canonical repository to persist safe identity normalisation.")
 assert(normalisingOpenStorage.writes === 1, "Project Open must persist the normalised identity map once.")
@@ -389,10 +389,10 @@ delete deterministicMissingId.projectDraft
 const deterministicStorageA = new MemoryStorage()
 const deterministicStorageB = new MemoryStorage()
 const deterministicRaw = JSON.stringify([deterministicMissingId])
-deterministicStorageA.seed(CUTNFLOW_PROJECT_STORAGE_KEY, deterministicRaw)
-deterministicStorageB.seed(CUTNFLOW_PROJECT_STORAGE_KEY, deterministicRaw)
-const deterministicA = listCutNFlowProjects(deterministicStorageA)
-const deterministicB = listCutNFlowProjects(deterministicStorageB)
+deterministicStorageA.seed(KYZA_PROJECT_STORAGE_KEY, deterministicRaw)
+deterministicStorageB.seed(KYZA_PROJECT_STORAGE_KEY, deterministicRaw)
+const deterministicA = listKyzaProjects(deterministicStorageA)
+const deterministicB = listKyzaProjects(deterministicStorageB)
 assert(deterministicA.ok && deterministicB.ok, "A V1 Project without an ID must migrate in both repositories.")
 assert(
   deterministicA.value[0]?.id === deterministicB.value[0]?.id,
@@ -408,7 +408,7 @@ const legacyCard = {
   spec: extendedSpec,
   updatedAt: timestamp,
 }
-legacyCardStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([legacyCard]))
+legacyCardStorage.seed(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([legacyCard]))
 const openedLegacyCard = loadRequestedProject(legacyCard.id, legacyCardStorage)
 assert(openedLegacyCard.ok, "The known old saved-card shape must migrate through the real Project Open route.")
 assert(openedLegacyCard.value.project.schemaVersion === 1, "The old saved card must become a canonical V1 Project.")
@@ -419,8 +419,8 @@ assert(loadRequestedProject(legacyCard.id, legacyCardStorage).ok, "The migrated 
 assert(legacyCardStorage.writes === legacyCardWrites, "Legacy saved-card migration must be idempotent.")
 
 const duplicateStorage = new MemoryStorage()
-assert(saveCutNFlowProject(project, duplicateStorage).ok, "Duplicate identity fixture must save.")
-const duplicated = duplicateCutNFlowProject(project.id, duplicateStorage, "Independent duplicate")
+assert(saveKyzaProject(project, duplicateStorage).ok, "Duplicate identity fixture must save.")
+const duplicated = duplicateKyzaProject(project.id, duplicateStorage, "Independent duplicate")
 assert(duplicated.ok && duplicated.value.cutter, "A Cutter Project must duplicate.")
 const sourceElementIds = new Set(project.cutter.identityMap.elements.map(({ id }) => id))
 const duplicateElementIds = duplicated.value.cutter.identityMap.elements.map(({ id }) => id)
@@ -438,7 +438,7 @@ const unknownTopLevel = {
   ...project,
   futureProjectEngineering: { toleranceMm: 0.2 },
 }
-const unknownTopLevelResult = parseCutNFlowProject(unknownTopLevel)
+const unknownTopLevelResult = parseKyzaProject(unknownTopLevel)
 assert(unknownTopLevelResult.ok === false, "Unknown top-level Project data must be rejected instead of silently removed.")
 assert(
   unknownTopLevelResult.errors.some((error) => error.includes("futureProjectEngineering")),
@@ -451,16 +451,16 @@ const unknownCutter = {
     futureCutterEngineering: { pressureBar: 2.5 },
   },
 }
-const unknownCutterResult = parseCutNFlowProject(unknownCutter)
+const unknownCutterResult = parseKyzaProject(unknownCutter)
 assert(unknownCutterResult.ok === false, "Unknown Cutter-document data must be rejected instead of silently removed.")
 assert(
   unknownCutterResult.errors.some((error) => error.includes("futureCutterEngineering")),
   "Unknown Cutter diagnostics must identify the unsupported field.",
 )
 
-const retryBase = loadCutNFlowProject(project.id, storage)
+const retryBase = loadKyzaProject(project.id, storage)
 assert(retryBase.ok && retryBase.value.cutter, "Conflict retry must reload the current Project.")
-const retryCandidate = updateCutNFlowProject({
+const retryCandidate = updateKyzaProject({
   project: retryBase.value,
   reason: "controls-edit",
   expectedRevision: retryBase.value.revision,
@@ -471,15 +471,15 @@ const retryCandidate = updateCutNFlowProject({
 })
 assert(retryCandidate.ok && retryCandidate.project, "Reloaded conflict retry must produce a valid candidate.")
 assert(
-  saveCutNFlowProject(retryCandidate.project, storage, { expectedRevision: retryBase.value.revision }).ok,
+  saveKyzaProject(retryCandidate.project, storage, { expectedRevision: retryBase.value.revision }).ok,
   "Reloading after conflict must allow a successful retry.",
 )
 
 const implicitConflictStorage = new MemoryStorage()
-assert(saveCutNFlowProject(project, implicitConflictStorage).ok, "Implicit conflict fixture must save.")
-const implicitBase = loadCutNFlowProject(project.id, implicitConflictStorage)
+assert(saveKyzaProject(project, implicitConflictStorage).ok, "Implicit conflict fixture must save.")
+const implicitBase = loadKyzaProject(project.id, implicitConflictStorage)
 assert(implicitBase.ok && implicitBase.value.cutter, "Implicit conflict fixture must reopen.")
-const implicitFirst = updateCutNFlowProject({
+const implicitFirst = updateKyzaProject({
   project: implicitBase.value,
   reason: "controls-edit",
   update: {
@@ -487,7 +487,7 @@ const implicitFirst = updateCutNFlowProject({
     patch: { width: implicitBase.value.cutter.legacySpec.width + 1 },
   },
 })
-const implicitSecond = updateCutNFlowProject({
+const implicitSecond = updateKyzaProject({
   project: implicitBase.value,
   reason: "controls-edit",
   update: {
@@ -496,13 +496,13 @@ const implicitSecond = updateCutNFlowProject({
   },
 })
 assert(implicitFirst.ok && implicitFirst.project && implicitSecond.ok && implicitSecond.project, "Concurrent implicit candidates must be valid.")
-assert(saveCutNFlowProject(implicitFirst.project, implicitConflictStorage).ok, "First implicit editor must save.")
-const implicitStale = saveCutNFlowProject(implicitSecond.project, implicitConflictStorage)
+assert(saveKyzaProject(implicitFirst.project, implicitConflictStorage).ok, "First implicit editor must save.")
+const implicitStale = saveKyzaProject(implicitSecond.project, implicitConflictStorage)
 assert(implicitStale.ok === false, "Repository protection must reject a same-revision overwrite even when a caller omits expectedRevision.")
 
 const falseValueStorage = new MemoryStorage()
 const falseDraft = setPackGenField(draft, "zipEnabled", false)
-const falseValueProject = createCutNFlowProjectV1({
+const falseValueProject = createKyzaProjectV1({
   id: "continuity-explicit-false",
   name: "Explicit false continuity",
   projectDraft: {
@@ -513,16 +513,16 @@ const falseValueProject = createCutNFlowProjectV1({
   createdAt: timestamp,
   updatedAt: timestamp,
 })
-assert(saveCutNFlowProject(falseValueProject, falseValueStorage).ok, "Explicit false fixture must save.")
-const falseValueReopened = loadCutNFlowProject(falseValueProject.id, falseValueStorage)
+assert(saveKyzaProject(falseValueProject, falseValueStorage).ok, "Explicit false fixture must save.")
+const falseValueReopened = loadKyzaProject(falseValueProject.id, falseValueStorage)
 assert(falseValueReopened.ok, "Explicit false fixture must reopen.")
 assert(falseValueReopened.value.projectDraft?.workspace?.fields.zipEnabled.value === false, "Explicit false Pack values must survive reopen.")
 
 const unprovenValidationStorage = new MemoryStorage()
 const unprovenValidation = JSON.parse(JSON.stringify(withEvidence)) as Record<string, unknown>
 delete unprovenValidation.revision
-unprovenValidationStorage.seed(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([unprovenValidation]))
-const unprovenValidationLoad = listCutNFlowProjects(unprovenValidationStorage)
+unprovenValidationStorage.seed(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([unprovenValidation]))
+const unprovenValidationLoad = listKyzaProjects(unprovenValidationStorage)
 assert(unprovenValidationLoad.ok, "A V1 Project with an unproven legacy revision must migrate.")
 assert(unprovenValidationLoad.value[0]?.latestValidationRun === undefined, "Unproven validation must not remain current after revision migration.")
 assert(
@@ -539,7 +539,7 @@ for (const packType of [
 ]) {
   const packModule = getPackModule(packType)
   assert(packModule, `${packType} must remain registered.`)
-  const isolated = createCutNFlowProjectV1({
+  const isolated = createKyzaProjectV1({
     id: `continuity-${packType}`,
     name: `Continuity ${packType}`,
     packType,
@@ -548,8 +548,8 @@ for (const packType of [
     updatedAt: timestamp,
   })
   const isolatedStorage = new MemoryStorage()
-  assert(saveCutNFlowProject(isolated, isolatedStorage).ok, `${packType} must save.`)
-  const isolatedReopened = loadCutNFlowProject(isolated.id, isolatedStorage)
+  assert(saveKyzaProject(isolated, isolatedStorage).ok, `${packType} must save.`)
+  const isolatedReopened = loadKyzaProject(isolated.id, isolatedStorage)
   assert(isolatedReopened.ok && isolatedReopened.value.cutter?.packType === packType, `${packType} must reopen without cross-mapping.`)
 }
 

@@ -3,7 +3,7 @@ import {
   createKSealEyemarkDefaults,
   reconcileKSealDualEyemarksForTrim
 } from "../apps/web/src/rules/kSealEyemarkRules"
-import { updateCutNFlowProject } from "../apps/web/src/project/projectUpdateService"
+import { updateKyzaProject } from "../apps/web/src/project/projectUpdateService"
 import { buildValidationCentreSummary } from "../apps/web/src/validation/validationCentre"
 import { getStructuredValidationState } from "../apps/web/src/validation/activeValidation"
 import { applyCutterValidationFix } from "../packages/cutter-engine/actions/validationFixes"
@@ -11,7 +11,7 @@ import { positionEyemarks } from "../packages/cutter-engine/actions/eyemarkPosit
 import {
   getEyemarkElementRefs,
   projectFromLegacySpec,
-  type CutNFlowProjectV1
+  type KyzaProjectV1
 } from "../packages/cutter-engine/project"
 import {
   BETA_CUTTER_RULESET_VERSION,
@@ -60,7 +60,7 @@ const makeProject = (
   updatedAt: now()
 })
 
-const sizeIssues = (project: CutNFlowProjectV1) => validateProjectCutter(project, { now }).issues.filter(
+const sizeIssues = (project: KyzaProjectV1) => validateProjectCutter(project, { now }).issues.filter(
   issue => issue.ruleId === "EYEMARK_MINIMUM_SIZE"
 )
 
@@ -152,7 +152,7 @@ const trimUpdatedSpec: FlowwrapSpec = {
     10
   )
 }
-const trimUpdate = updateCutNFlowProject({
+const trimUpdate = updateKyzaProject({
   project: trimSource,
   reason: "controls-edit",
   update: { type: "replace-legacy-spec", spec: trimUpdatedSpec }
@@ -237,7 +237,7 @@ assert(
     liveAdvisory.suggestedFixId === "kseal-fit-dual-eyemarks-to-trim",
   "The existing Cutter Studio issue-action adapter must expose the dual Advisory Quick Fix."
 )
-const quickFixUpdate = updateCutNFlowProject({
+const quickFixUpdate = updateKyzaProject({
   project: quickFixProject,
   reason: "engine-action",
   update: {

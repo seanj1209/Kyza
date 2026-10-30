@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../project"
+import type { KyzaProjectV1 } from "../project"
 import {
   getPreExportValidationRun,
   getBlockingValidationMessages,
@@ -267,7 +267,7 @@ const serializeSource = (
 
 const applyRootExportMetadata = (
   markup: string,
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   frame: ExportFrame,
   illustratorCompatible: boolean,
   metadata: CutterExportMetadata
@@ -281,10 +281,10 @@ const applyRootExportMetadata = (
     "viewBox",
     "width",
     "height",
-    "data-cutnflow-project-id",
-    "data-cutnflow-revision",
-    "data-cutnflow-export-tier",
-    "data-cutnflow-export-format"
+    "data-kyza-project-id",
+    "data-kyza-revision",
+    "data-kyza-export-tier",
+    "data-kyza-export-format"
   ]) {
     attributes = attributes.replace(
       new RegExp(`\\s${name}=["'][^"']*["']`, "gi"),
@@ -300,17 +300,17 @@ const applyRootExportMetadata = (
   attributes += ` viewBox="${frame.x} ${frame.y} ${frame.widthMm} ${frame.heightMm}"`
   attributes += ` width="${frame.widthMm}mm" height="${frame.heightMm}mm"`
   attributes += ` preserveAspectRatio="xMidYMid meet"`
-  attributes += ` data-cutnflow-project-id="${project.id}" data-cutnflow-revision="${project.revision}"`
-  attributes += ` data-cutnflow-export-tier="${metadata.exportTier}" data-cutnflow-export-format="${metadata.exportFormat}"`
+  attributes += ` data-kyza-project-id="${project.id}" data-kyza-revision="${project.revision}"`
+  attributes += ` data-kyza-export-tier="${metadata.exportTier}" data-kyza-export-format="${metadata.exportFormat}"`
   const root = `<svg${attributes}>`
-  const metadataNode = `<metadata id="cutnflow-export-metadata">${escapeXml(JSON.stringify(metadata))}</metadata>`
+  const metadataNode = `<metadata id="kyza-export-metadata">${escapeXml(JSON.stringify(metadata))}</metadata>`
   // SVG artboards are transparent in Illustrator and other vector editors.
   // The white backing belongs only to raster/PDF proofs, not editable artwork.
   return markup.replace(rootMatch[0], `${root}${metadataNode}`)
 }
 
 export const buildExportSvgDocument = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: CutterExportOptions,
   source: CutterExportSvgSource,
   metadata = createCutterExportMetadata(
@@ -340,7 +340,7 @@ export const buildExportSvgDocument = (
 }
 
 const buildValidationReport = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   validation: ValidationResult,
   validationRun: ValidationRun,
   metadata: CutterExportMetadata
@@ -357,8 +357,8 @@ const buildValidationReport = (
   messages: validation.messages
 })
 
-export const exportCutNFlowProject = (
-  project: CutNFlowProjectV1,
+export const exportKyzaProject = (
+  project: KyzaProjectV1,
   options: CutterExportOptions,
   source?: CutterExportSvgSource,
   authorization?: CutterExportAuthorization
@@ -391,7 +391,7 @@ export const exportCutNFlowProject = (
       ok: false,
       code: "vector_pdf_unavailable",
       errors: [
-        "Vector PDF export is not implemented. CutNFlow will not silently rasterise cutter lines for the pdf-vector format."
+        "Vector PDF export is not implemented. Kyza will not silently rasterise cutter lines for the pdf-vector format."
       ],
       validation,
       validationRun
@@ -489,32 +489,32 @@ export const exportCutNFlowProject = (
 }
 
 export const exportProjectSvg = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   source: CutterExportSvgSource,
   options: Omit<CutterExportOptions, "format"> = {
     includeLayers: true,
     preserveVector: true
   }
-) => exportCutNFlowProject(project, { ...options, format: "svg" }, source)
+) => exportKyzaProject(project, { ...options, format: "svg" }, source)
 
 export const exportProjectAiCompatibleSvg = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   source: CutterExportSvgSource,
   options: Omit<CutterExportOptions, "format"> = {
     includeLayers: true,
     preserveVector: true
   }
 ) =>
-  exportCutNFlowProject(
+  exportKyzaProject(
     project,
     { ...options, format: "ai-compatible-svg" },
     source
   )
 
 export const exportProjectPdfVector = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: Omit<CutterExportOptions, "format"> = {
     includeLayers: true,
     preserveVector: true
   }
-) => exportCutNFlowProject(project, { ...options, format: "pdf-vector" })
+) => exportKyzaProject(project, { ...options, format: "pdf-vector" })

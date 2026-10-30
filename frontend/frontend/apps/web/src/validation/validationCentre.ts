@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../../../../packages/cutter-engine/project"
+import type { KyzaProjectV1 } from "../../../../packages/cutter-engine/project"
 import { resolveExportReadiness, type ExportReadiness } from "../../../../packages/cutter-engine/export/exportReadiness"
 import {
   validateForExport,
@@ -68,7 +68,7 @@ export const getValidationIssuePresentation = (
 }
 
 export const buildValidationCentreSummary = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   hasArtwork: boolean,
   domain: "cutter" | "artwork" = "cutter",
   run?: ValidationRun,
@@ -148,7 +148,7 @@ export const buildValidationCentreSummary = (
 }
 
 export const buildProjectValidationWorkflowState = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   hasArtwork: boolean
 ): ProjectValidationWorkflowState => {
   const summary = buildValidationCentreSummary(project, hasArtwork, "artwork")

@@ -11,7 +11,7 @@ import {
 } from "../apps/web/src/validation/validationCentre"
 import { runPackGenerateRequest } from "../packages/engine-api/runPackGenerateRequest"
 import {
-  exportCutNFlowProject,
+  exportKyzaProject,
   exportProjectAiCompatibleSvg,
   exportProjectPdfVector,
   exportProjectSvg
@@ -30,20 +30,20 @@ import {
   EXPORT_PACKAGE_OUTPUTS
 } from "../packages/cutter-engine/export/exportPackage"
 import {
-  buildCutNFlowJsonExport,
-  createCutNFlowJsonExportFilename,
-  CUTNFLOW_JSON_EXPORT_SCHEMA_VERSION,
-  serializeCutNFlowJsonExport
+  buildKyzaJsonExport,
+  createKyzaJsonExportFilename,
+  KYZA_JSON_EXPORT_SCHEMA_VERSION,
+  serializeKyzaJsonExport
 } from "../packages/cutter-engine/export/jsonExport"
 import {
   buildExportLayerManifest,
-  CUTNFLOW_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION
+  KYZA_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION
 } from "../packages/cutter-engine/export/exportLayerManifest"
 import {
   canExportProject,
   getValidationDebugSnapshot,
   getBlockingValidationMessages,
-  validateCutNFlowProject,
+  validateKyzaProject,
   validateForExport,
   validateProjectCutter
 } from "../packages/cutter-engine/validation"
@@ -56,7 +56,7 @@ function assert(condition: boolean, message: string) {
 }
 
 function hasCode(
-  result: ReturnType<typeof validateCutNFlowProject>,
+  result: ReturnType<typeof validateKyzaProject>,
   code: string
 ) {
   return result.messages.some(message => message.code === code)
@@ -91,17 +91,17 @@ const makePackProject = (packType: string, id: string, spec?: FlowwrapSpec) => {
 }
 
 const validProject = makeProject(validSpec, "validation-valid")
-const valid = validateCutNFlowProject(validProject)
+const valid = validateKyzaProject(validProject)
 assert(valid.valid, "A simple valid pack must return valid true.")
 assert(valid.projectId === validProject.id, "Validation must include project ID.")
 assert(valid.revision === String(validProject.revision), "Validation must include revision.")
 
-const invalidDimensions = validateCutNFlowProject(
+const invalidDimensions = validateKyzaProject(
   makeProject({ ...validSpec, width: 0 }, "validation-dimensions")
 )
 assert(hasCode(invalidDimensions, "CUTTER_DIMENSIONS_INVALID"), "Invalid dimensions need stable code.")
 
-const invalidLiveArea = validateCutNFlowProject(
+const invalidLiveArea = validateKyzaProject(
   makeProject({ ...validSpec, width: 30, seal: 20 }, "validation-live-area")
 )
 assert(
@@ -109,7 +109,7 @@ assert(
   "Impossible live area needs stable code."
 )
 
-const unsupportedEyemarks = validateCutNFlowProject(
+const unsupportedEyemarks = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -143,7 +143,7 @@ const oneEyemarkProject = makeProject(
   },
   "validation-one-eyemark"
 )
-assert(validateCutNFlowProject(oneEyemarkProject).valid, "One eyemark must validate.")
+assert(validateKyzaProject(oneEyemarkProject).valid, "One eyemark must validate.")
 assert(canExportProject(oneEyemarkProject), "One valid flowwrap eyemark must export.")
 
 const centredEyemark = validateForExport(
@@ -182,7 +182,7 @@ const twoEyemarkProject = makeProject(
   },
   "validation-two-eyemarks"
 )
-assert(validateCutNFlowProject(twoEyemarkProject).valid, "Two eyemarks must validate.")
+assert(validateKyzaProject(twoEyemarkProject).valid, "Two eyemarks must validate.")
 assert(canExportProject(twoEyemarkProject), "Two valid flowwrap eyemarks must export.")
 
 const defaultPackProjects = [
@@ -555,11 +555,11 @@ const duplicateRefs = duplicateIdentity.cutter.identityMap.elements.filter(
 )
 duplicateRefs[1].id = duplicateRefs[0].id
 assert(
-  hasCode(validateCutNFlowProject(duplicateIdentity), "ELEMENT_ID_DUPLICATE"),
+  hasCode(validateKyzaProject(duplicateIdentity), "ELEMENT_ID_DUPLICATE"),
   "Duplicate eyemark IDs need stable error code."
 )
 
-const invalidSafeZone = validateCutNFlowProject(
+const invalidSafeZone = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -574,7 +574,7 @@ assert(
   hasCode(invalidSafeZone, "SAFE_ZONE_OUTSIDE_CUTTER"),
   "A safe zone outside the cutter needs a stable blocking code."
 )
-const unsafeSafeZoneClearance = validateCutNFlowProject(
+const unsafeSafeZoneClearance = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -594,7 +594,7 @@ assert(
   "Safe-zone seal overlap must remain advisory and must not block the project."
 )
 
-const safeZoneInSeal = validateCutNFlowProject(
+const safeZoneInSeal = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -671,13 +671,13 @@ assert(
 )
 assert(Boolean(debugSnapshot.seal?.resolvedLiveArea), "Debug output must include resolved seal geometry.")
 
-const negativeBleed = validateCutNFlowProject(
+const negativeBleed = validateKyzaProject(
   makeProject({ ...validSpec, bleed: -1 }, "validation-bleed")
 )
 assert(hasCode(negativeBleed, "BLEED_NEGATIVE"), "Negative bleed needs stable code.")
 assert(
   hasCode(
-    validateCutNFlowProject(makeProject({ ...validSpec, bleed: 4 }, "validation-bleed-mismatch")),
+    validateKyzaProject(makeProject({ ...validSpec, bleed: 4 }, "validation-bleed-mismatch")),
     "BLEED_RENDERER_VALUE_MISMATCH"
   ),
   "Renderer/project bleed mismatch must be explicit."
@@ -687,7 +687,7 @@ assert(
   "A renderer bleed mismatch must remain warning-only when geometry is possible."
 )
 
-const unsafeTearNotch = validateCutNFlowProject(
+const unsafeTearNotch = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -709,7 +709,7 @@ assert(
   "Unsafe legacy tear-notch offset needs stable code."
 )
 
-const invalidFold = validateCutNFlowProject(
+const invalidFold = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -719,7 +719,7 @@ const invalidFold = validateCutNFlowProject(
   )
 )
 assert(hasCode(invalidFold, "FOLD_OFFSET_INVALID"), "Invalid fold offset needs stable code.")
-const horizontalFold = validateCutNFlowProject(
+const horizontalFold = validateKyzaProject(
   makeProject(
     {
       ...validSpec,
@@ -733,7 +733,7 @@ assert(
   "Incomplete horizontal fold semantics must be a structured warning."
 )
 
-const malformed = validateCutNFlowProject({ schemaVersion: 1, id: "broken" })
+const malformed = validateKyzaProject({ schemaVersion: 1, id: "broken" })
 assert(!malformed.valid, "Malformed project must fail without throwing.")
 assert(hasCode(malformed, "PROJECT_SCHEMA_INVALID"), "Malformed project needs schema code.")
 
@@ -748,7 +748,7 @@ assert(
   "Export block must retain missing-ID code."
 )
 
-const invalidExport = exportCutNFlowProject(
+const invalidExport = exportKyzaProject(
   makeProject({ ...validSpec, width: 0 }, "export-invalid"),
   { format: "svg", includeLayers: true, preserveVector: true },
   "<svg viewBox=\"0 0 100 100\"></svg>"
@@ -985,14 +985,14 @@ const artworkExportPackage = createExportPackageDraft({
 })
 assert(artworkExportPackage.artworkStatus === "uploaded", "Uploaded artwork status must be preserved.")
 
-const jsonPayload = buildCutNFlowJsonExport({
+const jsonPayload = buildKyzaJsonExport({
   exportPackage: exportPackageDraft,
   project: packGeneratorProject,
   validation: validateForExport(packGeneratorProject),
   exportedAt: timestamp
 })
 assert(
-  jsonPayload.schemaVersion === CUTNFLOW_JSON_EXPORT_SCHEMA_VERSION,
+  jsonPayload.schemaVersion === KYZA_JSON_EXPORT_SCHEMA_VERSION,
   "JSON export needs a stable schema version."
 )
 assert(jsonPayload.exportedAt === timestamp, "JSON export needs its export timestamp.")
@@ -1038,7 +1038,7 @@ const layeredFlowWrapPackage = createExportPackageDraft({
   source: "save_export",
   createdAt: timestamp
 })
-const layeredFlowWrapPayload = buildCutNFlowJsonExport({
+const layeredFlowWrapPayload = buildKyzaJsonExport({
   exportPackage: layeredFlowWrapPackage,
   project: layeredFlowWrapProject,
   validation: layeredFlowWrapValidation,
@@ -1046,7 +1046,7 @@ const layeredFlowWrapPayload = buildCutNFlowJsonExport({
 })
 const flowWrapLayerIds = layeredFlowWrapPayload.layerManifest.layers.map(layer => layer.id)
 assert(
-  layeredFlowWrapPayload.layerManifest.schemaVersion === CUTNFLOW_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION,
+  layeredFlowWrapPayload.layerManifest.schemaVersion === KYZA_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION,
   "JSON export needs a stable layer manifest schema version."
 )
 const kSealLayerIds = buildExportLayerManifest({
@@ -1094,19 +1094,19 @@ assert(
 )
 assert(jsonPayload.metadata.reviewRequired, "JSON must explicitly require review.")
 assert(
-  serializeCutNFlowJsonExport(jsonPayload).includes('"generatedBy": "CutNFlow"'),
+  serializeKyzaJsonExport(jsonPayload).includes('"generatedBy": "Kyza"'),
   "JSON serialization must remain readable."
 )
 assert(
-  serializeCutNFlowJsonExport(jsonPayload).includes('"layerManifest"'),
+  serializeKyzaJsonExport(jsonPayload).includes('"layerManifest"'),
   "JSON serialization must include layerManifest."
 )
 assert(
-  createCutNFlowJsonExportFilename(jsonPayload) === "cutnflow-export-flow-wrap-2026-07-02.json",
+  createKyzaJsonExportFilename(jsonPayload) === "kyza-export-flow-wrap-2026-07-02.json",
   "JSON filename must include pack type and export date."
 )
 
-const blockedJsonPayload = buildCutNFlowJsonExport({
+const blockedJsonPayload = buildKyzaJsonExport({
   exportPackage: blockedExportPackage,
   project: outsideKnownZoneProject,
   validation: outsideKnownZone,
@@ -1140,7 +1140,7 @@ const sachetPackage = createExportPackageDraft({
   source: "save_export",
   createdAt: timestamp
 })
-const sachetJsonPayload = buildCutNFlowJsonExport({
+const sachetJsonPayload = buildKyzaJsonExport({
   exportPackage: sachetPackage,
   project: sachetProject,
   validation: sachetValidation,
@@ -1186,13 +1186,13 @@ if (svgExport.ok) {
   assert(Boolean(svgExport.validationReport), "Optional validation report must be attached.")
   assert(svgExport.metadata.exportTier === "illustrator-ready", "SVG metadata needs tier ID.")
   assert(
-    svgExport.svgMarkup.includes('data-cutnflow-export-tier="illustrator-ready"') &&
-      svgExport.svgMarkup.includes('data-cutnflow-export-format="svg"'),
+    svgExport.svgMarkup.includes('data-kyza-export-tier="illustrator-ready"') &&
+      svgExport.svgMarkup.includes('data-kyza-export-format="svg"'),
     "Generated SVG must embed export tier and format metadata."
   )
   assert(
-    svgExport.svgMarkup.includes(`data-cutnflow-project-id="${validProject.id}"`) &&
-      svgExport.svgMarkup.includes(`data-cutnflow-revision="${validProject.revision}"`),
+    svgExport.svgMarkup.includes(`data-kyza-project-id="${validProject.id}"`) &&
+      svgExport.svgMarkup.includes(`data-kyza-revision="${validProject.revision}"`),
     "SVG must carry the current project and revision identity."
   )
 }
@@ -1226,8 +1226,8 @@ if (aiCompatible.ok) {
     "Illustrator-compatible SVG must preserve named layer metadata."
   )
   assert(
-    aiCompatible.svgMarkup.includes(`data-cutnflow-project-id="${validProject.id}"`) &&
-      aiCompatible.svgMarkup.includes(`data-cutnflow-revision="${validProject.revision}"`),
+    aiCompatible.svgMarkup.includes(`data-kyza-project-id="${validProject.id}"`) &&
+      aiCompatible.svgMarkup.includes(`data-kyza-revision="${validProject.revision}"`),
     "Saved/current vector paths must use the same project and revision identity."
   )
 }
@@ -1238,7 +1238,7 @@ assert(
   "The raster PDF path must be labelled honestly in code."
 )
 
-const unavailableReproExport = exportCutNFlowProject(
+const unavailableReproExport = exportKyzaProject(
   validProject,
   {
     format: "ai-compatible-svg",
@@ -1265,4 +1265,4 @@ if (vectorPdf.ok === false) {
   )
 }
 
-console.log("CutNFlow structured validation and export tests passed.")
+console.log("Kyza structured validation and export tests passed.")
