@@ -1,21 +1,21 @@
 import { getPackModule } from "../../../apps/web/src/packs"
 import { getRuleRegistryEntriesForPack } from "../../../apps/web/src/core/registries"
 import { BETA_CUTTER_VALIDATION_RULES } from "../validation"
-import { hasCutterDocument, type CutNFlowProjectV1 } from "../project"
+import { hasCutterDocument, type KyzaProjectV1 } from "../project"
 import { BETA_CUTTER_RULESET_VERSION, getEffectiveValidationStatus, validationRunToLegacyResult, type ValidationRun, type CutterExportAuthorizationAudit } from "../validation"
 import { createExportRecordId } from "./preExportValidation"
 import { buildExportSvgDocument, type CutterExportSvgSource } from "./cutterExportService"
 import { createRasterPreviewPdfFromSvg } from "./rasterPreviewPdf"
 import { createReviewZip } from "./reviewZip"
 
-export const BETA_REVIEW_SNAPSHOT_VERSION = "klyro-beta-review-1" as const
+export const BETA_REVIEW_SNAPSHOT_VERSION = "kyza-beta-review-1" as const
 export const BETA_REVIEW_NOTICE = "UNAPPROVED BETA REVIEW — NOT FOR PRODUCTION"
 const clone = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 const ids = (values: readonly string[]) => [...new Set(values)].sort()
 const escape = (value: unknown) => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!)
 
 export function createBetaReviewSnapshot(input: {
-  project: CutNFlowProjectV1; run: ValidationRun; reviewer: string; reason: string; acknowledgedIssueIds: string[]; now?: string
+  project: KyzaProjectV1; run: ValidationRun; reviewer: string; reason: string; acknowledgedIssueIds: string[]; now?: string
 }) {
   const { project, run } = input
   const status = getEffectiveValidationStatus(run, project.revision)
@@ -82,7 +82,7 @@ export async function buildBetaReviewPackage(snapshot: BetaReviewSnapshot, sourc
   } else manifest.errors.push("The cutter could not be rendered. The specification and validation evidence are retained.")
   addText("snapshot.json", JSON.stringify({ ...snapshot, manifest }, null, 2))
   const issues = snapshot.validationRun.issues.map(issue => `<tr><td>${escape(issue.severity)}</td><td>${escape(issue.ruleId)}</td><td>${escape(issue.message)}</td><td>${escape(issue.currentValue === undefined ? "" : JSON.stringify(issue.currentValue))}</td><td>${escape(issue.expectedValue === undefined ? "" : JSON.stringify(issue.expectedValue))}</td></tr>`).join("")
-  addText("report.html", `<!doctype html><html lang="en"><meta charset="utf-8"><title>Klyro beta review</title><style>body{font:15px/1.5 Arial,sans-serif;max-width:1100px;margin:30px auto;padding:20px;color:#222}h1{color:#9e1316}table{border-collapse:collapse;width:100%}td,th{padding:10px;border:1px solid #ccc;text-align:left}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f0e8;padding:20px}img{width:100%;max-height:700px}</style><h1>${escape(BETA_REVIEW_NOTICE)}</h1><h2>${escape(snapshot.project.name)} / revision ${snapshot.project.revision}</h2><p>${escape(snapshot.capturedAt)} / ruleset ${escape(snapshot.validationRun.rulesetVersion)}</p><p>Reviewer (self-declared): ${escape(snapshot.decision.reviewer)}</p><p>Reason: ${escape(snapshot.decision.reason)}</p><p>Validation remains ${escape(snapshot.validationRun.status)}. This package is not a production release.</p>${manifest.visualAvailable ? '<img src="review.svg" alt="Unapproved scaled cutter review proof">' : ""}<h2>Validation findings</h2><table><tr><th>Severity</th><th>Rule</th><th>Finding</th><th>Current</th><th>Expected</th></tr>${issues}</table><h2>Specification and design snapshot</h2><pre>${escape(JSON.stringify(snapshot.project, null, 2))}</pre><h2>Scope and generation limitations</h2><p>${escape([...snapshot.scope.limitations, ...manifest.errors].join(" "))}</p></html>`)
+  addText("report.html", `<!doctype html><html lang="en"><meta charset="utf-8"><title>Kyza beta review</title><style>body{font:15px/1.5 Arial,sans-serif;max-width:1100px;margin:30px auto;padding:20px;color:#222}h1{color:#9e1316}table{border-collapse:collapse;width:100%}td,th{padding:10px;border:1px solid #ccc;text-align:left}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f4f0e8;padding:20px}img{width:100%;max-height:700px}</style><h1>${escape(BETA_REVIEW_NOTICE)}</h1><h2>${escape(snapshot.project.name)} / revision ${snapshot.project.revision}</h2><p>${escape(snapshot.capturedAt)} / ruleset ${escape(snapshot.validationRun.rulesetVersion)}</p><p>Reviewer (self-declared): ${escape(snapshot.decision.reviewer)}</p><p>Reason: ${escape(snapshot.decision.reason)}</p><p>Validation remains ${escape(snapshot.validationRun.status)}. This package is not a production release.</p>${manifest.visualAvailable ? '<img src="review.svg" alt="Unapproved scaled cutter review proof">' : ""}<h2>Validation findings</h2><table><tr><th>Severity</th><th>Rule</th><th>Finding</th><th>Current</th><th>Expected</th></tr>${issues}</table><h2>Specification and design snapshot</h2><pre>${escape(JSON.stringify(snapshot.project, null, 2))}</pre><h2>Scope and generation limitations</h2><p>${escape([...snapshot.scope.limitations, ...manifest.errors].join(" "))}</p></html>`)
   return { blob: createReviewZip(files), filename: `${snapshot.project.name.replace(/[^a-z0-9_-]/gi, "_")}_r${snapshot.project.revision}_UNAPPROVED_BETA.zip`, mimeType: "application/zip", manifest,
     prepared: { capability: { label: "Unapproved beta review snapshot", extensions: [".zip"] } } }
 }

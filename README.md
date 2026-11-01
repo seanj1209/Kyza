@@ -1,12 +1,11 @@
 # Kyza
 
-Flagship Kyza deployment containing the Klyro app.
+Kyza is a browser-based workspace for packaging specification, cutter engineering, validation and export.
 
 ## Current state
 
-- The Klyro app is served at `/` and `/app`
-- Illustrative cutter preview with no upload, save, or write actions
-- Klyro app copied from `ArtworkSandbox` main at `fd8564f6cb86a1f8ee22f34daf65346cdbae6681`
+- The Kyza app is served at `/` and `/app`
+- Kyza app copied from `ArtworkSandbox` main at `fd8564f6cb86a1f8ee22f34daf65346cdbae6681`
 - App entry point: `/app`; Cutter, Artwork, Validation and Account routes are preserved
 - No secrets committed
 
@@ -14,10 +13,16 @@ Flagship Kyza deployment containing the Klyro app.
 
 Deploy this repository as a separate Vercel staging project. Keep the existing ArtworkSandbox projects and production domain unchanged.
 
-The Kyza Vercel project is the canonical public deployment. Keep `ArtworkSandbox` separate as the source/backup repository and do not attach its Vercel project to `kyza.co.uk`. Vercel Authentication / Deployment Protection should remain enabled for development previews and private routes.
+The Kyza Vercel project serves `kyza.co.uk`. Keep `ArtworkSandbox` separate as a frozen historical repository. Vercel Authentication / Deployment Protection remains enabled for all Kyza deployments.
 
 The full application must sit behind Vercel/GitHub deployment protection plus server-side authorization before an app route or any write endpoint is enabled. Do not rely on client-side hiding for access control.
 
 ## Local preview
 
-Open `index.html` directly or serve this folder with any static file server. To run the full app locally, run `npm --prefix frontend/frontend ci` followed by `npm --prefix frontend/frontend run dev`.
+Run `npm --prefix frontend/frontend ci` followed by `npm --prefix frontend/frontend run dev`. Run `npm --prefix frontend/frontend run verify` for the full verification suite.
+
+## Brand
+
+The exact owner-supplied Origin PNGs are used across the application, including separate light/dark horizontal logos and symbols. Assets live in `frontend/frontend/public/branding`; SHA-256 hashes are recorded in `manifest.json`. SVG viewports only trim surrounding whitespace. The logo is not traced, recoloured or recreated. Export legends embed the original symbol image; cutter geometry and legend text remain editable.
+
+The current source tree, stylesheet names, application copy, tests and export producers use Kyza naming. The isolated `brandCompatibility.ts` adapter accepts historical storage keys and export-audit version identifiers so existing projects, preferences, IDs and revisions remain recoverable. Those historical identifiers are not product branding.

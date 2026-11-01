@@ -1,9 +1,9 @@
-import type { CutNFlowProjectV1, CutterElementRef } from "../project"
+import type { KyzaProjectV1, CutterElementRef } from "../project"
 import type { ValidationResult } from "../validation"
 import type { ExportPackage } from "./exportPackage"
 
-export const CUTNFLOW_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION =
-  "cutnflow-export-layer-manifest-1" as const
+export const KYZA_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION =
+  "kyza-export-layer-manifest-1" as const
 
 export type ExportLayerGroup =
   | "base"
@@ -43,7 +43,7 @@ export type ExportLayerManifestFormatNotes = {
 }
 
 export type ExportLayerManifest = {
-  schemaVersion: typeof CUTNFLOW_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION
+  schemaVersion: typeof KYZA_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION
   source: "project-state"
   packTypeId: string
   displayPackType: string
@@ -96,7 +96,7 @@ const hasEnabledItems = (items?: readonly object[]) =>
   ))
 
 const buildBaseLayers = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elements: CutterElementRef[]
 ): ExportLayer[] => {
   const spec = project.cutter.legacySpec
@@ -179,13 +179,13 @@ const buildBaseLayers = (
 }
 
 const buildAttributeLayers = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   elements: CutterElementRef[]
 ): ExportLayer[] => {
   const spec = project.cutter.legacySpec
   const layers: ExportLayer[] = []
 
-  if (spec.cutterLegend) layers.push(withElementIds({id:"cutter-legend",name:"Cutter Legend",group:"attributes",exportable:true,intendedFormats:["svg","ai-compatible-svg","raster-preview-pdf"],description:"Editable Klyro vector legend and technical key."}))
+  if (spec.cutterLegend) layers.push(withElementIds({id:"cutter-legend",name:"Cutter Legend",group:"attributes",exportable:true,intendedFormats:["svg","ai-compatible-svg","raster-preview-pdf"],description:"Editable Kyza vector legend and technical key."}))
 
   if (hasEnabledItems(spec.safeZones)) {
     layers.push(withElementIds({
@@ -309,7 +309,7 @@ const buildMetadataLayers = (
 ]
 
 export const buildExportLayerManifest = (input: {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validation?: ValidationResult
   exportPackage?: ExportPackage
   createdAt?: string
@@ -319,7 +319,7 @@ export const buildExportLayerManifest = (input: {
   const packSpecification = draft?.packSpecification
   const elements = project.cutter.identityMap.elements
   return {
-    schemaVersion: CUTNFLOW_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION,
+    schemaVersion: KYZA_EXPORT_LAYER_MANIFEST_SCHEMA_VERSION,
     source: "project-state",
     packTypeId: packSpecification?.packTypeId ?? project.cutter.packType,
     displayPackType: packSpecification?.displayName ?? project.name,

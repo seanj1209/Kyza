@@ -1,16 +1,16 @@
 import { generatePackGenRecommendations } from "../packages/ai-engine"
 import {
-  CUTNFLOW_PROJECT_STORAGE_KEY,
-  createCutNFlowProjectV1,
+  KYZA_PROJECT_STORAGE_KEY,
+  createKyzaProjectV1,
   FLOW_WRAP_PACK_TYPE_IDS,
   getEyemarkElementRefs,
-  listCutNFlowProjects,
-  loadCutNFlowProject,
+  listKyzaProjects,
+  loadKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
+  saveKyzaProject,
   toEnginePackTypeId,
   toPackSpecificationPackTypeId,
-  type CutNFlowProjectStorage,
+  type KyzaProjectStorage,
 } from "../packages/cutter-engine/project"
 import { validateProjectCutter } from "../packages/cutter-engine/validation"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
@@ -57,7 +57,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message: string) {
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   readonly values = new Map<string, string>()
   writeCount = 0
   failWrites = false
@@ -74,7 +74,7 @@ class MemoryStorage implements CutNFlowProjectStorage {
 const timestamp = "2026-07-19T10:00:00.000Z"
 const nextTimestamp = "2026-07-19T11:00:00.000Z"
 const storage = new MemoryStorage()
-const project = createCutNFlowProjectV1({
+const project = createKyzaProjectV1({
   id: "pack-gen-project-101",
   name: "Retail Snack Launch",
   createdAt: timestamp,
@@ -87,7 +87,7 @@ const project = createCutNFlowProjectV1({
   artwork: { assetIds: ["artwork-1"] },
   exportSettings: { format: "svg", preserveVector: true, includeLayers: true },
 })
-assert(saveCutNFlowProject(project, storage).ok, "Fixture Project must save.")
+assert(saveKyzaProject(project, storage).ok, "Fixture Project must save.")
 
 const validLoad = loadPackGenProject("?projectId=pack-gen-project-101", storage)
 assert(validLoad.ok && validLoad.mode === "project", "A valid projectId must load in Project-connected mode.")
@@ -113,7 +113,7 @@ assert(!loadPackGenProject("?projectId=bad%00id", storage).ok, "Invalid projectI
 assert(!loadPackGenProject("?projectId=missing-project", storage).ok, "Unknown projectId must produce controlled recovery.")
 
 const corruptStorage = new MemoryStorage()
-corruptStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, "not-json")
+corruptStorage.values.set(KYZA_PROJECT_STORAGE_KEY, "not-json")
 const corruptLoad = loadPackGenProject("?projectId=pack-gen-project-101", corruptStorage)
 assert(corruptLoad.ok === false, "Corrupt canonical storage must produce controlled recovery.")
 assert(corruptLoad.reason === "corrupt", "Corrupt canonical storage must be identified honestly.")
@@ -400,7 +400,7 @@ assert(zipDraft.workspace?.fields.zipEnabled.value === true, "A supported zip pr
 assert(zipDraft.workspace?.fields.zipEnabled.source === "flowai", "An explicitly requested zip must retain FlowAI provenance.")
 assert(
   kSealTwoEyemarkDraft.workspace?.fields.zipEnabled.value === false
-    && kSealTwoEyemarkDraft.workspace.fields.zipEnabled.source === "cnf-tech",
+    && kSealTwoEyemarkDraft.workspace.fields.zipEnabled.source === "kyza-tech",
   "An unrequested supported zip default must retain deterministic engine provenance.",
 )
 const zipReadiness = getPackGenCutterReadiness(zipDraft)
@@ -542,7 +542,7 @@ const whitespaceProject = connectStandalonePackGenToProject(
   { storage: whitespaceProjectStorage, now: () => timestamp },
 )
 assert(whitespaceProject.ok === false, "A whitespace-only Project Name must fail controlled validation.")
-assert(!whitespaceProjectStorage.values.has(CUTNFLOW_PROJECT_STORAGE_KEY), "An invalid Project Name must not persist a partial Project.")
+assert(!whitespaceProjectStorage.values.has(KYZA_PROJECT_STORAGE_KEY), "An invalid Project Name must not persist a partial Project.")
 const failedStandaloneStorage = new MemoryStorage()
 failedStandaloneStorage.failWrites = true
 const standaloneDraftBeforeFailure = JSON.stringify(standaloneRecommendationDraft)
@@ -558,7 +558,7 @@ const failedStandaloneConnect = connectStandalonePackGenToProject(
 )
 assert(failedStandaloneConnect.ok === false, "A standalone Project save failure must be reported without navigating.")
 assert(JSON.stringify(standaloneRecommendationDraft) === standaloneDraftBeforeFailure, "A standalone save failure must preserve all in-memory Pack Gen values.")
-assert(!failedStandaloneStorage.values.has(CUTNFLOW_PROJECT_STORAGE_KEY), "A failed standalone save must not create another storage record.")
+assert(!failedStandaloneStorage.values.has(KYZA_PROJECT_STORAGE_KEY), "A failed standalone save must not create another storage record.")
 const connectedStandalone = connectStandalonePackGenToProject(
   standaloneRecommendationDraft,
   {
@@ -578,7 +578,7 @@ assert(connectedStandalone.project.metadata?.customerOrBrand === undefined, "Bla
 assert(connectedStandalone.project.metadata?.jobReference === undefined, "Blank optional Job Reference metadata must be omitted.")
 assertJsonEqual(
   [...standaloneProjectStorage.values.keys()],
-  [CUTNFLOW_PROJECT_STORAGE_KEY],
+  [KYZA_PROJECT_STORAGE_KEY],
   "Connecting standalone Pack Gen must use only canonical Project storage.",
 )
 const standaloneCutter = createOrUpdateCutterFromPackGen(
@@ -589,23 +589,23 @@ const standaloneCutter = createOrUpdateCutterFromPackGen(
 )
 assert(standaloneCutter.ok, "Confirmed standalone Project Details must create the deterministic Cutter.")
 assert(standaloneCutter.project.id === connectedStandalone.project.id, "Standalone Cutter must use the same new canonical Project ID.")
-const standaloneProjects = listCutNFlowProjects(standaloneProjectStorage)
+const standaloneProjects = listKyzaProjects(standaloneProjectStorage)
 assert(standaloneProjects.ok && standaloneProjects.value.length === 1, "Standalone continuation must create exactly one canonical Project.")
 assert(standaloneProjects.value[0].cutter?.packType === recommendation.packType, "The one standalone Project must contain the generated Cutter.")
 
 const legacyZipStorage = new MemoryStorage()
-const legacyZipProjects = JSON.parse(standaloneProjectStorage.values.get(CUTNFLOW_PROJECT_STORAGE_KEY)!) as Array<{
+const legacyZipProjects = JSON.parse(standaloneProjectStorage.values.get(KYZA_PROJECT_STORAGE_KEY)!) as Array<{
   projectDraft?: { workspace?: { fields?: Record<string, unknown> } }
 }>
 delete legacyZipProjects[0].projectDraft?.workspace?.fields?.zipEnabled
-legacyZipStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify(legacyZipProjects))
+legacyZipStorage.values.set(KYZA_PROJECT_STORAGE_KEY, JSON.stringify(legacyZipProjects))
 const legacyZipWritesBeforeLoad = legacyZipStorage.writeCount
 const legacyZipLoad = loadPackGenProject("?projectId=standalone-project-202", legacyZipStorage)
 assert(legacyZipLoad.ok, "A Project saved before zipEnabled existed must remain readable.")
 assert(legacyZipLoad.draft.workspace?.fields.zipEnabled.state === "missing", "Legacy Project load must add an in-memory missing zip field without inventing a value.")
 assert(legacyZipStorage.writeCount === legacyZipWritesBeforeLoad, "Legacy Project load must not silently migrate or rewrite canonical storage.")
 const invalidZipStorage = new MemoryStorage()
-const invalidZipProjects = JSON.parse(standaloneProjectStorage.values.get(CUTNFLOW_PROJECT_STORAGE_KEY)!) as Array<{
+const invalidZipProjects = JSON.parse(standaloneProjectStorage.values.get(KYZA_PROJECT_STORAGE_KEY)!) as Array<{
   projectDraft?: { workspace?: { fields?: Record<string, unknown> } }
 }>
 invalidZipProjects[0].projectDraft!.workspace!.fields!.zipEnabled = {
@@ -613,7 +613,7 @@ invalidZipProjects[0].projectDraft!.workspace!.fields!.zipEnabled = {
   state: "confirmed",
   source: "user",
 }
-invalidZipStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify(invalidZipProjects))
+invalidZipStorage.values.set(KYZA_PROJECT_STORAGE_KEY, JSON.stringify(invalidZipProjects))
 const invalidZipLoad = loadPackGenProject("?projectId=standalone-project-202", invalidZipStorage)
 assert(invalidZipLoad.ok === false && invalidZipLoad.reason === "corrupt", "A non-boolean persisted zip value must fail the canonical Project contract.")
 
@@ -668,7 +668,7 @@ assert(
 )
 assert(exactKSealDraft.workspace?.fields.eyemarkCount.value === 2, "The active suggestion must initialize two eyemarks.")
 assert(exactKSealDraft.workspace?.fields.trimMm.value === 10, "The Pack Service policy must initialize K-Seal trim.")
-assert(exactKSealDraft.workspace?.fields.trimMm.source === "cnf-tech", "Trim must retain deterministic Pack Service provenance.")
+assert(exactKSealDraft.workspace?.fields.trimMm.source === "kyza-tech", "Trim must retain deterministic Pack Service provenance.")
 const connectedKSealAcceptance = connectStandalonePackGenToProject(
   exactKSealDraft,
   {
@@ -733,11 +733,11 @@ assert(
   "Validation must reference both stable eyemark CutterElement IDs.",
 )
 const preTrimWorkspaceStorage = new MemoryStorage()
-const preTrimWorkspaceProjects = JSON.parse(kSealAcceptanceStorage.values.get(CUTNFLOW_PROJECT_STORAGE_KEY)!) as Array<{
+const preTrimWorkspaceProjects = JSON.parse(kSealAcceptanceStorage.values.get(KYZA_PROJECT_STORAGE_KEY)!) as Array<{
   projectDraft?: { workspace?: { fields?: Record<string, unknown> } }
 }>
 delete preTrimWorkspaceProjects[0]?.projectDraft?.workspace?.fields?.trimMm
-preTrimWorkspaceStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify(preTrimWorkspaceProjects))
+preTrimWorkspaceStorage.values.set(KYZA_PROJECT_STORAGE_KEY, JSON.stringify(preTrimWorkspaceProjects))
 const migratedPreTrimWorkspace = loadPackGenProject("?projectId=kseal-qa-207", preTrimWorkspaceStorage)
 assert(migratedPreTrimWorkspace.ok, "A saved workspace from before trimMm was added must reopen.")
 assert(migratedPreTrimWorkspace.draft.workspace?.fields.trimMm.state === "missing", "Compatibility hydration must add missing trim provenance without changing saved values.")
@@ -790,11 +790,11 @@ assert(
 )
 const legacyFlowwrapWorkspaceStorage = new MemoryStorage()
 const legacyFlowwrapProjects = JSON.parse(
-  flowwrapSingleStorage.values.get(CUTNFLOW_PROJECT_STORAGE_KEY)!,
+  flowwrapSingleStorage.values.get(KYZA_PROJECT_STORAGE_KEY)!,
 ) as Array<{ projectDraft?: { workspace?: { fields?: { packType?: { value?: string } } } } }>
 legacyFlowwrapProjects[0]!.projectDraft!.workspace!.fields!.packType!.value = "flowwrap"
 legacyFlowwrapWorkspaceStorage.values.set(
-  CUTNFLOW_PROJECT_STORAGE_KEY,
+  KYZA_PROJECT_STORAGE_KEY,
   JSON.stringify(legacyFlowwrapProjects),
 )
 const migratedFlowwrapWorkspace = loadPackGenProject(
@@ -833,7 +833,7 @@ const invalidGeneration = connectStandalonePackGenToProject(
   { storage: invalidGenerationStorage, now: () => timestamp },
 )
 assert(invalidGeneration.ok === false, "A genuine deterministic validation error must remain a controlled failure.")
-assert(!invalidGenerationStorage.values.has(CUTNFLOW_PROJECT_STORAGE_KEY), "Failed Cutter preflight must not leave a partial Project.")
+assert(!invalidGenerationStorage.values.has(KYZA_PROJECT_STORAGE_KEY), "Failed Cutter preflight must not leave a partial Project.")
 let draft = applyRecommendationToPackGenDraft(
   validLoad.draft,
   recommendation,
@@ -841,7 +841,7 @@ let draft = applyRecommendationToPackGenDraft(
 )
 assert(draft.workspace?.fields.finishedWidthMm.state === "proposed", "FlowAI values must begin proposed.")
 assert(draft.workspace?.fields.finishedWidthMm.source === "flowai", "FlowAI provenance must be retained.")
-assert(draft.workspace?.fields.minimumSafeZoneMm.source === "cnf-tech", "Deterministic derived defaults must be identified separately from FlowAI.")
+assert(draft.workspace?.fields.minimumSafeZoneMm.source === "kyza-tech", "Deterministic derived defaults must be identified separately from FlowAI.")
 assert(draft.workspace?.assumptions.length, "Recommendation assumptions must enter the shared draft.")
 assert(Array.isArray(draft.workspace?.unresolvedQuestions), "Recommendation questions must enter the shared draft.")
 assert(project.revision === 1, "Local prompt work must not mutate the Project revision.")
@@ -861,7 +861,7 @@ assert(draft.workspace?.completion.status === "Ready for Cutter Review", "Comple
 assert(!JSON.stringify(draft.workspace?.completion).toLowerCase().includes("validated"), "Completeness must not claim validation approval.")
 
 const writesBeforeSave = storage.writeCount
-assert(loadCutNFlowProject(project.id, storage).ok, "Local edits must leave the stored Project readable.")
+assert(loadKyzaProject(project.id, storage).ok, "Local edits must leave the stored Project readable.")
 assert(storage.writeCount === writesBeforeSave, "Editing values must not persist per keystroke.")
 const saved = savePackGenDraft(project.id, draft, 1, { storage, now: () => nextTimestamp })
 assert(saved.ok, "Save Draft must persist after read-back verification.")
@@ -883,7 +883,7 @@ const staleSave = savePackGenDraft(project.id, restored.draft, 1, { storage })
 assert(staleSave.ok === false, "A stale revision must not overwrite a newer Project.")
 assert(staleSave.reason === "stale", "A stale save must be identified honestly.")
 const failingStorage = new MemoryStorage()
-failingStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, storage.values.get(CUTNFLOW_PROJECT_STORAGE_KEY)!)
+failingStorage.values.set(KYZA_PROJECT_STORAGE_KEY, storage.values.get(KYZA_PROJECT_STORAGE_KEY)!)
 failingStorage.failWrites = true
 const failedSave = savePackGenDraft(project.id, restored.draft, 2, { storage: failingStorage })
 assert(failedSave.ok === false, "A storage failure must not report save success.")
@@ -897,14 +897,14 @@ const cutterResult = createOrUpdateCutterFromPackGen(project.id, restored.draft,
 assert(cutterResult.ok, "Confirmed supported values must create a deterministic Cutter.")
 assert(cutterResult.project.id === project.id, "Cutter creation must retain the canonical Project ID.")
 assert(cutterResult.destinationUrl === "/cutter?projectId=pack-gen-project-101", "Cutter creation must route using the canonical Project ID.")
-assert(cutterResult.project.cutter?.legacySpec.width === 360, "CnF Tech output must receive the confirmed width.")
-assert(cutterResult.project.cutter?.legacySpec.height === 220, "CnF Tech output must receive the confirmed height.")
-assert(cutterResult.project.cutter?.legacySpec.bleed === recommendation.bleedMm, "CnF Tech output must receive confirmed bleed.")
+assert(cutterResult.project.cutter?.legacySpec.width === 360, "Kyza Tech output must receive the confirmed width.")
+assert(cutterResult.project.cutter?.legacySpec.height === 220, "Kyza Tech output must receive the confirmed height.")
+assert(cutterResult.project.cutter?.legacySpec.bleed === recommendation.bleedMm, "Kyza Tech output must receive confirmed bleed.")
 assert(cutterResult.project.cutter?.legacySpec.substrate === "clear", "Unsupported free-form material notes must resolve to the controlled Clear substrate default.")
 assertJsonEqual(cutterResult.project.metadata, project.metadata, "Cutter creation must preserve metadata.")
 assertJsonEqual(cutterResult.project.artwork, project.artwork, "Cutter creation must preserve artwork.")
 assertJsonEqual(cutterResult.project.exportSettings, project.exportSettings, "Cutter creation must preserve export settings.")
-const generatedReopen = loadCutNFlowProject(project.id, storage)
+const generatedReopen = loadKyzaProject(project.id, storage)
 assert(generatedReopen.ok && generatedReopen.value.cutter?.legacySpec.width === 360, "Reopen must restore the generated Cutter.")
 
 const cutterBeforeDraftEdit = JSON.stringify(cutterResult.project.cutter)
@@ -965,11 +965,11 @@ const legacyProject = projectFromLegacySpec("flowwrap", "Existing Cutter", legac
   createdAt: timestamp,
   updatedAt: timestamp,
 })
-assert(saveCutNFlowProject(legacyProject, storage).ok, "Existing Cutter fixture must save.")
+assert(saveKyzaProject(legacyProject, storage).ok, "Existing Cutter fixture must save.")
 const legacyLoad = loadPackGenProject("?projectId=existing-cutter-no-draft", storage)
 assert(legacyLoad.ok && legacyLoad.mode === "project" && legacyLoad.draft.workspace?.completion.status === "Empty", "Existing Cutter Projects without Pack Gen data must remain valid and open with an empty draft.")
 assert(legacyLoad.project.cutter?.legacySpec.width === 400, "Opening Pack Gen must preserve an existing Cutter.")
 
-assertJsonEqual([...storage.values.keys()], [CUTNFLOW_PROJECT_STORAGE_KEY], "Pack Gen must introduce no second permanent storage key.")
+assertJsonEqual([...storage.values.keys()], [KYZA_PROJECT_STORAGE_KEY], "Pack Gen must introduce no second permanent storage key.")
 
 console.log("Canonical Pack Gen Project integration verified")

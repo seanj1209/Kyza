@@ -5,12 +5,12 @@ import { getProjectValidationSnapshot } from "../apps/web/src/validation/activeV
 import { exportProjectSvg } from "../packages/cutter-engine/export/cutterExportService"
 import {
   getEyemarkElementRefs,
-  loadCutNFlowProject,
-  parseCutNFlowProject,
+  loadKyzaProject,
+  parseKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1
+  saveKyzaProject,
+  type KyzaProjectStorage,
+  type KyzaProjectV1
 } from "../packages/cutter-engine/project"
 import {
   BETA_CUTTER_RULESET_VERSION,
@@ -60,12 +60,12 @@ const makeProject = (
 })
 
 const validate = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   trigger: ValidationTrigger = "manual"
 ) => validateProjectCutter(project, { trigger, now })
 
 const issueFor = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   ruleId: string,
   trigger: ValidationTrigger = "manual"
 ) => validate(project, trigger).issues.find(issue => issue.ruleId === ruleId)
@@ -161,7 +161,7 @@ assert(getEffectiveValidationStatus(undefined, validFlowwrap.revision) === "not_
 const priorProjectWithoutValidation = JSON.parse(JSON.stringify(validFlowwrap))
 delete priorProjectWithoutValidation.latestValidationRun
 delete priorProjectWithoutValidation.validationRuns
-const migratedPriorProject = parseCutNFlowProject(priorProjectWithoutValidation)
+const migratedPriorProject = parseKyzaProject(priorProjectWithoutValidation)
 assert(
   migratedPriorProject.ok
     && getEffectiveValidationStatus(
@@ -414,7 +414,7 @@ assertEqual(issueBasis("live"), issueBasis("manual"), "Live and manual triggers 
 assertEqual(issueBasis("manual"), issueBasis("pre_export"), "Manual and pre-export triggers must share engineering truth.")
 
 // Persistence through the canonical Project repository.
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
   getItem(key: string) { return this.values.get(key) ?? null }
   setItem(key: string, value: string) { this.values.set(key, value) }
@@ -422,9 +422,9 @@ class MemoryStorage implements CutNFlowProjectStorage {
 }
 const storage = new MemoryStorage()
 const liveStorage = new MemoryStorage()
-const savedLiveSnapshot = saveCutNFlowProject(liveSnapshot.project, liveStorage)
+const savedLiveSnapshot = saveKyzaProject(liveSnapshot.project, liveStorage)
 assert(savedLiveSnapshot.ok, "A live Validation Run attached to the Project must save canonically.")
-const reopenedLiveSnapshot = loadCutNFlowProject(validFlowwrap.id, liveStorage)
+const reopenedLiveSnapshot = loadKyzaProject(validFlowwrap.id, liveStorage)
 assert(
   reopenedLiveSnapshot.ok
     && reopenedLiveSnapshot.value.latestValidationRun?.id === liveSnapshot.run.id
@@ -433,7 +433,7 @@ assert(
 )
 const persisted = validateAndPersistProjectCutter(outsideTrackProject, { storage, now, trigger: "manual" })
 assert(persisted.ok, "A Validation Run must save through the canonical Project repository.")
-const reopened = loadCutNFlowProject(outsideTrackProject.id, storage)
+const reopened = loadKyzaProject(outsideTrackProject.id, storage)
 assert(reopened.ok && Boolean(reopened.value.latestValidationRun), "A saved Validation Run must reopen with its Project.")
 const reopenedRun = reopened.ok ? reopened.value.latestValidationRun! : undefined
 assert(reopenedRun!.id === persisted.run.id, "Validation Run ID must persist.")

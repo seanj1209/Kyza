@@ -1,7 +1,7 @@
 import {
   getEyemarkElementRefs,
   getPerfLaneElementRefs,
-  type CutNFlowProjectV1,
+  type KyzaProjectV1,
   type CutterElementRef,
 } from "../../../../packages/cutter-engine/project"
 
@@ -21,7 +21,7 @@ export type CutterElementSelectionResolution =
     }
 
 export const resolveCutterElementSelection = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   affectedElementId: string,
 ): CutterElementSelectionResolution => {
   const element = project.cutter.identityMap.elements.find(

@@ -1,4 +1,4 @@
-# CutNFlow Development Standards
+# Kyza Development Standards
 
 ## Document Status
 
@@ -13,7 +13,7 @@ Last Updated: 04 July 2026
 
 # 1. Purpose
 
-This document defines how CutNFlow decisions, documentation, development tasks and implementation work should be managed.
+This document defines how Kyza decisions, documentation, development tasks and implementation work should be managed.
 
 It ensures that the platform remains organised, consistent, traceable and scalable as it grows.
 
@@ -21,7 +21,7 @@ It ensures that the platform remains organised, consistent, traceable and scalab
 
 # 2. Source of Truth
 
-Official documentation is the source of truth for CutNFlow.
+Official documentation is the source of truth for Kyza.
 
 Chats are used for discussion and decision-making.
 
@@ -317,4 +317,4 @@ Codex should follow the latest approved documentation.
 
 # 13. Core Rule
 
-No major CutNFlow change should be implemented unless it has been discussed, approved, documented and linked to the correct source document.
+No major Kyza change should be implemented unless it has been discussed, approved, documented and linked to the correct source document.

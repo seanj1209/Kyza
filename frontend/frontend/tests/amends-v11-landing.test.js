@@ -15,7 +15,7 @@ assert.match(landingCss, /\.start-sidebar \.start-studio-title \{[^}]*font-size:
 assert.doesNotMatch(main, /sidebarIntro|start-sidebar-intro/, "The subtitle under Cutter Studio is removed")
 assert.match(main, /packHeader\.textContent = "Get Started"/)
 assert.doesNotMatch(main, /Choose a pack type/)
-assert.match(main, /startPackIntro\.textContent = "Choose a pack, import a cutter, or tell Flow what you need\."/)
+assert.match(main, /startPackIntro\.textContent = "Choose a pack, import a cutter, or tell Kyza what you need\."/)
 assert.match(main, /customProjectButton\.textContent = "Sandbox Mode"/)
 assert.match(main, /decorateStartAction\(customProjectButton, cutterIcons\.box, "For Trials and Bespoke Project Work"\)/)
 assert.doesNotMatch(main, /Create Manually/)
@@ -36,7 +36,7 @@ assert.doesNotMatch(stepNav, /step-active-outline/, "No outline rect is drawn ar
 assert.doesNotMatch(stepCss, /step-active-outline/)
 assert.match(stepNav, /button\.className=active\?"is-active":""/, "The active step tab is marked")
 assert.match(stepNav, /step-canvas-tag\$\{active\?" is-active":""\}/, "The tag below the cutter is marked")
-assert.match(stepCss, /\.step-canvas-tag\.is-active rect \{ fill:var\(--klyro-brand,#b4151b\)/, "The active tag below the cutter is red")
-assert.match(stepCss, /\.step-navigation button\.is-active \{ color:var\(--klyro-brand,#b4151b\)/, "The active tray tab is red")
+assert.match(stepCss, /\.step-canvas-tag\.is-active rect \{ fill:var\(--kyza-brand,#b4151b\)/, "The active tag below the cutter is red")
+assert.match(stepCss, /\.step-navigation button\.is-active \{ color:var\(--kyza-brand,#b4151b\)/, "The active tray tab is red")
 
 console.log("Amends v11: landing copy, centred pack indicator and tab-only stepped-cutter selection verified")

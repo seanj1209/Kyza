@@ -40,19 +40,19 @@ for (const [key,v] of Object.entries({x:'10',y:'20',width:'30',height:'15'})) as
 const wt=appearance.APPEARANCE_TARGETS.find(t=>t.id==='windows'), ws=new Node('rect',{fill:'none'})
 svg.querySelectorAll=s=>s===wt.selector?[ws]:[]
 appearance.applyElementAppearance(svg,{elementAppearance:{windows:{color:'#2eb774',fill:'hatch'}}})
-assert.equal(ws.getAttribute('fill'),'url(#klyro-appearance-hatch-windows)'); assert.match(svg.children[0].innerHTML,/patternUnits="userSpaceOnUse"/)
+assert.equal(ws.getAttribute('fill'),'url(#kyza-appearance-hatch-windows)'); assert.match(svg.children[0].innerHTML,/patternUnits="userSpaceOnUse"/)
 const mt=appearance.APPEARANCE_TARGETS.find(t=>t.id==='main'), st=appearance.APPEARANCE_TARGETS.find(t=>t.id==='sub'), ml=new Node('line'), sl=new Node('line'), group=new Node('g')
 sl.closest=()=>({}); group.children=[ml,sl]; svg.querySelectorAll=s=>s===mt.selector?[group]:s===st.selector?[sl]:[]
 appearance.applyElementAppearance(svg,{elementAppearance:{main:{color:'#9e1316'},sub:{color:'#2eb774'}}})
 assert.equal(ml.getAttribute('stroke'),'#9e1316'); assert.equal(sl.getAttribute('stroke'),'#2eb774','Main/sub styles stay separate')
 const storage=new Map(), localStorage={getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v)}
 const ui=await load('apps/web/src/ui/customiseAppearanceControls.ts',{localStorage,require:()=>({})})
-storage.set('klyro.customise.recentColours',JSON.stringify(['<script>','#ABCDEF','#abcdef',null]))
+storage.set('kyza.customise.recentColours',JSON.stringify(['<script>','#ABCDEF','#abcdef',null]))
 assert.deepEqual(Array.from(ui.readRecentColours()),['#abcdef'])
 for(let i=0;i<10;i++) ui.rememberColour('#'+i.toString(16).padStart(6,'0'))
 assert.equal(ui.readRecentColours().length,8); assert.equal(ui.readRecentColours()[0],'#000009')
 ui.rememberColour('#000005'); assert.equal(ui.readRecentColours()[0],'#000005')
-storage.set('klyro.customise.recentColours','bad json'); assert.equal(ui.readRecentColours().length,0)
+storage.set('kyza.customise.recentColours','bad json'); assert.equal(ui.readRecentColours().length,0)
 const document=fixtureDocument
 const eui=await load('apps/web/src/ui/exportSelection.ts',{document,require:()=>({})}), host=new Node(), calls=[]
 const actions=[{format:'svg',label:'Editable SVG',available:true,extensions:['.svg']},{format:'json',label:'JSON',available:true,extensions:['.json']},{format:'pdf-vector',label:'Vector PDF',available:false,extensions:['.pdf']}]

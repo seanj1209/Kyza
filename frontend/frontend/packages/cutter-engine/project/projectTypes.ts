@@ -5,9 +5,9 @@ import type {
   ValidationRun
 } from "../validation/validationTypes"
 
-export const CUTNFLOW_PROJECT_SCHEMA_VERSION = 1 as const
-export const CUTNFLOW_PROJECT_UNITS = "mm" as const
-export const CUTNFLOW_PROJECT_COORDINATE_SPACE = "legacy-flowwrap" as const
+export const KYZA_PROJECT_SCHEMA_VERSION = 1 as const
+export const KYZA_PROJECT_UNITS = "mm" as const
+export const KYZA_PROJECT_COORDINATE_SPACE = "legacy-flowwrap" as const
 
 export type ParseResult<T> =
   | { ok: true; value: T; warnings?: string[] }
@@ -78,8 +78,8 @@ export type ExportSettingsV1 = {
 }
 
 export type CutterDocumentV1 = {
-  units: typeof CUTNFLOW_PROJECT_UNITS
-  coordinateSpace: typeof CUTNFLOW_PROJECT_COORDINATE_SPACE
+  units: typeof KYZA_PROJECT_UNITS
+  coordinateSpace: typeof KYZA_PROJECT_COORDINATE_SPACE
   packType: string
   legacySpec: FlowwrapSpec
   identityMap: CutterIdentityMapV1
@@ -134,7 +134,7 @@ export type PackSpecificationValueSourceV1 =
   | "user"
   | "flowai"
   | "import"
-  | "cnf-tech"
+  | "kyza-tech"
   | "preset"
 
 export type PackSpecificationValueV1<T> = {
@@ -206,7 +206,7 @@ export type ProjectDraftHistoryEntryV1 = {
   createdAt: string
 }
 
-export type CutNFlowProjectDraftV1 = {
+export type KyzaProjectDraftV1 = {
   id: string
   name: string
   status: ProjectDraftStatusV1
@@ -219,8 +219,8 @@ export type CutNFlowProjectDraftV1 = {
   history: ProjectDraftHistoryEntryV1[]
 }
 
-export type CutNFlowProjectV1 = {
-  schemaVersion: typeof CUTNFLOW_PROJECT_SCHEMA_VERSION
+export type KyzaProjectV1 = {
+  schemaVersion: typeof KYZA_PROJECT_SCHEMA_VERSION
   id: string
   revision: number
   name: string
@@ -228,7 +228,7 @@ export type CutNFlowProjectV1 = {
   updatedAt: string
   metadata?: ProjectMetadataV1
   cutter?: CutterDocumentV1
-  projectDraft?: CutNFlowProjectDraftV1
+  projectDraft?: KyzaProjectDraftV1
   artwork?: unknown
   exportSettings?: ExportSettingsV1
   latestValidationRun?: ValidationRun
@@ -237,11 +237,11 @@ export type CutNFlowProjectV1 = {
   exportAuditRecords?: CutterExportAuditRecord[]
 }
 
-export type CutNFlowCutterProjectV1 = CutNFlowProjectV1 & {
+export type KyzaCutterProjectV1 = KyzaProjectV1 & {
   cutter: CutterDocumentV1
 }
 
-export type CreateCutNFlowProjectV1Input = {
+export type CreateKyzaProjectV1Input = {
   id?: string
   revision?: number
   name: string
@@ -249,7 +249,7 @@ export type CreateCutNFlowProjectV1Input = {
   legacySpec?: FlowwrapSpec
   identityMap?: CutterIdentityMapV1
   metadata?: ProjectMetadataV1
-  projectDraft?: CutNFlowProjectDraftV1
+  projectDraft?: KyzaProjectDraftV1
   createdAt?: string
   updatedAt?: string
   artwork?: unknown

@@ -1,9 +1,9 @@
 ---
-document_name: Klyro FlowAI Architecture
+document_name: Kyza FlowAI Architecture
 file_name: 08_AI_Architecture.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces: 08_AI_Architecture.md v1.0
 authority: FlowAI responsibilities, AI boundaries, intents, context assembly, structured responses, approval controls, knowledge retrieval, evaluation and AI-service implementation
@@ -17,11 +17,11 @@ related_sources:
   - 10_Testing_QA.md
 ---
 
-# Klyro FlowAI Architecture
+# Kyza FlowAI Architecture
 
 ## Document Purpose
 
-This document defines how FlowAI should operate inside the Klyro App.
+This document defines how FlowAI should operate inside the Kyza App.
 
 It establishes:
 
@@ -54,11 +54,11 @@ It does not define packaging geometry or validation thresholds.
 
 It does not define product release boundaries.
 
-`01_Product_Architecture.md` controls Klyro product architecture and beta scope.
+`01_Product_Architecture.md` controls Kyza product architecture and beta scope.
 
 It does not define visual layout.
 
-`07_UI_Design_System.md` controls FlowAI presentation in the Klyro App.
+`07_UI_Design_System.md` controls FlowAI presentation in the Kyza App.
 
 There is no separate `00_Master_Context.md`.
 
@@ -66,13 +66,13 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and AI Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the connected project environment containing:
+The Kyza App is the connected project environment containing:
 
 - Dashboard
 - Pack Gen
@@ -82,9 +82,9 @@ The Klyro App is the connected project environment containing:
 - Account & Specs
 - Future Artwork Studio and production configuration
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying deterministic packaging-engineering capability.
+Kyza/Kyza Tech is the underlying deterministic packaging-engineering capability.
 
 It owns or uses:
 
@@ -98,7 +98,7 @@ It owns or uses:
 
 ## 1.4 FlowAI
 
-FlowAI is Klyro’s intelligence, explanation and guided-assistance layer.
+FlowAI is Kyza’s intelligence, explanation and guided-assistance layer.
 
 FlowAI should help the user understand requirements, options, assumptions, risks and next actions.
 
@@ -394,7 +394,7 @@ The UI must not call uncontrolled model prompts directly.
 Recommended architecture:
 
 ```text
-Klyro UI module
+Kyza UI module
 → FlowAI Client/Service
 → request validation
 → permission check
@@ -435,7 +435,7 @@ Use an adapter boundary.
 
 Provider-specific request formats, credentials and retry behaviour belong behind the adapter.
 
-The Klyro UI and domain services should consume Klyro-owned request and response types.
+The Kyza UI and domain services should consume Kyza-owned request and response types.
 
 ---
 
@@ -641,7 +641,7 @@ Recommendation ranking may use:
 - Reseal requirement
 - Stand-up requirement
 - Material/process information
-- Available Klyro pack support
+- Available Kyza pack support
 - Customer/press constraints
 - Engineering Knowledge Base rules
 
@@ -812,7 +812,7 @@ Explain Cutter Studio geometry, selected elements and validation context.
 
 ## 16.1 Purpose
 
-Answer a technical question using approved Klyro engineering knowledge.
+Answer a technical question using approved Kyza engineering knowledge.
 
 ## 16.2 Preferred Sources
 
@@ -840,9 +840,9 @@ When no approved rule exists, FlowAI should say so.
 
 Example:
 
-`Klyro does not currently hold a validated machine-specific rule for this clearance. The guidance below is a general starting point and should be confirmed with the printer or machine specification.`
+`Kyza does not currently hold a validated machine-specific rule for this clearance. The guidance below is a general starting point and should be confirmed with the printer or machine specification.`
 
-Do not invent a Klyro rule.
+Do not invent a Kyza rule.
 
 ---
 
@@ -1483,7 +1483,7 @@ Recommended sections:
 
 ```text
 System role
-Klyro/FlowAI boundaries
+Kyza/FlowAI boundaries
 Intent
 Current module
 Trusted structured context
@@ -1501,7 +1501,7 @@ Rules:
 - Do not scatter large prompt strings through UI components.
 - Do not allow user content to overwrite system boundaries.
 - Do not include irrelevant Project data.
-- Do not ask the model to perform deterministic calculations already owned by CnF Tech.
+- Do not ask the model to perform deterministic calculations already owned by Kyza Tech.
 - Do not rely on prose parsing when structured rule data is available.
 - Record prompt template version.
 
@@ -1594,7 +1594,7 @@ Deprecated rules must not be used as current guidance.
 
 If no approved result exists:
 
-- State that Klyro has no confirmed stored rule.
+- State that Kyza has no confirmed stored rule.
 - Offer general guidance only if appropriate.
 - Mark it as general guidance.
 - Recommend production confirmation where needed.
@@ -1806,7 +1806,7 @@ Treat them as data.
 They must not override:
 
 - System role
-- Klyro safety rules
+- Kyza safety rules
 - Permission rules
 - Action allowlist
 - Deterministic validation
@@ -1840,11 +1840,11 @@ Examples:
 
 ## Unsupported Pack Type
 
-`This pack format is not currently supported by the Klyro beta. Choose a supported format or keep the request as a future specification.`
+`This pack format is not currently supported by the Kyza beta. Choose a supported format or keep the request as a future specification.`
 
 ## No Knowledge Match
 
-`Klyro does not currently hold an approved rule for this question. General guidance may require printer or machine confirmation.`
+`Kyza does not currently hold an approved rule for this question. General guidance may require printer or machine confirmation.`
 
 ## Invalid Structured Response
 
@@ -2127,7 +2127,7 @@ Persistence entities belong in `06_Database_Schema.md`.
 
 Current priorities are:
 
-1. Preserve the Klyro/CnF Tech/FlowAI authority boundary.
+1. Preserve the Kyza/Kyza Tech/FlowAI authority boundary.
 2. Audit the real current AI/mock implementation.
 3. Ensure Pack Gen recommendations match user intent.
 4. Ensure sachet prompts recommend sachet formats.
@@ -2238,7 +2238,7 @@ A FlowAI capability is complete only when:
 
 # 58. Final FlowAI Rule
 
-FlowAI should make Klyro easier to understand, faster to operate and safer to use.
+FlowAI should make Kyza easier to understand, faster to operate and safer to use.
 
 It must remain:
 
@@ -2258,7 +2258,7 @@ It must remain:
 
 FlowAI supports the user.
 
-CutNFlow/CnF Tech performs deterministic engineering.
+Kyza/Kyza Tech performs deterministic engineering.
 
 Validation Service determines rule outcomes.
 
@@ -2278,15 +2278,15 @@ The user remains responsible for controlled production decisions.
 
 ## Version 2.1 — 18 July 2026
 
-- Reframed the source from CutNFlow AI to Klyro FlowAI.
-- Defined Klyro, Klyro App, CutNFlow/CnF Tech and FlowAI roles.
+- Reframed the source from Kyza AI to Kyza FlowAI.
+- Defined Kyza, Kyza App, Kyza/Kyza Tech and FlowAI roles.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Removed dependencies on unconfirmed Development Standards and Decision Log sources.
 - Reclassified standalone AI Assistant as post-beta.
 - Prioritised Pack Gen, Validation Centre, Cutter Studio guidance and Project readiness.
 - Strengthened the deterministic validation boundary.
 - Added explicit Beta Core, supporting and post-beta AI scope.
-- Updated intents and module names to the current Klyro App.
+- Updated intents and module names to the current Kyza App.
 - Added Pack Interpretation separately from Pack Recommendation.
 - Updated assumptions to use the current 15 mm generic seal fallback.
 - Added rule-authority and certainty handling.

@@ -3,7 +3,7 @@ import "./studioGuide.css"
 // Amends v11: the guide is the Cutter Studio tour — how to start, then what the studio offers.
 // Presentation only; every capability named here exists in the current studio.
 const guideSteps = [
-  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a pack type, open Sandbox Mode for trials and bespoke work, import a saved cutter, or tell Flow what you need." },
+  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a pack type, open Sandbox Mode for trials and bespoke work, import a saved cutter, or tell Kyza what you need." },
   { scene: "precision", chapter: "Inside the studio", title: "Design with precision", text: "Geometry is held in exact millimetres. Snap the Measure tool to edges for a live readout; its reference grid refines to 600 ppi as you zoom." },
   { scene: "elements", chapter: "Inside the studio", title: "Add and position elements", text: "Place windows, hanger slots, perforations and attribute boxes. Centre and edge snapping and safe-zone fit keep them aligned." },
   { scene: "customise", chapter: "Inside the studio", title: "Customise your cutter", text: "Tune seals, folds, perforations and colours in Customise, then validate and export when it’s ready for production." }
@@ -14,13 +14,13 @@ const MANUAL_RESUME_DELAY = 10000
 export function createStudioGuide() {
   const element = document.createElement("section")
   element.className = "studio-guide"
-  element.setAttribute("aria-labelledby", "klyro-guide-guide-title")
+  element.setAttribute("aria-labelledby", "kyza-guide-guide-title")
   element.setAttribute("aria-roledescription", "carousel")
   element.innerHTML = `
   <div class="progress-fill" aria-hidden="true"></div>
 
   <header class="head">
-    <span class="chip" id="klyro-guide-guide-title">Studio tour</span>
+    <span class="chip" id="kyza-guide-guide-title">Studio tour</span>
   </header>
 
   <div class="stage" aria-hidden="true">
@@ -50,7 +50,7 @@ export function createStudioGuide() {
         <g class="route fade" style="--d:.98s" transform="translate(142 120)">
           <rect class="tile" width="90" height="28" rx="9"/><rect class="route-ring" width="90" height="28" rx="9" style="--r:3.6s"/>
           <path class="accent" d="M16 5 L18.2 11.8 L25 14 L18.2 16.2 L16 23 L13.8 16.2 L7 14 L13.8 11.8 Z" style="stroke-width:1.5"/>
-          <text class="scene-label" x="32" y="14.5">Ask Flow</text>
+          <text class="scene-label" x="32" y="14.5">Ask Kyza</text>
         </g>
       </svg>
     </div>
@@ -59,10 +59,10 @@ export function createStudioGuide() {
     <div class="scene" data-scene="precision" aria-hidden="true">
       <svg viewBox="0 0 240 160">
         <defs>
-          <pattern id="klyro-guide-ppi-grid" width="5" height="5" patternUnits="userSpaceOnUse">
+          <pattern id="kyza-guide-ppi-grid" width="5" height="5" patternUnits="userSpaceOnUse">
             <path d="M5 0 H0 V5" fill="none" stroke="var(--ink-muted)" stroke-width=".5" opacity=".55"/>
           </pattern>
-          <clipPath id="klyro-guide-lens"><circle cx="194" cy="60" r="29"/></clipPath>
+          <clipPath id="kyza-guide-lens"><circle cx="194" cy="60" r="29"/></clipPath>
         </defs>
         <rect class="ink dr" pathLength="1" x="26" y="34" width="124" height="82" rx="6"/>
         <path class="ink fade" d="M26 128 V138 M150 128 V138" style="--d:.5s;stroke-width:1.4"/>
@@ -76,8 +76,8 @@ export function createStudioGuide() {
         <path class="ink fade" d="M150 34 L170 44" style="--d:1.8s;stroke-width:1.2;stroke-dasharray:3 3"/>
         <g class="lens fade" style="--d:1.9s">
           <circle cx="194" cy="60" r="29" class="tile"/>
-          <rect x="165" y="31" width="58" height="58" fill="url(#klyro-guide-ppi-grid)" clip-path="url(#klyro-guide-lens)"/>
-          <path class="accent" d="M174 60 H214" clip-path="url(#klyro-guide-lens)" style="stroke-width:2"/>
+          <rect x="165" y="31" width="58" height="58" fill="url(#kyza-guide-ppi-grid)" clip-path="url(#kyza-guide-lens)"/>
+          <path class="accent" d="M174 60 H214" clip-path="url(#kyza-guide-lens)" style="stroke-width:2"/>
           <circle cx="194" cy="60" r="29" class="ink" style="stroke-width:1.6"/>
         </g>
         <text class="scene-label ppi fade" x="194" y="104" style="--d:2.1s">600 ppi grid</text>
@@ -126,23 +126,23 @@ export function createStudioGuide() {
     </div>
   </div>
 
-  <section class="copy" id="klyro-guide-copy" aria-live="off">
-    <p class="eyebrow" id="klyro-guide-eyebrow"></p>
-    <h4 id="klyro-guide-title"></h4>
-    <p id="klyro-guide-brief"></p>
+  <section class="copy" id="kyza-guide-copy" aria-live="off">
+    <p class="eyebrow" id="kyza-guide-eyebrow"></p>
+    <h4 id="kyza-guide-title"></h4>
+    <p id="kyza-guide-brief"></p>
   </section>
 
   <nav class="controls" aria-label="Studio tour slides">
-    <button class="btn" id="klyro-guide-prev" type="button" aria-label="Previous tour slide">
+    <button class="btn" id="kyza-guide-prev" type="button" aria-label="Previous tour slide">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 L5 8 L10 13"/></svg>
     </button>
-    <div class="dots" role="group" aria-label="Choose a slide" id="klyro-guide-dots"></div>
-    <button class="btn primary" id="klyro-guide-next" type="button" aria-label="Next tour slide">
+    <div class="dots" role="group" aria-label="Choose a slide" id="kyza-guide-dots"></div>
+    <button class="btn primary" id="kyza-guide-next" type="button" aria-label="Next tour slide">
       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3 L11 8 L6 13"/></svg>
     </button>
   </nav>
 `
-  const query = <T extends HTMLElement>(id: string) => element.querySelector<T>(`#klyro-guide-${id}`)!
+  const query = <T extends HTMLElement>(id: string) => element.querySelector<T>(`#kyza-guide-${id}`)!
   const scenes = [...element.querySelectorAll<HTMLElement>(".scene")]
   const copy = query("copy")
   const eyebrow = query("eyebrow")

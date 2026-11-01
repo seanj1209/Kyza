@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Marketing Website
+document_name: Kyza Marketing Website
 file_name: 11_Marketing_Website.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces: 11_Marketing_Website.md v1.0
 authority: Public positioning, website purpose, messaging hierarchy, page structure, capability claims, conversion routes, website content, SEO direction and marketing implementation rules
@@ -18,15 +18,15 @@ related_sources:
   - 10_Testing_QA.md
 ---
 
-# Klyro Marketing Website
+# Kyza Marketing Website
 
 ## Document Purpose
 
-This document defines the public website and marketing direction for Klyro.
+This document defines the public website and marketing direction for Kyza.
 
 It establishes:
 
-- The role of the Klyro website
+- The role of the Kyza website
 - Public product positioning
 - Brand and technology hierarchy
 - Audience and customer problems
@@ -44,7 +44,7 @@ It establishes:
 - Website QA
 - Gemini and Codex implementation rules
 
-This document is the source of truth for public-facing Klyro website messaging.
+This document is the source of truth for public-facing Kyza website messaging.
 
 It does not replace:
 
@@ -57,9 +57,9 @@ It does not replace:
 
 `01_Product_Architecture.md` controls the product hierarchy and current release scope.
 
-`07_UI_Design_System.md` controls the Klyro visual and interaction system.
+`07_UI_Design_System.md` controls the Kyza visual and interaction system.
 
-`09_Development_Roadmap.md` controls when the public website should link to the Klyro App and how beta access is introduced.
+`09_Development_Roadmap.md` controls when the public website should link to the Kyza App and how beta access is introduced.
 
 `10_Testing_QA.md` controls website and release verification.
 
@@ -69,27 +69,27 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and Brand Hierarchy
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the master customer-facing brand.
+Kyza is the master customer-facing brand.
 
-The public website should present Klyro as the company, product family and trusted customer-facing identity.
+The public website should present Kyza as the company, product family and trusted customer-facing identity.
 
-Klyro owns:
+Kyza owns:
 
 - The public website
-- Klyro App positioning
+- Kyza App positioning
 - Customer-facing services
 - Product messaging
 - Account and access experiences
 - Brand identity
 - Marketing and education
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the main connected working environment.
+The Kyza App is the main connected working environment.
 
-The website may describe and show the Klyro App, but the website must not become a substitute for it.
+The website may describe and show the Kyza App, but the website must not become a substitute for it.
 
 The app is where users:
 
@@ -101,25 +101,25 @@ The app is where users:
 - Save and reopen Project state
 - Export supported technical output
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying packaging-engineering capability used within Klyro.
+Kyza/Kyza Tech is the underlying packaging-engineering capability used within Kyza.
 
 Public marketing may refer to it as:
 
-- Klyro’s packaging-engineering technology
-- CnF Tech
-- The engineering system behind Klyro
+- Kyza’s packaging-engineering technology
+- Kyza Tech
+- The engineering system behind Kyza
 
-It should not compete with Klyro as a second master brand.
+It should not compete with Kyza as a second master brand.
 
 Detailed technology messaging belongs on a Product or Technology page rather than dominating the homepage hero.
 
-The working public term remains `CnF Tech` unless a later brand decision approves another name.
+The working public term remains `Kyza Tech` unless a later brand decision approves another name.
 
 ## 1.4 FlowAI
 
-FlowAI is Klyro’s intelligence, explanation and guided-assistance layer.
+FlowAI is Kyza’s intelligence, explanation and guided-assistance layer.
 
 Public messaging should describe FlowAI as:
 
@@ -136,10 +136,10 @@ FlowAI must not be marketed as an unrestricted autonomous packaging engineer.
 The public relationship is:
 
 ```text
-Klyro
-├── Klyro Website
-└── Klyro App
-    ├── CnF Tech — deterministic packaging engineering
+Kyza
+├── Kyza Website
+└── Kyza App
+    ├── Kyza Tech — deterministic packaging engineering
     └── FlowAI — intelligence, explanation and guidance
 ```
 
@@ -147,9 +147,9 @@ Klyro
 
 # 2. Website Role
 
-The Klyro website exists to:
+The Kyza website exists to:
 
-- Explain Klyro clearly
+- Explain Kyza clearly
 - Build trust
 - Show the real product
 - Communicate practical value
@@ -157,11 +157,11 @@ The Klyro website exists to:
 - Educate potential users
 - Support beta access
 - Support future search discovery
-- Guide suitable users towards the Klyro App
+- Guide suitable users towards the Kyza App
 
 The website should sell, explain and educate.
 
-The Klyro App should create, engineer, validate, save and export.
+The Kyza App should create, engineer, validate, save and export.
 
 The website must remain separate from application workspace logic.
 
@@ -169,7 +169,7 @@ The website must remain separate from application workspace logic.
 
 # 3. Current Website Position
 
-A Klyro website concept and working implementation already exist.
+A Kyza website concept and working implementation already exist.
 
 The next stage is refinement, not an automatic rebuild.
 
@@ -177,7 +177,7 @@ Current website work should prioritise:
 
 - Copy refinement
 - Better feature/value hierarchy
-- Real Klyro App screenshots
+- Real Kyza App screenshots
 - Correct current product claims
 - Improved section alignment
 - Stronger visual depth
@@ -205,7 +205,7 @@ Current rule:
 
 Until a controlled access route exists, use an appropriate CTA such as:
 
-- Explore Klyro
+- Explore Kyza
 - See How It Works
 - Join the Beta
 - Request Early Access
@@ -214,14 +214,14 @@ Until a controlled access route exists, use an appropriate CTA such as:
 
 When app access becomes ready, CTA options may include:
 
-- Open Klyro
+- Open Kyza
 - Sign In
 - Start a Project
 - Enter Beta
 
 The approved domain and access path must be verified before being hardcoded into this source or implementation.
 
-The old `cutnflow.co.uk` and `app.cutnflow.co.uk` assumptions are not treated as the confirmed Klyro domain strategy.
+The old `kyza.co.uk` and `app.kyza.co.uk` assumptions are not treated as the confirmed Kyza domain strategy.
 
 ---
 
@@ -229,7 +229,7 @@ The old `cutnflow.co.uk` and `app.cutnflow.co.uk` assumptions are not treated as
 
 ## 5.1 Primary Position
 
-Klyro is a connected packaging-engineering environment for flexible packaging.
+Kyza is a connected packaging-engineering environment for flexible packaging.
 
 It helps users turn product requirements into structured pack specifications, engineered cutter starting points, validation insight and controlled technical output.
 
@@ -258,7 +258,7 @@ From product requirement to controlled technical output.
 Recommended direction:
 
 ```text
-Klyro brings pack definition, cutter engineering, validation and technical export into one connected Project — supported by deterministic packaging technology and practical AI guidance.
+Kyza brings pack definition, cutter engineering, validation and technical export into one connected Project — supported by deterministic packaging technology and practical AI guidance.
 ```
 
 ## 5.4 Technology Position
@@ -266,12 +266,12 @@ Klyro brings pack definition, cutter engineering, validation and technical expor
 Recommended direction:
 
 ```text
-CnF Tech handles structured packaging-engineering logic. FlowAI helps users understand requirements, assumptions, risks and next actions.
+Kyza Tech handles structured packaging-engineering logic. FlowAI helps users understand requirements, assumptions, risks and next actions.
 ```
 
-## 5.5 What Klyro Is Not
+## 5.5 What Kyza Is Not
 
-Klyro is not:
+Kyza is not:
 
 - A generic AI chatbot
 - A decorative cutter-drawing toy
@@ -285,7 +285,7 @@ Klyro is not:
 
 # 6. Core Marketing Principle
 
-The website should lead with what Klyro gives users, not a list of software modules.
+The website should lead with what Kyza gives users, not a list of software modules.
 
 Priority messages are:
 
@@ -315,7 +315,7 @@ Turn packaging requirements into clearer, more controlled technical Projects.
 Supporting statement:
 
 ```text
-Klyro connects pack definition, cutter engineering, validation and export so users can work with greater confidence, fewer gaps and a clear record of the decisions behind each Project.
+Kyza connects pack definition, cutter engineering, validation and export so users can work with greater confidence, fewer gaps and a clear record of the decisions behind each Project.
 ```
 
 Alternative concise statement:
@@ -328,13 +328,13 @@ One Project. Connected engineering. Clearer decisions.
 
 # 8. Value Pillars
 
-The homepage should communicate Klyro through a limited set of strong, benefit-led pillars.
+The homepage should communicate Kyza through a limited set of strong, benefit-led pillars.
 
 Recommended pillars:
 
 ## 8.1 Built Around the Project
 
-Klyro keeps pack requirements, cutter structure, validation state, assumptions and outputs connected.
+Kyza keeps pack requirements, cutter structure, validation state, assumptions and outputs connected.
 
 Expanded direction:
 
@@ -344,17 +344,17 @@ The Project remains the working source of truth. Pack Gen, Cutter Studio, Valida
 
 ## 8.2 Engineering Before Assumption
 
-Klyro uses structured packaging rules and pack-specific logic before presenting a technical result.
+Kyza uses structured packaging rules and pack-specific logic before presenting a technical result.
 
 Expanded direction:
 
 ```text
-CnF Tech separates deterministic calculations and validation from AI explanation, helping users understand what is confirmed, what is assumed and what still needs review.
+Kyza Tech separates deterministic calculations and validation from AI explanation, helping users understand what is confirmed, what is assumed and what still needs review.
 ```
 
 ## 8.3 Clarity Without Oversimplification
 
-Klyro makes technical packaging work easier to understand without hiding its engineering detail.
+Kyza makes technical packaging work easier to understand without hiding its engineering detail.
 
 Expanded direction:
 
@@ -364,7 +364,7 @@ New users can begin with guided inputs while experienced users retain access to 
 
 ## 8.4 Control Stays Visible
 
-Klyro explains and recommends, but production-critical decisions remain user-controlled.
+Kyza explains and recommends, but production-critical decisions remain user-controlled.
 
 Expanded direction:
 
@@ -374,7 +374,7 @@ FlowAI can suggest a pack direction or explain a validation issue. It cannot sil
 
 ## 8.5 Fewer Hand-Offs, Fewer Gaps
 
-Klyro reduces the loss of context between pack definition, cutter creation, validation and export.
+Kyza reduces the loss of context between pack definition, cutter creation, validation and export.
 
 Expanded direction:
 
@@ -384,7 +384,7 @@ Assumptions, decisions and validation remain attached to the same Project so use
 
 ## 8.6 Built for Real Packaging Work
 
-Klyro is shaped by flexible-packaging, reprographics, prepress and production workflow knowledge.
+Kyza is shaped by flexible-packaging, reprographics, prepress and production workflow knowledge.
 
 Expanded direction:
 
@@ -466,7 +466,7 @@ Messaging should avoid:
 
 - Explaining every engineering term in the hero
 - Using jargon with no context
-- Oversimplifying Klyro into a consumer design tool
+- Oversimplifying Kyza into a consumer design tool
 - Presenting new users as the only audience
 - Presenting packaging engineers as replaceable
 
@@ -474,7 +474,7 @@ Messaging should avoid:
 
 # 11. Audience Problems
 
-Klyro should connect its value to real workflow problems.
+Kyza should connect its value to real workflow problems.
 
 Examples:
 
@@ -498,7 +498,7 @@ It should show a clearer connected alternative.
 
 # 12. Tone of Voice
 
-The Klyro website tone should be:
+The Kyza website tone should be:
 
 - Professional
 - Precise
@@ -533,7 +533,7 @@ The tone should feel like a capable technical partner.
 - Packaging-industry criticism
 - Claims of perfect accuracy
 - Guaranteed production-readiness
-- Claims that Klyro replaces engineers, printers or responsible review
+- Claims that Kyza replaces engineers, printers or responsible review
 - Long feature lists in the hero
 
 ---
@@ -584,7 +584,7 @@ Pack-specific validation helps identify supported cutter risks before export.
 Not:
 
 ```text
-Klyro guarantees accurate packaging.
+Kyza guarantees accurate packaging.
 ```
 
 ## 13.3 Prohibited Claims
@@ -619,7 +619,7 @@ The website should feel:
 - Distinctive
 - Controlled rather than sterile
 
-The website may be more expressive than the Klyro App.
+The website may be more expressive than the Kyza App.
 
 It must still feel related to the app.
 
@@ -639,7 +639,7 @@ Avoid:
 
 # 15. Brand and Visual System
 
-Use the approved Klyro assets and current font system.
+Use the approved Kyza assets and current font system.
 
 Core colours:
 
@@ -651,10 +651,10 @@ Supporting values and theme tokens should come from `07_UI_Design_System.md`.
 
 Rules:
 
-- Use the official Klyro logo.
+- Use the official Kyza logo.
 - Do not recreate it as typed text.
 - Use the correct light/dark logo variant.
-- Do not visually promote CutNFlow/CnF Tech above Klyro.
+- Do not visually promote Kyza/Kyza Tech above Kyza.
 - Keep Spartan Red selective.
 - Use Dusky Cream for warmth, not as a low-contrast wash.
 - Use layered charcoal rather than pure black everywhere.
@@ -675,7 +675,7 @@ Acceptable direction:
 - Warm light workflow/resources section
 - Dark closing CTA/footer
 
-If a website-wide theme toggle is implemented, it must follow the shared Klyro theme rules.
+If a website-wide theme toggle is implemented, it must follow the shared Kyza theme rules.
 
 Do not add a theme toggle merely as decoration.
 
@@ -697,7 +697,7 @@ Primary CTA depends on access state:
 
 - Join the Beta
 - Request Early Access
-- Open Klyro
+- Open Kyza
 - Sign In
 
 A simpler early website may use:
@@ -722,7 +722,7 @@ Rules:
 
 The homepage should answer:
 
-1. What is Klyro?
+1. What is Kyza?
 2. What does it help users achieve?
 3. Why is it different from a generic tool or AI assistant?
 4. What is working now?
@@ -743,9 +743,9 @@ Recommended structure:
 3. Credibility/value strip
 4. Expandable value pillars
 5. Connected workflow
-6. Real Klyro App product showcase
+6. Real Kyza App product showcase
 7. Current core capabilities
-8. CnF Tech and FlowAI technology section
+8. Kyza Tech and FlowAI technology section
 9. Use cases/audiences
 10. Beta/early-access section
 11. Resource preview
@@ -783,7 +783,7 @@ Packaging workflows, made clearer.
 ### Supporting Copy
 
 ```text
-Klyro connects pack definition, cutter engineering, validation and technical export inside one Project — giving packaging and prepress teams a clearer route from requirement to controlled output.
+Kyza connects pack definition, cutter engineering, validation and technical export inside one Project — giving packaging and prepress teams a clearer route from requirement to controlled output.
 ```
 
 ### Primary CTA
@@ -791,7 +791,7 @@ Klyro connects pack definition, cutter engineering, validation and technical exp
 Current pre-access:
 
 ```text
-Explore Klyro
+Explore Kyza
 ```
 
 or:
@@ -803,7 +803,7 @@ Join the Beta
 Future approved app access:
 
 ```text
-Open Klyro
+Open Kyza
 ```
 
 ### Secondary CTA
@@ -828,7 +828,7 @@ Move from product requirement to structured pack specification, engineered cutte
 
 ## 20.4 Hero Visual
 
-Use a real or accurately staged Klyro App visual.
+Use a real or accurately staged Kyza App visual.
 
 Preferred:
 
@@ -890,7 +890,7 @@ Designed for clearer technical decisions.
 Recommended introduction:
 
 ```text
-Klyro does more than place packaging tools beside each other. It keeps the Project connected, makes assumptions visible and separates deterministic engineering from AI guidance.
+Kyza does more than place packaging tools beside each other. It keeps the Project connected, makes assumptions visible and separates deterministic engineering from AI guidance.
 ```
 
 Suggested items:
@@ -963,7 +963,7 @@ Real app screenshots should replace conceptual product cards as the interface st
 Every screenshot must:
 
 - Match the current app
-- Use the current Klyro logo
+- Use the current Kyza logo
 - Use the current font
 - Use the approved navigation
 - Use real or clearly labelled demo Project data
@@ -1010,7 +1010,7 @@ Start with what you know.
 Short copy:
 
 ```text
-Describe the product or build the pack manually. Klyro converts the requirement into a structured Pack Specification with visible assumptions and a clear route into cutter engineering.
+Describe the product or build the pack manually. Kyza converts the requirement into a structured Pack Specification with visible assumptions and a clear route into cutter engineering.
 ```
 
 Current/beta-target capability:
@@ -1104,7 +1104,7 @@ Only verified formats should be named as available.
 
 ---
 
-# 26. CnF Tech Section
+# 26. Kyza Tech Section
 
 Recommended heading:
 
@@ -1115,7 +1115,7 @@ Packaging engineering beneath the interface.
 Supporting copy:
 
 ```text
-CnF Tech is the deterministic capability behind Klyro’s pack specifications, cutter geometry, engineering defaults and validation rules.
+Kyza Tech is the deterministic capability behind Kyza’s pack specifications, cutter geometry, engineering defaults and validation rules.
 ```
 
 Supporting points:
@@ -1130,7 +1130,7 @@ Supporting points:
 Important boundary:
 
 ```text
-CnF Tech calculates and validates. It is not a marketing chatbot and it does not rely on AI to decide engineering pass or failure.
+Kyza Tech calculates and validates. It is not a marketing chatbot and it does not rely on AI to decide engineering pass or failure.
 ```
 
 Do not overexpose internal implementation detail on the homepage.
@@ -1150,7 +1150,7 @@ Guidance that knows its limits.
 Supporting copy:
 
 ```text
-FlowAI interprets requirements, exposes assumptions and explains validation in practical language while deterministic Klyro services remain responsible for engineering outcomes.
+FlowAI interprets requirements, exposes assumptions and explains validation in practical language while deterministic Kyza services remain responsible for engineering outcomes.
 ```
 
 Supporting points:
@@ -1281,7 +1281,7 @@ Value:
 - Future artwork-preparation workflow
 - Better connection to manufacturing requirements
 
-Do not claim Klyro replaces converter or printer approval.
+Do not claim Kyza replaces converter or printer approval.
 
 ---
 
@@ -1314,7 +1314,7 @@ A use case must not imply that every format is active.
 Recommended messaging:
 
 ```text
-Klyro is being developed through a controlled beta focused on one complete packaging-engineering journey: define the pack, generate the cutter, validate the Project, save the work and prepare supported technical output.
+Kyza is being developed through a controlled beta focused on one complete packaging-engineering journey: define the pack, generate the cutter, validate the Project, save the work and prepare supported technical output.
 ```
 
 Supporting wording:
@@ -1384,7 +1384,7 @@ Rules:
 
 # 34. Product Page
 
-The Product page should explain the connected Klyro App more deeply than the homepage.
+The Product page should explain the connected Kyza App more deeply than the homepage.
 
 Recommended structure:
 
@@ -1395,7 +1395,7 @@ Recommended structure:
 5. Validation Centre
 6. Export Release
 7. FlowAI
-8. CnF Tech
+8. Kyza Tech
 9. Current beta scope
 10. Planned expansion
 11. Beta/request-access CTA
@@ -1417,7 +1417,7 @@ Technology designed for controlled engineering.
 Recommended sections:
 
 - Project-centred data
-- CnF Tech
+- Kyza Tech
 - Deterministic validation
 - FlowAI
 - Assumptions and confidence
@@ -1427,7 +1427,7 @@ Recommended sections:
 - Security and access direction
 - Technical roadmap
 
-This page should explain why Klyro is more controlled than a generic AI tool.
+This page should explain why Kyza is more controlled than a generic AI tool.
 
 It should not expose private source code, prompts, credentials or proprietary implementation detail.
 
@@ -1447,7 +1447,7 @@ Future or staged solution pages may include:
 Each page should include:
 
 - Workflow problem
-- Current Klyro value
+- Current Kyza value
 - Relevant beta capability
 - Planned capability clearly labelled
 - Example Project
@@ -1482,7 +1482,7 @@ Potential topics:
 Resource articles must distinguish:
 
 - General guidance
-- Klyro Working Standard
+- Kyza Working Standard
 - Customer/press-specific rule
 - Production confirmation required
 
@@ -1503,7 +1503,7 @@ Key concepts
 Common mistakes
 General guidance
 What varies by printer/machine/customer
-How Klyro supports the workflow
+How Kyza supports the workflow
 Related pack types
 Related resources
 CTA
@@ -1524,14 +1524,14 @@ Possible sections:
 - Track clearance
 - Slit tolerance
 - What varies by machine
-- How Klyro represents eyemark rules
+- How Kyza represents eyemark rules
 - Related sachet and flow-wrap guidance
 
 ---
 
 # 39. About Page
 
-The About page should explain why Klyro exists.
+The About page should explain why Kyza exists.
 
 Recommended points:
 
@@ -1609,7 +1609,7 @@ Until then, use:
 
 - Join the Beta
 - Request Early Access
-- Contact Klyro
+- Contact Kyza
 
 ---
 
@@ -1619,7 +1619,7 @@ Until then, use:
 
 Preferred:
 
-- Explore Klyro
+- Explore Kyza
 - Join the Beta
 - Request Early Access
 - See How It Works
@@ -1628,7 +1628,7 @@ Preferred:
 
 After access is ready:
 
-- Open Klyro
+- Open Kyza
 - Start a Project
 - Sign In
 - Enter Beta
@@ -1639,7 +1639,7 @@ After access is ready:
 - View Technology
 - Read Resources
 - See the Workflow
-- Contact Klyro
+- Contact Kyza
 
 ## 42.4 CTA Rules
 
@@ -1674,13 +1674,13 @@ Packaging workflows, made clearer.
 Body:
 
 ```text
-Klyro connects pack definition, cutter engineering, validation and technical export inside one Project — helping packaging and prepress teams work with greater clarity and control.
+Kyza connects pack definition, cutter engineering, validation and technical export inside one Project — helping packaging and prepress teams work with greater clarity and control.
 ```
 
 Primary CTA:
 
 ```text
-Explore Klyro
+Explore Kyza
 ```
 
 Secondary CTA:
@@ -1700,7 +1700,7 @@ Designed for clearer technical decisions.
 Body:
 
 ```text
-Klyro keeps the Project connected, makes assumptions visible and separates deterministic engineering from AI guidance.
+Kyza keeps the Project connected, makes assumptions visible and separates deterministic engineering from AI guidance.
 ```
 
 ## Workflow Section
@@ -1728,7 +1728,7 @@ Engineering beneath the interface. Guidance where it helps.
 Body:
 
 ```text
-CnF Tech manages structured packaging logic and deterministic validation. FlowAI interprets, explains and recommends while production-critical changes stay under user control.
+Kyza Tech manages structured packaging logic and deterministic validation. FlowAI interprets, explains and recommends while production-critical changes stay under user control.
 ```
 
 ## Closing CTA
@@ -1736,13 +1736,13 @@ CnF Tech manages structured packaging logic and deterministic validation. FlowAI
 Heading:
 
 ```text
-Help shape the next stage of Klyro.
+Help shape the next stage of Kyza.
 ```
 
 Body:
 
 ```text
-Klyro is moving towards a controlled beta focused on pack definition, cutter engineering, validation and export.
+Kyza is moving towards a controlled beta focused on pack definition, cutter engineering, validation and export.
 ```
 
 CTA:
@@ -1781,7 +1781,7 @@ The website must not become a second product roadmap.
 
 # 45. SEO Positioning
 
-Klyro is a new brand name and should be paired with descriptive packaging terms.
+Kyza is a new brand name and should be paired with descriptive packaging terms.
 
 Potential priority topics:
 
@@ -1812,13 +1812,13 @@ Avoid keyword stuffing.
 Title direction:
 
 ```text
-Klyro | Flexible Packaging Engineering Software
+Kyza | Flexible Packaging Engineering Software
 ```
 
 Description direction:
 
 ```text
-Klyro connects pack definition, cutter engineering, validation and technical export inside one flexible-packaging Project.
+Kyza connects pack definition, cutter engineering, validation and technical export inside one flexible-packaging Project.
 ```
 
 ## Product
@@ -1826,7 +1826,7 @@ Klyro connects pack definition, cutter engineering, validation and technical exp
 Title direction:
 
 ```text
-Klyro App | Pack Generation, Cutter Engineering and Validation
+Kyza App | Pack Generation, Cutter Engineering and Validation
 ```
 
 ## Technology
@@ -1834,7 +1834,7 @@ Klyro App | Pack Generation, Cutter Engineering and Validation
 Title direction:
 
 ```text
-Klyro Technology | CnF Tech and FlowAI
+Kyza Technology | Kyza Tech and FlowAI
 ```
 
 ## Resources
@@ -1842,7 +1842,7 @@ Klyro Technology | CnF Tech and FlowAI
 Title direction:
 
 ```text
-Flexible Packaging Engineering Resources | Klyro
+Flexible Packaging Engineering Resources | Kyza
 ```
 
 Metadata must reflect current capability.
@@ -1882,16 +1882,16 @@ Define:
 - Open Graph description
 - Preview image
 - Twitter/X card where relevant
-- Klyro logo
+- Kyza logo
 - Correct site URL
 
 The preview image should use:
 
-- Klyro brand
+- Kyza brand
 - High-resolution real product visual
 - Short readable message
 - No tiny UI collage
-- No old CutNFlow public-brand header
+- No old Kyza public-brand header
 
 ---
 
@@ -2034,7 +2034,7 @@ Recommended shared components:
 - `FAQAccordion`
 - `ContactForm`
 
-Reuse shared Klyro tokens.
+Reuse shared Kyza tokens.
 
 Do not copy application components blindly where website presentation requires different spacing or content hierarchy.
 
@@ -2063,18 +2063,18 @@ Rules:
 
 Potential FAQ questions:
 
-- What is Klyro?
-- Who is Klyro for?
-- Is Klyro a CAD tool?
-- What is CnF Tech?
+- What is Kyza?
+- Who is Kyza for?
+- Is Kyza a CAD tool?
+- What is Kyza Tech?
 - What is FlowAI?
-- Can Klyro create cutter guides?
+- Can Kyza create cutter guides?
 - Which pack formats are supported?
-- Does Klyro validate artwork?
+- Does Kyza validate artwork?
 - Can FlowAI change cutter geometry?
 - What export formats are supported?
-- Is Klyro production-ready?
-- Does Klyro replace packaging engineers?
+- Is Kyza production-ready?
+- Does Kyza replace packaging engineers?
 - How can I join the beta?
 
 Answers must match the current Product Architecture and release state.
@@ -2083,25 +2083,25 @@ Answers must match the current Product Architecture and release state.
 
 # 57. Suggested FAQ Answers
 
-## Is Klyro a CAD tool?
+## Is Kyza a CAD tool?
 
 ```text
-Klyro is a packaging-engineering environment rather than a general-purpose CAD package. Cutter Studio provides structured controls for supported flexible-packaging geometry and technical output.
+Kyza is a packaging-engineering environment rather than a general-purpose CAD package. Cutter Studio provides structured controls for supported flexible-packaging geometry and technical output.
 ```
 
 ## Can FlowAI change cutter geometry?
 
 ```text
-FlowAI may recommend a change, but production-critical changes require explicit user review and are applied through deterministic Klyro engineering services.
+FlowAI may recommend a change, but production-critical changes require explicit user review and are applied through deterministic Kyza engineering services.
 ```
 
-## Is Klyro production-ready?
+## Is Kyza production-ready?
 
 ```text
-Klyro is moving through a controlled beta. Supported workflows and formats are tested in stages, and printer, converter or customer review remains important for production decisions.
+Kyza is moving through a controlled beta. Supported workflows and formats are tested in stages, and printer, converter or customer review remains important for production decisions.
 ```
 
-## Does Klyro validate artwork?
+## Does Kyza validate artwork?
 
 ```text
 The first beta focuses on pack definition, cutter engineering, validation and export. Full Artwork Studio and artwork preflight are planned extensions unless explicitly shown as available.
@@ -2113,9 +2113,9 @@ The first beta focuses on pack definition, cutter engineering, validation and ex
 
 Website QA must verify:
 
-- Klyro is the master brand
-- No old CutNFlow website branding remains unintentionally
-- CnF Tech is positioned as underlying technology
+- Kyza is the master brand
+- No old Kyza website branding remains unintentionally
+- Kyza Tech is positioned as underlying technology
 - FlowAI claims are controlled
 - Current and future capability are separated
 - Navigation works
@@ -2145,7 +2145,7 @@ Detailed release QA belongs in `10_Testing_QA.md`.
 Before publishing a screenshot:
 
 - Current app version?
-- Correct Klyro logo?
+- Correct Kyza logo?
 - Correct navigation?
 - Correct theme?
 - No old module names?
@@ -2165,19 +2165,19 @@ Before publishing a screenshot:
 
 Current priorities are:
 
-1. Preserve the current Klyro website implementation where it remains useful.
-2. Replace old CutNFlow product positioning.
-3. Make Klyro the clear master brand.
+1. Preserve the current Kyza website implementation where it remains useful.
+2. Replace old Kyza product positioning.
+3. Make Kyza the clear master brand.
 4. Replace module-led homepage messaging with value-led messaging.
 5. Add the expandable value-pillar section.
 6. Align the hero with the connected Project workflow.
 7. Add real Dashboard, Pack Gen and Cutter Studio screenshots.
 8. Remove or relabel Artwork Studio and other post-beta claims.
-9. Clarify CnF Tech and FlowAI responsibilities.
+9. Clarify Kyza Tech and FlowAI responsibilities.
 10. Keep app access disabled until the approved beta route exists.
 11. Add beta/request-access CTA.
 12. Verify light/dark section contrast and responsive layout.
-13. Update SEO metadata from CutNFlow to Klyro.
+13. Update SEO metadata from Kyza to Kyza.
 14. Add accessibility and performance checks.
 15. Align the website after the core beta workflow stabilises.
 
@@ -2191,7 +2191,7 @@ Recommended workflow:
 2. Map existing sections to this source.
 3. Keep structurally useful components.
 4. Identify outdated copy and claims.
-5. Capture approved Klyro App screenshots.
+5. Capture approved Kyza App screenshots.
 6. Use Gemini for section and interaction refinement where needed.
 7. Record approved behaviour in this source.
 8. Create focused Codex tasks by section.
@@ -2219,7 +2219,7 @@ Gemini may be used to:
 
 Gemini should be instructed to:
 
-- Preserve the Klyro logo
+- Preserve the Kyza logo
 - Preserve the current font
 - Preserve the brand palette
 - Keep the current site approach where possible
@@ -2238,8 +2238,8 @@ Codex must:
 
 - Read `01_Product_Architecture.md`, `07_UI_Design_System.md`, `09_Development_Roadmap.md` and this source before major website work.
 - Preserve useful existing website components.
-- Keep website and Klyro App logic separate.
-- Use official Klyro assets.
+- Keep website and Kyza App logic separate.
+- Use official Kyza assets.
 - Preserve the current font.
 - Use shared brand tokens.
 - Use real screenshots.
@@ -2253,8 +2253,8 @@ Codex must:
 
 Codex must not:
 
-- Rebrand the website back to CutNFlow.
-- Replace Klyro with CnF Tech as the public brand.
+- Rebrand the website back to Kyza.
+- Replace Kyza with Kyza Tech as the public brand.
 - Add a public development-app link.
 - Invent pricing.
 - Invent customers, testimonials or usage data.
@@ -2270,20 +2270,20 @@ Codex must not:
 
 # 64. Airtable Alignment
 
-Retain existing website action IDs where practical and reword them around Klyro.
+Retain existing website action IDs where practical and reword them around Kyza.
 
 Suggested action direction:
 
-- `CNF-2601` — Align Klyro website positioning and navigation
-- `CNF-2602` — Rewrite homepage messaging around value pillars
-- `CNF-2603` — Implement expandable Klyro value section
-- `CNF-2604` — Capture and implement real Klyro App screenshots
-- `CNF-2605` — Align Product and Technology pages
-- `CNF-2606` — Add current/future capability status labels
-- `CNF-2607` — Implement beta/request-access route
-- `CNF-2608` — Update Klyro SEO and social metadata
-- `CNF-2609` — Complete website accessibility/responsive QA
-- `CNF-2610` — Verify public app-link and deployment readiness
+- `KYZA-2601` — Align Kyza website positioning and navigation
+- `KYZA-2602` — Rewrite homepage messaging around value pillars
+- `KYZA-2603` — Implement expandable Kyza value section
+- `KYZA-2604` — Capture and implement real Kyza App screenshots
+- `KYZA-2605` — Align Product and Technology pages
+- `KYZA-2606` — Add current/future capability status labels
+- `KYZA-2607` — Implement beta/request-access route
+- `KYZA-2608` — Update Kyza SEO and social metadata
+- `KYZA-2609` — Complete website accessibility/responsive QA
+- `KYZA-2610` — Verify public app-link and deployment readiness
 
 Completion of this source does not mean the website amendments are implemented.
 
@@ -2300,10 +2300,10 @@ Track separately:
 
 # 65. Website Completion Criteria
 
-The Klyro website realignment is complete when:
+The Kyza website realignment is complete when:
 
-- Klyro is consistently the master brand.
-- CnF Tech and FlowAI roles are accurate.
+- Kyza is consistently the master brand.
+- Kyza Tech and FlowAI roles are accurate.
 - The hero communicates connected packaging engineering.
 - The homepage leads with outcomes rather than a module list.
 - Value pillars are clear and interaction works accessibly.
@@ -2352,9 +2352,9 @@ Where a marketing claim conflicts with current tested product capability, the te
 
 # 67. Final Marketing Website Rule
 
-The Klyro website should make the product feel credible, precise and distinctly useful to real packaging, reprographics and prepress users.
+The Kyza website should make the product feel credible, precise and distinctly useful to real packaging, reprographics and prepress users.
 
-It should communicate that Klyro is:
+It should communicate that Kyza is:
 
 - Connected
 - Engineering-aware
@@ -2368,7 +2368,7 @@ It should communicate that Klyro is:
 - Honest about current capability
 - Built to grow without pretending the future is already complete
 
-The website should build confidence and create a clear route towards the Klyro App without overpromising what the product can currently do.
+The website should build confidence and create a clear route towards the Kyza App without overpromising what the product can currently do.
 
 ---
 
@@ -2383,13 +2383,13 @@ The website should build confidence and create a clear route towards the Klyro A
 
 ## Version 2.1 — 19 July 2026
 
-- Reframed the source from CutNFlow Marketing Website to Klyro Marketing Website.
-- Established Klyro as the master customer-facing brand.
-- Repositioned CutNFlow/CnF Tech as underlying packaging-engineering technology.
+- Reframed the source from Kyza Marketing Website to Kyza Marketing Website.
+- Established Kyza as the master customer-facing brand.
+- Repositioned Kyza/Kyza Tech as underlying packaging-engineering technology.
 - Repositioned FlowAI as intelligence, explanation and guided assistance.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Removed active dependencies on unconfirmed Development Standards and Decision Log sources.
-- Removed the old confirmed-domain assumptions pending Klyro domain/access verification.
+- Removed the old confirmed-domain assumptions pending Kyza domain/access verification.
 - Added a rule preventing public links to the development app.
 - Changed the homepage from module-led to outcome/value-led messaging.
 - Added expandable value pillars focused on Project continuity, engineering clarity and user control.
@@ -2397,11 +2397,11 @@ The website should build confidence and create a clear route towards the Klyro A
 - Added the current connected beta workflow.
 - Reclassified Artwork Studio, press configuration and advanced production intelligence as planned/future.
 - Added current, beta, in-development, planned and future capability labels.
-- Added real Klyro App screenshot standards and approval checks.
-- Added CnF Tech and FlowAI website sections.
+- Added real Kyza App screenshot standards and approval checks.
+- Added Kyza Tech and FlowAI website sections.
 - Added beta/early-access messaging and CTA strategy.
 - Updated Product, Technology, Solutions, Resources and About page direction.
-- Updated SEO from CutNFlow-first to Klyro plus descriptive flexible-packaging terms.
+- Updated SEO from Kyza-first to Kyza plus descriptive flexible-packaging terms.
 - Added structured data, analytics, accessibility, performance and responsive rules.
 - Added Gemini and Codex implementation workflows.
 - Added Airtable alignment, completion criteria and claim governance.

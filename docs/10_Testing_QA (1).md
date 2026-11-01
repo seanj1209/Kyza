@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Testing and QA
+document_name: Kyza Testing and QA
 file_name: 10_Testing_QA.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces: 10_Testing_QA.md v1.0
 authority: Test strategy, quality gates, test matrices, regression coverage, evidence standards, bug classification and beta release QA
@@ -18,11 +18,11 @@ related_sources:
   - 11_Marketing_Website.md
 ---
 
-# Klyro Testing and QA
+# Kyza Testing and QA
 
 ## Document Purpose
 
-This document defines the testing and quality-assurance strategy for the Klyro App and its underlying CutNFlow/CnF Tech engineering capability.
+This document defines the testing and quality-assurance strategy for the Kyza App and its underlying Kyza/Kyza Tech engineering capability.
 
 It establishes:
 
@@ -47,7 +47,7 @@ It establishes:
 - Codex testing rules
 - Airtable QA alignment
 
-This document protects Klyro from becoming visually polished but technically unreliable.
+This document protects Kyza from becoming visually polished but technically unreliable.
 
 Testing must confirm that the product works as one connected Project workflow:
 
@@ -84,13 +84,13 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and QA Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the connected working environment.
+The Kyza App is the connected working environment.
 
 The first controlled beta centres on:
 
@@ -102,9 +102,9 @@ The first controlled beta centres on:
 - Export Release
 - Account & Specs essentials
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the deterministic packaging-engineering capability.
+Kyza/Kyza Tech is the deterministic packaging-engineering capability.
 
 Testing must verify:
 
@@ -132,7 +132,7 @@ Testing must verify that FlowAI:
 
 # 2. Core QA Principle
 
-Klyro QA must test technical truth, workflow continuity and user control.
+Kyza QA must test technical truth, workflow continuity and user control.
 
 A feature is not complete because:
 
@@ -154,7 +154,7 @@ Visual defects remain important, but a visually correct screen must not hide inv
 
 # 3. QA Principles
 
-Klyro QA follows these principles.
+Kyza QA follows these principles.
 
 1. Project continuity is a release-critical requirement.
 2. Engineering behaviour must be tested independently from appearance.
@@ -459,7 +459,7 @@ A feature may be `Implemented — Awaiting QA` before these conditions are compl
 Required:
 
 - One active version of each source file
-- Klyro terminology consistent
+- Kyza terminology consistent
 - No required reference to nonexistent sources
 - Beta and post-beta scope aligned
 - Cross-references valid
@@ -583,7 +583,7 @@ Check every source for:
 - Correct version
 - Clear authority
 - Current related sources
-- Klyro terminology
+- Kyza terminology
 - No active duplicate
 - No unfinished code fence
 - No pasted chat artefacts
@@ -1865,13 +1865,13 @@ Verify:
 - No Project data is lost
 - No false success is shown
 - Technical detail is available where helpful
-- Copy matches Klyro tone
+- Copy matches Kyza tone
 
 ---
 
 # 49. UI Design System QA
 
-Verify current Klyro design rules:
+Verify current Kyza design rules:
 
 - Correct logo variant
 - Current font preserved
@@ -1886,7 +1886,7 @@ Verify current Klyro design rules:
 - Shared modal/drawer behaviour
 - Consistent spacing and radius
 - No old purple/retired scheme
-- No old CutNFlow public-brand chrome
+- No old Kyza public-brand chrome
 - No duplicate component created unnecessarily
 
 ---
@@ -1897,7 +1897,7 @@ Test every Beta Core route in both themes.
 
 ## Light Mode
 
-- Dark/primary Klyro logo visible
+- Dark/primary Kyza logo visible
 - Text readable
 - Cards/panels separated
 - Inputs visible
@@ -1908,7 +1908,7 @@ Test every Beta Core route in both themes.
 
 ## Dark Mode
 
-- Reverse/light Klyro logo visible
+- Reverse/light Kyza logo visible
 - Cream/off-white text readable
 - Layered charcoal surfaces
 - No bright cream foreground blocks left over
@@ -2099,7 +2099,7 @@ Verify:
 - Environment variables present
 - Routes work after refresh
 - Assets load
-- Klyro logo loads in both themes
+- Kyza logo loads in both themes
 - API/service endpoint configuration correct
 - FlowAI key not exposed to browser
 - Downloads work
@@ -2115,7 +2115,7 @@ Deployment verification must include the deployed commit or build identifier.
 Use after significant changes.
 
 1. Open the deployed or local app.
-2. Confirm the Klyro header and collapsed navigation.
+2. Confirm the Kyza header and collapsed navigation.
 3. Open Dashboard.
 4. Use Start Here.
 5. Enter `20g sauce packet`.
@@ -2461,21 +2461,21 @@ Do not introduce a new test framework without checking the current stack and mai
 
 # 69. Airtable QA Alignment
 
-Retain existing CNF IDs where practical.
+Retain existing KYZA IDs where practical.
 
 Suggested updated actions:
 
-- `CNF-2301` — Complete Klyro Testing & QA v2.1
-- `CNF-2302` — Create Pack Gen prompt and expected-output fixtures
-- `CNF-2303` — Create supported pack-type expectation matrix
-- `CNF-2304` — Create pack-specific Cutter geometry regression suite
-- `CNF-2305` — Create deterministic validation-rule suite
-- `CNF-2306` — Create Export Release QA suite
-- `CNF-2307` — Create Klyro UI and accessibility smoke checklist
-- `CNF-2308` — Create pre-deployment regression and beta release gate
-- `CNF-2309` — Create Project save/reopen and migration test suite
-- `CNF-2310` — Create FlowAI schema, safety and approval suite
-- `CNF-2311` — Create full beta end-to-end suite
+- `KYZA-2301` — Complete Kyza Testing & QA v2.1
+- `KYZA-2302` — Create Pack Gen prompt and expected-output fixtures
+- `KYZA-2303` — Create supported pack-type expectation matrix
+- `KYZA-2304` — Create pack-specific Cutter geometry regression suite
+- `KYZA-2305` — Create deterministic validation-rule suite
+- `KYZA-2306` — Create Export Release QA suite
+- `KYZA-2307` — Create Kyza UI and accessibility smoke checklist
+- `KYZA-2308` — Create pre-deployment regression and beta release gate
+- `KYZA-2309` — Create Project save/reopen and migration test suite
+- `KYZA-2310` — Create FlowAI schema, safety and approval suite
+- `KYZA-2311` — Create full beta end-to-end suite
 
 Recommended Airtable fields:
 
@@ -2552,7 +2552,7 @@ When a test includes a post-beta module, it must be labelled post-beta and must 
 
 # 72. Final QA Rule
 
-Klyro testing must prove that the product is:
+Kyza testing must prove that the product is:
 
 - Connected
 - Engineering-aware
@@ -2586,8 +2586,8 @@ The first beta is successful only when a user can complete the supported workflo
 
 ## Version 2.1 — 19 July 2026
 
-- Reframed Testing & QA from CutNFlow platform QA to Klyro beta QA.
-- Defined Klyro, Klyro App, CnF Tech and FlowAI testing boundaries.
+- Reframed Testing & QA from Kyza platform QA to Kyza beta QA.
+- Defined Kyza, Kyza App, Kyza Tech and FlowAI testing boundaries.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Removed required dependencies on unconfirmed Development Standards and Decision Log sources.
 - Replaced the old full-platform QA list with Beta Core and post-beta boundaries.

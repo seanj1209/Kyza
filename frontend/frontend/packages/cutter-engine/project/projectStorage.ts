@@ -1,23 +1,24 @@
 import {
-  createCutNFlowProjectId,
-  createCutNFlowProjectV1,
-  parseCutNFlowProject
+  createKyzaProjectId,
+  createKyzaProjectV1,
+  parseKyzaProject
 } from "./projectContract"
 import {
   createIndependentCutterIdentityMap,
   syncLegacySpecFromElementRefs
 } from "./elementIdentity"
 import { migrateStoredProjectRecord } from "./projectMigrations"
-import type { CutNFlowProjectV1, ParseResult } from "./projectTypes"
+import type { KyzaProjectV1, ParseResult } from "./projectTypes"
+import { readBrandStorage } from "./brandCompatibility"
 
-export const CUTNFLOW_PROJECT_STORAGE_KEY = "cutnflow.projects.v1"
+export const KYZA_PROJECT_STORAGE_KEY = "kyza.projects.v1"
 
-export type CutNFlowProjectStorage = Pick<
+export type KyzaProjectStorage = Pick<
   Storage,
   "getItem" | "setItem" | "removeItem"
 >
 
-export type SaveCutNFlowProjectOptions = {
+export type SaveKyzaProjectOptions = {
   expectedRevision?: number
 }
 
@@ -33,22 +34,22 @@ export type RejectedProjectRecord = {
   rawRecord: unknown
 }
 
-export type CutNFlowProjectCollectionRead = {
-  projects: CutNFlowProjectV1[]
+export type KyzaProjectCollectionRead = {
+  projects: KyzaProjectV1[]
   rejectedRecords: RejectedProjectRecord[]
 }
 
 type AcceptedProjectRecord = {
   index: number
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
 }
 
-type InternalProjectCollectionRead = CutNFlowProjectCollectionRead & {
+type InternalProjectCollectionRead = KyzaProjectCollectionRead & {
   acceptedRecords: AcceptedProjectRecord[]
   sourceRecords: unknown[]
 }
 
-const continuityBasis = (project: CutNFlowProjectV1) => {
+const continuityBasis = (project: KyzaProjectV1) => {
   const {
     latestValidationRun: _latestValidationRun,
     validationRuns: _validationRuns,
@@ -60,8 +61,8 @@ const continuityBasis = (project: CutNFlowProjectV1) => {
 }
 
 const resolveStorage = (
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectStorage> => {
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectStorage> => {
   if (storage) {
     return { ok: true, value: storage }
   }
@@ -76,13 +77,13 @@ const resolveStorage = (
 }
 
 const readProjectCollection = (
-  storage: CutNFlowProjectStorage
+  storage: KyzaProjectStorage
 ): ParseResult<InternalProjectCollectionRead> => {
   let raw: string | null
   try {
-    raw = storage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY)
+    raw = readBrandStorage(storage, KYZA_PROJECT_STORAGE_KEY)
   } catch {
-    return { ok: false, errors: ["Unable to read CutNFlow project storage."] }
+    return { ok: false, errors: ["Unable to read Kyza project storage."] }
   }
   if (!raw) {
     return {
@@ -100,10 +101,10 @@ const readProjectCollection = (
   try {
     parsed = JSON.parse(raw)
   } catch {
-    return { ok: false, errors: ["Stored CutNFlow projects are not valid JSON."] }
+    return { ok: false, errors: ["Stored Kyza projects are not valid JSON."] }
   }
   if (!Array.isArray(parsed)) {
-    return { ok: false, errors: ["Stored CutNFlow projects must be an array."] }
+    return { ok: false, errors: ["Stored Kyza projects must be an array."] }
   }
 
   const acceptedRecords: AcceptedProjectRecord[] = []
@@ -135,12 +136,12 @@ const readProjectCollection = (
   let sourceRecords = [...parsed]
   if (migratedProject && rejectedRecords.length === 0) {
     try {
-      storage.setItem(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify(projects))
+      storage.setItem(KYZA_PROJECT_STORAGE_KEY, JSON.stringify(projects))
       sourceRecords = [...projects]
     } catch {
       return {
         ok: false,
-        errors: ["Unable to persist the migrated CutNFlow project collection."]
+        errors: ["Unable to persist the migrated Kyza project collection."]
       }
     }
   }
@@ -156,28 +157,28 @@ const readProjectCollection = (
 }
 
 const writeProjectCollection = (
-  storage: CutNFlowProjectStorage,
+  storage: KyzaProjectStorage,
   projects: readonly unknown[]
 ): ParseResult<unknown[]> => {
   try {
-    storage.setItem(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify(projects))
+    storage.setItem(KYZA_PROJECT_STORAGE_KEY, JSON.stringify(projects))
     return { ok: true, value: [...projects] }
   } catch {
-    return { ok: false, errors: ["Unable to write CutNFlow project storage."] }
+    return { ok: false, errors: ["Unable to write Kyza project storage."] }
   }
 }
 
-export const listCutNFlowProjects = (
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectV1[]> => {
-  const read = readCutNFlowProjectCollection(storage)
+export const listKyzaProjects = (
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectV1[]> => {
+  const read = readKyzaProjectCollection(storage)
   if (read.ok === false) return { ok: false, errors: read.errors }
   return { ok: true, value: read.value.projects }
 }
 
-export const readCutNFlowProjectCollection = (
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectCollectionRead> => {
+export const readKyzaProjectCollection = (
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectCollectionRead> => {
   const resolved = resolveStorage(storage)
   if (resolved.ok === false) {
     return { ok: false, errors: resolved.errors }
@@ -194,10 +195,10 @@ export const readCutNFlowProjectCollection = (
     : read
 }
 
-export const listCutNFlowProjectsStrict = (
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectV1[]> => {
-  const read = readCutNFlowProjectCollection(storage)
+export const listKyzaProjectsStrict = (
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectV1[]> => {
+  const read = readKyzaProjectCollection(storage)
   if (read.ok === false) return read
   if (read.value.rejectedRecords.length > 0) {
     return {
@@ -210,11 +211,11 @@ export const listCutNFlowProjectsStrict = (
   return { ok: true, value: read.value.projects }
 }
 
-export const loadCutNFlowProject = (
+export const loadKyzaProject = (
   id: string,
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectV1> => {
-  const read = readCutNFlowProjectCollection(storage)
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectV1> => {
+  const read = readKyzaProjectCollection(storage)
   if (read.ok === false) {
     return { ok: false, errors: read.errors }
   }
@@ -224,17 +225,17 @@ export const loadCutNFlowProject = (
   return rejected
     ? {
         ok: false,
-        errors: rejected.errors.map(error => `CutNFlow project "${id}" is invalid: ${error}`)
+        errors: rejected.errors.map(error => `Kyza project "${id}" is invalid: ${error}`)
       }
-    : { ok: false, errors: [`CutNFlow project "${id}" was not found.`] }
+    : { ok: false, errors: [`Kyza project "${id}" was not found.`] }
 }
 
-export const saveCutNFlowProject = (
-  project: CutNFlowProjectV1,
-  storage?: CutNFlowProjectStorage,
-  options: SaveCutNFlowProjectOptions = {}
-): ParseResult<CutNFlowProjectV1> => {
-  const parsed = parseCutNFlowProject(project)
+export const saveKyzaProject = (
+  project: KyzaProjectV1,
+  storage?: KyzaProjectStorage,
+  options: SaveKyzaProjectOptions = {}
+): ParseResult<KyzaProjectV1> => {
+  const parsed = parseKyzaProject(project)
   if (parsed.ok === false) {
     return parsed
   }
@@ -297,9 +298,9 @@ export const saveCutNFlowProject = (
     : { ok: false, errors: written.errors }
 }
 
-export const deleteCutNFlowProject = (
+export const deleteKyzaProject = (
   id: string,
-  storage?: CutNFlowProjectStorage
+  storage?: KyzaProjectStorage
 ): ParseResult<boolean> => {
   const resolved = resolveStorage(storage)
   if (resolved.ok === false) {
@@ -322,18 +323,18 @@ export const deleteCutNFlowProject = (
     : { ok: false, errors: written.errors }
 }
 
-export const duplicateCutNFlowProject = (
+export const duplicateKyzaProject = (
   id: string,
-  storage?: CutNFlowProjectStorage,
+  storage?: KyzaProjectStorage,
   duplicateName?: string
-): ParseResult<CutNFlowProjectV1> => {
-  const loaded = loadCutNFlowProject(id, storage)
+): ParseResult<KyzaProjectV1> => {
+  const loaded = loadKyzaProject(id, storage)
   if (loaded.ok === false) {
     return loaded
   }
   const source = loaded.value
-  const duplicateId = createCutNFlowProjectId()
-  const duplicate = createCutNFlowProjectV1({
+  const duplicateId = createKyzaProjectId()
+  const duplicate = createKyzaProjectV1({
     id: duplicateId,
     name: duplicateName?.trim() || `${source.name} Copy`,
     metadata: source.metadata,
@@ -350,38 +351,38 @@ export const duplicateCutNFlowProject = (
     artwork: source.artwork,
     exportSettings: source.exportSettings
   })
-  return saveCutNFlowProject(
+  return saveKyzaProject(
     duplicate.cutter ? syncLegacySpecFromElementRefs(duplicate) : duplicate,
     storage
   )
 }
 
-export const exportCutNFlowProjectJson = (
-  project: CutNFlowProjectV1
+export const exportKyzaProjectJson = (
+  project: KyzaProjectV1
 ): ParseResult<string> => {
-  const parsed = parseCutNFlowProject(project)
+  const parsed = parseKyzaProject(project)
   if (parsed.ok === false) {
     return parsed
   }
   try {
     return { ok: true, value: JSON.stringify(parsed.value, null, 2) }
   } catch {
-    return { ok: false, errors: ["Unable to serialise the CutNFlow project."] }
+    return { ok: false, errors: ["Unable to serialise the Kyza project."] }
   }
 }
 
-export const importCutNFlowProjectJson = (
+export const importKyzaProjectJson = (
   json: string,
-  storage?: CutNFlowProjectStorage
-): ParseResult<CutNFlowProjectV1> => {
+  storage?: KyzaProjectStorage
+): ParseResult<KyzaProjectV1> => {
   let value: unknown
   try {
     value = JSON.parse(json)
   } catch {
-    return { ok: false, errors: ["Imported CutNFlow project is not valid JSON."] }
+    return { ok: false, errors: ["Imported Kyza project is not valid JSON."] }
   }
-  const parsed = parseCutNFlowProject(value)
+  const parsed = parseKyzaProject(value)
   return parsed.ok === true
-    ? saveCutNFlowProject(parsed.value, storage)
+    ? saveKyzaProject(parsed.value, storage)
     : parsed
 }

@@ -4,41 +4,41 @@
 :root body #customisation-panel .file-menu-wrap { display: flex; flex-direction: column; gap: 14px; }
 :root body #customisation-panel .file-menu-popout { position: static; display: flex; gap: 8px; width: auto; padding: 0; background: none; box-shadow: none; border: 0; flex-wrap: wrap; }
 :root body #customisation-panel .file-menu-trigger { align-self: flex-start; padding: 8px 12px; font-size: 12px; text-transform: none; }
-:root body #customisation-panel .file-export-readiness { display: grid; gap: 12px; color: var(--klyro-text); font-size: 13px; }
+:root body #customisation-panel .file-export-readiness { display: grid; gap: 12px; color: var(--kyza-text); font-size: 13px; }
 :root body #customisation-panel .file-export-readiness > strong { font-size: 16px; font-weight: 650; }
 :root body #customisation-panel .export-validation-counts { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
-:root body #customisation-panel .export-count { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid var(--klyro-border); border-radius: 13px; background: var(--klyro-panel-raised); font-size: 20px; font-variant-numeric: tabular-nums; box-shadow: var(--klyro-control-shadow); }
+:root body #customisation-panel .export-count { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px; border: 1px solid var(--kyza-border); border-radius: 13px; background: var(--kyza-panel-raised); font-size: 20px; font-variant-numeric: tabular-nums; box-shadow: var(--kyza-control-shadow); }
 :root body #customisation-panel .export-count svg { width: 22px; height: 22px; }
-:root body #customisation-panel .export-count-critical { color: var(--klyro-accent-text); }
-:root body #customisation-panel .export-count-warning { color: var(--klyro-warning); }
-:root body #customisation-panel .export-count-advisory { color: var(--klyro-text-muted); }
-:root body #customisation-panel .export-count-pass { color: var(--klyro-success); }
-:root body #customisation-panel .export-review-notes { border: 1px solid var(--klyro-border); border-radius: 12px; padding: 10px 12px; background: var(--klyro-panel-soft); }
+:root body #customisation-panel .export-count-critical { color: var(--kyza-accent-text); }
+:root body #customisation-panel .export-count-warning { color: var(--kyza-warning); }
+:root body #customisation-panel .export-count-advisory { color: var(--kyza-text-muted); }
+:root body #customisation-panel .export-count-pass { color: var(--kyza-success); }
+:root body #customisation-panel .export-review-notes { border: 1px solid var(--kyza-border); border-radius: 12px; padding: 10px 12px; background: var(--kyza-panel-soft); }
 :root body #customisation-panel .export-review-notes summary { font-size: 12px; font-weight: 600; cursor: pointer; }
-:root body #customisation-panel .export-review-notes ul { margin: 10px 0 0; padding-left: 18px; color: var(--klyro-text-muted); line-height: 1.65; font-size: 12px; }
-:root body #customisation-panel .file-export-package { display: grid; gap: 4px; padding: 12px; border-radius: 12px; margin: 0; background: var(--klyro-panel-soft); font-size: 12px; }
+:root body #customisation-panel .export-review-notes ul { margin: 10px 0 0; padding-left: 18px; color: var(--kyza-text-muted); line-height: 1.65; font-size: 12px; }
+:root body #customisation-panel .file-export-package { display: grid; gap: 4px; padding: 12px; border-radius: 12px; margin: 0; background: var(--kyza-panel-soft); font-size: 12px; }
 :root body #customisation-panel .file-export-package[hidden] { display: none; }
-:root body #customisation-panel .file-export-package span { color: var(--klyro-text-muted); }
+:root body #customisation-panel .file-export-package span { color: var(--kyza-text-muted); }
 :root body #customisation-panel .export-format-selection { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; border: 0; padding: 0; margin: 0; min-width: 0; }
 :root body #customisation-panel .export-format-selection legend { font-weight: 650; font-size: 14px; margin-bottom: 12px; }
-:root body #customisation-panel .export-format-card { display: flex; align-items: center; gap: 10px; border: 1px solid var(--klyro-border); border-radius: 13px; padding: 12px; background: var(--klyro-panel-raised); box-shadow: var(--klyro-control-shadow); cursor: pointer; }
-:root body #customisation-panel .export-format-card:has(input:checked) { border-color: var(--klyro-accent-text); background: color-mix(in srgb,var(--klyro-brand) 7%,var(--klyro-panel-raised)); }
+:root body #customisation-panel .export-format-card { display: flex; align-items: center; gap: 10px; border: 1px solid var(--kyza-border); border-radius: 13px; padding: 12px; background: var(--kyza-panel-raised); box-shadow: var(--kyza-control-shadow); cursor: pointer; }
+:root body #customisation-panel .export-format-card:has(input:checked) { border-color: var(--kyza-accent-text); background: color-mix(in srgb,var(--kyza-brand) 7%,var(--kyza-panel-raised)); }
 :root body #customisation-panel .export-format-card:has(input:disabled) { opacity: .55; cursor: default; }
-:root body #customisation-panel .export-format-card svg { width: 22px; height: 22px; flex: 0 0 22px; color: var(--klyro-text-muted); }
-:root body #customisation-panel .export-format-card input { width: 16px; height: 16px; flex: 0 0 16px; accent-color: var(--klyro-brand); }
+:root body #customisation-panel .export-format-card svg { width: 22px; height: 22px; flex: 0 0 22px; color: var(--kyza-text-muted); }
+:root body #customisation-panel .export-format-card input { width: 16px; height: 16px; flex: 0 0 16px; accent-color: var(--kyza-brand); }
 :root body #customisation-panel .export-format-card strong { display: block; font-size: 12px; font-weight: 600; }
-:root body #customisation-panel .export-format-card small { display: block; margin-top: 3px; color: var(--klyro-text-subtle); font-size: 11px; }
-:root body #customisation-panel .export-planned-note { grid-column: 1/-1; color: var(--klyro-text-subtle); font-size: 11px; }
-:root body #customisation-panel .export-future-formats { grid-column: 1/-1; border-top: 1px solid var(--klyro-border); padding-top: 12px; }
-:root body #customisation-panel .export-future-formats summary { font-size: 12px; color: var(--klyro-text-muted); cursor: pointer; }
+:root body #customisation-panel .export-format-card small { display: block; margin-top: 3px; color: var(--kyza-text-subtle); font-size: 11px; }
+:root body #customisation-panel .export-planned-note { grid-column: 1/-1; color: var(--kyza-text-subtle); font-size: 11px; }
+:root body #customisation-panel .export-future-formats { grid-column: 1/-1; border-top: 1px solid var(--kyza-border); padding-top: 12px; }
+:root body #customisation-panel .export-future-formats summary { font-size: 12px; color: var(--kyza-text-muted); cursor: pointer; }
 :root body #customisation-panel .export-future-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding-top: 12px; }
-:root body #customisation-panel .export-error-override { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid color-mix(in srgb,var(--klyro-accent-text) 42%,var(--klyro-border)); border-radius: 12px; background: color-mix(in srgb,var(--klyro-brand) 6%,var(--klyro-panel-soft)); cursor: pointer; }
+:root body #customisation-panel .export-error-override { display: flex; align-items: flex-start; gap: 10px; padding: 12px; border: 1px solid color-mix(in srgb,var(--kyza-accent-text) 42%,var(--kyza-border)); border-radius: 12px; background: color-mix(in srgb,var(--kyza-brand) 6%,var(--kyza-panel-soft)); cursor: pointer; }
 :root body #customisation-panel .export-error-override[hidden] { display: none; }
-:root body #customisation-panel .export-error-override input { width: 17px; height: 17px; margin-top: 1px; accent-color: var(--klyro-brand); }
+:root body #customisation-panel .export-error-override input { width: 17px; height: 17px; margin-top: 1px; accent-color: var(--kyza-brand); }
 :root body #customisation-panel .export-error-override span { display: grid; gap: 3px; }
 :root body #customisation-panel .export-error-override strong { font-size: 13px; }
-:root body #customisation-panel .export-error-override small { color: var(--klyro-text-muted); font-size: 11px; line-height: 1.45; }
-:root body #customisation-panel .export-selected-button { align-self: flex-end; border: 0; color: white; background: var(--klyro-brand); padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: var(--klyro-control-shadow); }
+:root body #customisation-panel .export-error-override small { color: var(--kyza-text-muted); font-size: 11px; line-height: 1.45; }
+:root body #customisation-panel .export-selected-button { align-self: flex-end; border: 0; color: white; background: var(--kyza-brand); padding: 11px 18px; border-radius: 12px; font-size: 13px; font-weight: 600; box-shadow: var(--kyza-control-shadow); }
 :root body #customisation-panel .export-selected-button:disabled { opacity: .45; cursor: not-allowed; }
-:root body #customisation-panel .export-selection-feedback { color: var(--klyro-text-muted); font-size: 11px; line-height: 1.5; margin: 0; }
+:root body #customisation-panel .export-selection-feedback { color: var(--kyza-text-muted); font-size: 11px; line-height: 1.5; margin: 0; }
 @media (max-width: 480px) { :root body #customisation-panel :is(.export-format-selection,.export-future-grid) { grid-template-columns: 1fr; } :root body #customisation-panel .export-count { padding: 8px; gap: 6px; } }

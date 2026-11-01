@@ -23,4 +23,4 @@ This log records implementation, merge and Airtable update status for the V5 ame
 - DOY gusset: the entered Gusset value now measures the clear span on each side of the fold. The bottom seal allowance remains outside that span. At Gusset 40 mm with 7.5 mm bottom seals, the widest oval cross-section reads side arc, 7.5 mm, 7.5 mm, 40 mm, 40 mm, 7.5 mm, 7.5 mm, side arc.
 - The stored centre footprint, drawing width, oval/arc syncing and eyemark/cutout zones now follow that definition. Existing DOY project data may need a compatibility review because a stored centre width from an older version can represent the prior, narrower interpretation.
 - Verification: full 28-part verification suite and 23 focused browser checks passed.
-- Airtable: evidence added to CNF-0801, CNF-2304, CNF-1007, CNF-2517 and CNF-2521 on 23 October 2026. Their existing QA and engineering status was retained.
+- Airtable: evidence added to KYZA-0801, KYZA-2304, KYZA-1007, KYZA-2517 and KYZA-2521 on 23 October 2026. Their existing QA and engineering status was retained.

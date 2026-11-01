@@ -6,10 +6,10 @@ import {
 import { createEmptyPackGenDraft } from "../apps/web/src/packGen/packGenProjectService"
 import { loadRequestedProject } from "../apps/web/src/project/projectOpenService"
 import {
-  CUTNFLOW_PROJECT_STORAGE_KEY,
-  listCutNFlowProjects,
-  parseCutNFlowProject,
-  type CutNFlowProjectStorage,
+  KYZA_PROJECT_STORAGE_KEY,
+  listKyzaProjects,
+  parseKyzaProject,
+  type KyzaProjectStorage,
 } from "../packages/cutter-engine/project"
 
 function assert(condition: boolean, message = "Assertion failed") {
@@ -24,7 +24,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message = "Values d
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   readonly values = new Map<string, string>()
   writes = 0
   reads = 0
@@ -51,7 +51,7 @@ class MemoryStorage implements CutNFlowProjectStorage {
 const packGenRequest: CreateProjectRequest = {
   projectId: "project / pack-gen?1",
   projectName: "Pack Gen Parent",
-  customerOrBrand: "Klyro Foods",
+  customerOrBrand: "Kyza Foods",
   productName: "Bakery Bar",
   jobReference: "JOB-603",
   description: "Single serve wrapped product",
@@ -67,7 +67,7 @@ assertEqual(packGenCreated.project.id, packGenRequest.projectId)
 assertEqual(packGenCreated.project.revision, 1)
 assertEqual(packGenCreated.project.cutter, undefined, "Pack Gen creation must not invent Cutter geometry.")
 assertJsonEqual(packGenCreated.project.metadata, {
-  customerOrBrand: "Klyro Foods",
+  customerOrBrand: "Kyza Foods",
   productName: "Bakery Bar",
   jobReference: "JOB-603",
   description: "Single serve wrapped product",
@@ -92,7 +92,7 @@ const attachedDraft = {
 const attachedDraftProject = createCanonicalProject({
   projectId: attachedDraft.id,
   projectName: attachedDraft.name,
-  customerOrBrand: "Klyro Foods",
+  customerOrBrand: "Kyza Foods",
   jobReference: "ATTACHED-101",
   startingRoute: "pack-gen",
   packType: "flowwrap",
@@ -105,7 +105,7 @@ assertEqual(attachedDraftStorage.writes, 1, "Attaching a Pack Gen draft must cre
 const repeatedAttachedDraft = createCanonicalProject({
   projectId: attachedDraft.id,
   projectName: attachedDraft.name,
-  customerOrBrand: "Klyro Foods",
+  customerOrBrand: "Kyza Foods",
   jobReference: "ATTACHED-101",
   startingRoute: "pack-gen",
   packType: "flowwrap",
@@ -117,7 +117,7 @@ assertEqual(attachedDraftStorage.writes, 1, "Retrying attached draft creation mu
 const repeated = createCanonicalProject(packGenRequest, { storage: packGenStorage })
 assert(repeated.ok, "A repeated confirmed submission must resolve to its existing Project.")
 assertEqual(packGenStorage.writes, 1, "Idempotent retry must not write a second Project.")
-const onePackGenProject = listCutNFlowProjects(packGenStorage)
+const onePackGenProject = listKyzaProjects(packGenStorage)
 assert(onePackGenProject.ok && onePackGenProject.value.length === 1)
 
 const omittedMetadataStorage = new MemoryStorage()
@@ -136,7 +136,7 @@ const oldProject = {
   createdAt: "2026-07-19T10:00:00.000Z",
   updatedAt: "2026-07-19T10:00:00.000Z",
 }
-const parsedOldProject = parseCutNFlowProject(oldProject)
+const parsedOldProject = parseKyzaProject(oldProject)
 assert(parsedOldProject.ok, "Older Projects without metadata must remain valid.")
 
 const cutterStorage = new MemoryStorage()
@@ -171,7 +171,7 @@ const sameNameB = createCanonicalProject({
   startingRoute: "pack-gen",
 }, { storage: sameNameStorage })
 assert(sameNameA.ok && sameNameB.ok)
-const sameNames = listCutNFlowProjects(sameNameStorage)
+const sameNames = listKyzaProjects(sameNameStorage)
 assert(sameNames.ok && sameNames.value.length === 2, "Project name must not be used as identity.")
 
 const noStorage = createCanonicalProject({
@@ -188,7 +188,7 @@ const writeFailure = createCanonicalProject({
   startingRoute: "pack-gen",
 }, { storage: writeFailureStorage })
 assert(writeFailure.ok === false)
-assertEqual(writeFailureStorage.values.has(CUTNFLOW_PROJECT_STORAGE_KEY), false)
+assertEqual(writeFailureStorage.values.has(KYZA_PROJECT_STORAGE_KEY), false)
 
 const unsupported = createCanonicalProject({
   projectId: "unsupported-pack",

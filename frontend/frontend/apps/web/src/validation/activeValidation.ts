@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../../../../packages/cutter-engine/project"
+import type { KyzaProjectV1 } from "../../../../packages/cutter-engine/project"
 import {
   BETA_CUTTER_RULESET_VERSION,
   getEffectiveValidationStatus,
@@ -46,7 +46,7 @@ export type StructuredValidationState = {
 }
 
 export type ProjectValidationSnapshot = {
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   run: ValidationRun
   validation: StructuredValidationState
   reused: boolean
@@ -61,7 +61,7 @@ const parseIssueLines = (value: string | null) =>
     : []
 
 export const getStructuredValidationState = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   run: ValidationRun = validateProjectCutter(project, { trigger: "live" }),
 ): StructuredValidationState => {
   const issueValidation = validationRunToLegacyResult(run)
@@ -103,7 +103,7 @@ export const getStructuredValidationState = (
 }
 
 export const getProjectValidationSnapshot = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: {
     trigger?: ValidationTrigger
     force?: boolean

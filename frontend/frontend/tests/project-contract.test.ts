@@ -2,20 +2,20 @@ import { packModules } from "../apps/web/src/packs"
 import { plainWebPack } from "../apps/web/src/packs/plainWebPack"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  CUTNFLOW_PROJECT_COORDINATE_SPACE,
-  CUTNFLOW_PROJECT_STORAGE_KEY,
-  CUTNFLOW_PROJECT_UNITS,
-  createCutNFlowProjectV1,
-  duplicateCutNFlowProject,
-  exportCutNFlowProjectJson,
-  importCutNFlowProjectJson,
+  KYZA_PROJECT_COORDINATE_SPACE,
+  KYZA_PROJECT_STORAGE_KEY,
+  KYZA_PROJECT_UNITS,
+  createKyzaProjectV1,
+  duplicateKyzaProject,
+  exportKyzaProjectJson,
+  importKyzaProjectJson,
   legacySpecFromProject,
-  listCutNFlowProjects,
-  loadCutNFlowProject,
-  parseCutNFlowProject,
+  listKyzaProjects,
+  loadKyzaProject,
+  parseKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage
+  saveKyzaProject,
+  type KyzaProjectStorage
 } from "../packages/cutter-engine/project"
 
 function assert(condition: boolean, message: string) {
@@ -28,7 +28,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message: string) {
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
 
   getItem(key: string) {
@@ -92,9 +92,9 @@ const project = projectFromLegacySpec("pillow-pack", "Contract Test", oneEyemark
 
 assert(project.schemaVersion === 1, "Project schema version must be 1.")
 assert(project.revision === 1, "New project revision must start at 1.")
-assert(project.cutter.units === CUTNFLOW_PROJECT_UNITS, "Project units must be mm.")
+assert(project.cutter.units === KYZA_PROJECT_UNITS, "Project units must be mm.")
 assert(
-  project.cutter.coordinateSpace === CUTNFLOW_PROJECT_COORDINATE_SPACE,
+  project.cutter.coordinateSpace === KYZA_PROJECT_COORDINATE_SPACE,
   "Project coordinate space must remain legacy-flowwrap."
 )
 
@@ -139,7 +139,7 @@ const projectWithDraft = projectFromLegacySpec(
     }
   }
 )
-const parsedProjectWithDraft = parseCutNFlowProject(projectWithDraft)
+const parsedProjectWithDraft = parseKyzaProject(projectWithDraft)
 assert(parsedProjectWithDraft.ok, "Project contract must accept Pack Generator draft metadata.")
 if (parsedProjectWithDraft.ok) {
   assert(
@@ -148,30 +148,30 @@ if (parsedProjectWithDraft.ok) {
   )
 }
 
-const validResult = parseCutNFlowProject(project)
-assert(validResult.ok, "A valid CutNFlow project must parse.")
+const validResult = parseKyzaProject(project)
+assert(validResult.ok, "A valid Kyza project must parse.")
 if (validResult.ok) {
   assert(validResult.value.metadata === undefined, "Older Cutter Projects without metadata must remain unchanged.")
 }
 
-const malformedResult = parseCutNFlowProject({
+const malformedResult = parseKyzaProject({
   ...project,
   cutter: { ...project.cutter, units: "in" }
 })
 assert(!malformedResult.ok, "A project with non-mm units must be rejected.")
 
-const missingIdResult = parseCutNFlowProject({ ...project, id: undefined })
+const missingIdResult = parseKyzaProject({ ...project, id: undefined })
 assert(missingIdResult.ok, "A missing project-level ID may be generated safely.")
 if (missingIdResult.ok) {
   assert(missingIdResult.value.id.length > 0, "Generated project ID must not be empty.")
 }
-const missingRevisionResult = parseCutNFlowProject({ ...project, revision: undefined })
+const missingRevisionResult = parseKyzaProject({ ...project, revision: undefined })
 assert(missingRevisionResult.ok, "A Phase 1 project without revision must migrate to revision 1.")
 if (missingRevisionResult.ok) {
   assert(missingRevisionResult.value.revision === 1, "Missing revision must normalise to 1.")
 }
 assert(
-  !parseCutNFlowProject({ ...project, id: 42 }).ok,
+  !parseKyzaProject({ ...project, id: 42 }).ok,
   "An invalid project ID type must be rejected rather than replaced."
 )
 
@@ -191,7 +191,7 @@ const twoEyemarkProject = projectFromLegacySpec(
     updatedAt: timestamp
   }
 )
-const twoEyemarkParsed = parseCutNFlowProject(
+const twoEyemarkParsed = parseKyzaProject(
   JSON.parse(JSON.stringify(twoEyemarkProject))
 )
 assert(twoEyemarkParsed.ok, "Two-eyemark project must survive JSON parsing.")
@@ -203,7 +203,7 @@ if (twoEyemarkParsed.ok) {
   )
 }
 
-const legacyWorkspaceWithoutTrim = createCutNFlowProjectV1({
+const legacyWorkspaceWithoutTrim = createKyzaProjectV1({
   ...project,
   projectDraft: {
     id: project.id,
@@ -236,7 +236,7 @@ const legacyWorkspaceWithoutTrim = createCutNFlowProjectV1({
     history: [],
   },
 })
-const legacyWorkspaceWithoutTrimParsed = parseCutNFlowProject(JSON.parse(JSON.stringify(legacyWorkspaceWithoutTrim)))
+const legacyWorkspaceWithoutTrimParsed = parseKyzaProject(JSON.parse(JSON.stringify(legacyWorkspaceWithoutTrim)))
 assert(legacyWorkspaceWithoutTrimParsed.ok, "Stored Pack Gen workspaces created before trimMm must remain readable.")
 
 const registeredPackModules = [...packModules, plainWebPack]
@@ -247,7 +247,7 @@ registeredPackModules.forEach(packModule => {
     createdAt: timestamp,
     updatedAt: timestamp
   })
-  const parsed = parseCutNFlowProject(JSON.parse(JSON.stringify(wrapped)))
+  const parsed = parseKyzaProject(JSON.parse(JSON.stringify(wrapped)))
   assert(parsed.ok, `Registered pack ${packModule.id} must round-trip.`)
   if (parsed.ok) {
     assert(parsed.value.cutter.packType === packModule.id, "Pack type must be preserved.")
@@ -265,11 +265,11 @@ registeredPackModules.forEach(packModule => {
 })
 
 const storage = new MemoryStorage()
-const saved = saveCutNFlowProject(project, storage)
+const saved = saveKyzaProject(project, storage)
 assert(saved.ok, "Project must save through the versioned storage boundary.")
-assert(storage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) !== null, "Versioned key must be used.")
+assert(storage.getItem(KYZA_PROJECT_STORAGE_KEY) !== null, "Versioned key must be used.")
 
-const loaded = loadCutNFlowProject(project.id, storage)
+const loaded = loadKyzaProject(project.id, storage)
 assert(loaded.ok, "Saved project must load.")
 if (loaded.ok) {
   assert(loaded.value.cutter.packType === "pillow-pack", "Loaded pack type must persist.")
@@ -280,7 +280,7 @@ if (loaded.ok) {
   )
 }
 
-const duplicate = duplicateCutNFlowProject(project.id, storage)
+const duplicate = duplicateKyzaProject(project.id, storage)
 assert(duplicate.ok, "Saved project must duplicate.")
 if (duplicate.ok) {
   assert(duplicate.value.id !== project.id, "Duplicate must receive a new project ID.")
@@ -291,32 +291,32 @@ if (duplicate.ok) {
   )
 }
 
-const listed = listCutNFlowProjects(storage)
+const listed = listKyzaProjects(storage)
 assert(listed.ok && listed.value.length === 2, "Storage must contain source and duplicate.")
 
 const migrationStorage = new MemoryStorage()
 const projectWithoutId = { ...project } as Record<string, unknown>
 delete projectWithoutId.id
 migrationStorage.setItem(
-  CUTNFLOW_PROJECT_STORAGE_KEY,
+  KYZA_PROJECT_STORAGE_KEY,
   JSON.stringify([projectWithoutId])
 )
-const migratedList = listCutNFlowProjects(migrationStorage)
+const migratedList = listKyzaProjects(migrationStorage)
 assert(migratedList.ok, "Storage may safely migrate a missing project-level ID.")
 if (migratedList.ok) {
   const generatedId = migratedList.value[0]?.id
-  const reloadedList = listCutNFlowProjects(migrationStorage)
+  const reloadedList = listKyzaProjects(migrationStorage)
   assert(
     reloadedList.ok && reloadedList.value[0]?.id === generatedId,
     "A generated storage ID must be persisted and remain stable."
   )
 }
 
-const exported = exportCutNFlowProjectJson(twoEyemarkProject)
+const exported = exportKyzaProjectJson(twoEyemarkProject)
 assert(exported.ok, "Valid project must export as JSON.")
 if (exported.ok) {
   const importStorage = new MemoryStorage()
-  const imported = importCutNFlowProjectJson(exported.value, importStorage)
+  const imported = importKyzaProjectJson(exported.value, importStorage)
   assert(imported.ok, "Exported project JSON must import through validation.")
   if (imported.ok) {
     assertJsonEqual(
@@ -328,7 +328,7 @@ if (exported.ok) {
 }
 
 assert(
-  !importCutNFlowProjectJson("{bad json", new MemoryStorage()).ok,
+  !importKyzaProjectJson("{bad json", new MemoryStorage()).ok,
   "Malformed JSON import must return an error result."
 )
 
@@ -337,11 +337,11 @@ const appearanceSpec: FlowwrapSpec = {
   elementAppearance: { bbe: { color: "#9e1316", thickness: .5, lineStyle: "dashed", opacity: .8 }, windows: { fill: "hatch" }, main: { fontSize: 6 } }
 }
 const appearanceProject = projectFromLegacySpec("flowwrap", "Appearance round-trip", appearanceSpec)
-const appearanceExport = exportCutNFlowProjectJson(appearanceProject)
+const appearanceExport = exportKyzaProjectJson(appearanceProject)
 assert(appearanceExport.ok, "Appearance project must export.")
 if (appearanceExport.ok) {
-  const appearanceImport = importCutNFlowProjectJson(appearanceExport.value, new MemoryStorage())
+  const appearanceImport = importKyzaProjectJson(appearanceExport.value, new MemoryStorage())
   assert(appearanceImport.ok, "Appearance JSON must import through the existing contract.")
   if (appearanceImport.ok) assertJsonEqual(legacySpecFromProject(appearanceImport.value), appearanceSpec, "Appearance and geometry must survive save/export/import.")
 }
-console.log("CutNFlow project contract tests passed.")
+console.log("Kyza project contract tests passed.")

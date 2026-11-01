@@ -1,13 +1,13 @@
 import type { PackGenRecommendation } from "../../../../packages/ai-engine"
 import {
-  createCutNFlowProjectV1,
-  loadCutNFlowProject,
-  saveCutNFlowProject,
+  createKyzaProjectV1,
+  loadKyzaProject,
+  saveKyzaProject,
   toEnginePackTypeId,
   toPackSpecificationPackTypeId,
-  type CutNFlowProjectDraftV1,
-  type CutNFlowProjectStorage,
-  type CutNFlowProjectV1,
+  type KyzaProjectDraftV1,
+  type KyzaProjectStorage,
+  type KyzaProjectV1,
   type PackSpecificationCompletionV1,
   type PackSpecificationFieldsV1,
   type PackSpecificationValueV1,
@@ -16,7 +16,7 @@ import { createCanonicalProject, createProjectSubmissionId } from "../project/pr
 import { createCutterProjectUrl, parseRequestedProjectId } from "../project/projectNavigation"
 import {
   createCutterSpecFromConfirmedPackValues,
-  getCnFTechPackSpecificationDefaults,
+  getKyzaTechPackSpecificationDefaults,
   type PackGenCutterSpecificationInputs,
 } from "./packGenHandoff"
 import {
@@ -112,7 +112,7 @@ const withPolicyDefaults = (
     mutable[key] = {
       value,
       state: "proposed",
-      source: "cnf-tech",
+      source: "kyza-tech",
       confidence: "high",
       note: "Deterministic default from the registered pack module.",
     }
@@ -121,7 +121,7 @@ const withPolicyDefaults = (
 }
 
 export function calculatePackSpecificationCompletion(
-  draft: Pick<CutNFlowProjectDraftV1, "productPrompt" | "workspace">,
+  draft: Pick<KyzaProjectDraftV1, "productPrompt" | "workspace">,
 ): PackSpecificationCompletionV1 {
   const workspace = draft.workspace
   if (!workspace) {
@@ -170,7 +170,7 @@ export function calculatePackSpecificationCompletion(
   }
 }
 
-const withCalculatedCompletion = (draft: CutNFlowProjectDraftV1): CutNFlowProjectDraftV1 => {
+const withCalculatedCompletion = (draft: KyzaProjectDraftV1): KyzaProjectDraftV1 => {
   if (!draft.workspace) return draft
   const next = {
     ...draft,
@@ -184,9 +184,9 @@ const withCalculatedCompletion = (draft: CutNFlowProjectDraftV1): CutNFlowProjec
 }
 
 export function createEmptyPackGenDraft(
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   createdAt = project.updatedAt,
-): CutNFlowProjectDraftV1 {
+): KyzaProjectDraftV1 {
   let fields = createEmptyPackSpecificationFields()
   if (project.metadata?.requestedPackType) {
     const packType = toPackSpecificationPackTypeId(project.metadata.requestedPackType)
@@ -226,7 +226,7 @@ export function createEmptyPackGenDraft(
 
 export function createStandalonePackGenDraft(
   createdAt = new Date().toISOString(),
-): CutNFlowProjectDraftV1 {
+): KyzaProjectDraftV1 {
   return withCalculatedCompletion({
     id: "standalone-pack-gen",
     name: "Standalone Pack Gen",
@@ -254,9 +254,9 @@ export function createStandalonePackGenDraft(
 }
 
 const legacyWorkspace = (
-  project: CutNFlowProjectV1,
-  draft: CutNFlowProjectDraftV1,
-): CutNFlowProjectDraftV1 => {
+  project: KyzaProjectV1,
+  draft: KyzaProjectDraftV1,
+): KyzaProjectDraftV1 => {
   if (draft.workspace) {
     const fields = {
       ...createEmptyPackSpecificationFields(),
@@ -323,13 +323,13 @@ const legacyWorkspace = (
 }
 
 export type PackGenProjectLoadResult =
-  | { ok: true; mode: "standalone"; draft: CutNFlowProjectDraftV1 }
-  | { ok: true; mode: "project"; project: CutNFlowProjectV1; draft: CutNFlowProjectDraftV1 }
+  | { ok: true; mode: "standalone"; draft: KyzaProjectDraftV1 }
+  | { ok: true; mode: "project"; project: KyzaProjectV1; draft: KyzaProjectDraftV1 }
   | { ok: false; reason: "invalid-id" | "not-found" | "corrupt"; message: string }
 
 export function loadPackGenProject(
   searchParams: URLSearchParams | string,
-  storage?: CutNFlowProjectStorage,
+  storage?: KyzaProjectStorage,
 ): PackGenProjectLoadResult {
   const requested = parseRequestedProjectId(searchParams)
   if (requested.status === "absent") {
@@ -338,7 +338,7 @@ export function loadPackGenProject(
   if (requested.status === "invalid") {
     return { ok: false, reason: "invalid-id", message: requested.message }
   }
-  const loaded = loadCutNFlowProject(requested.projectId, storage)
+  const loaded = loadKyzaProject(requested.projectId, storage)
   if (loaded.ok === false) {
     const notFound = loaded.errors.some((error) => error.includes("was not found"))
     return {
@@ -371,10 +371,10 @@ const proposedValue = <T>(value: T | undefined, recommendation: PackGenRecommend
 )
 
 export function applyRecommendationToPackGenDraft(
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   recommendation: PackGenRecommendation,
   prompt: string,
-): CutNFlowProjectDraftV1 {
+): KyzaProjectDraftV1 {
   const workspace = draft.workspace ?? createEmptyPackGenDraft({
     schemaVersion: 1,
     id: draft.id,
@@ -389,7 +389,7 @@ export function applyRecommendationToPackGenDraft(
   ) => workspace.fields[field]?.state === "confirmed" ? workspace.fields[field] : value
   const signals = recommendation.extractedSignals
   const suggestedSubstrate = recommendation.substrateSuggestion ?? signals.substrateHint
-  const cnfTechDefaults = getCnFTechPackSpecificationDefaults(recommendation.packType, draft.id)
+  const kyzaTechDefaults = getKyzaTechPackSpecificationDefaults(recommendation.packType, draft.id)
   const policyFields = withPolicyDefaults(workspace.fields, recommendation.packType, true)
   const refreshStandaloneFinishedDimensions = draft.id === "standalone-pack-gen"
   const fields: PackSpecificationFieldsV1 = {
@@ -431,12 +431,12 @@ export function applyRecommendationToPackGenDraft(
     ),
     minimumSafeZoneMm: setUnlessConfirmed(
       "minimumSafeZoneMm",
-      cnfTechDefaults?.minimumSafeZoneMm === undefined
+      kyzaTechDefaults?.minimumSafeZoneMm === undefined
         ? missingValue<number>()
         : {
-            value: cnfTechDefaults.minimumSafeZoneMm,
+            value: kyzaTechDefaults.minimumSafeZoneMm,
             state: "proposed",
-            source: "cnf-tech",
+            source: "kyza-tech",
             confidence: "high",
             note: "Deterministic pack-service default.",
           },
@@ -458,10 +458,10 @@ export function applyRecommendationToPackGenDraft(
 }
 
 export function setPackGenField(
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   field: PackGenWorkspaceField,
   value: string | number | boolean | undefined,
-): CutNFlowProjectDraftV1 {
+): KyzaProjectDraftV1 {
   if (!draft.workspace) return draft
   const normalizedValue = typeof value === "string" ? value.trim() || undefined : value
   const normalized = field === "packType" && typeof normalizedValue === "string"
@@ -482,7 +482,7 @@ export function setPackGenField(
   })
 }
 
-export function acceptProposedPackGenValues(draft: CutNFlowProjectDraftV1): CutNFlowProjectDraftV1 {
+export function acceptProposedPackGenValues(draft: KyzaProjectDraftV1): KyzaProjectDraftV1 {
   if (!draft.workspace) return draft
   const fields = Object.fromEntries(Object.entries(draft.workspace.fields).map(([field, entry]) => [
     field,
@@ -495,9 +495,9 @@ export function acceptProposedPackGenValues(draft: CutNFlowProjectDraftV1): CutN
 }
 
 export function setPackGenReviewState(
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   input: { assumptionsReviewed?: boolean; unresolvedQuestions?: string[]; prompt?: string },
-): CutNFlowProjectDraftV1 {
+): KyzaProjectDraftV1 {
   if (!draft.workspace) return draft
   return withCalculatedCompletion({
     ...draft,
@@ -515,27 +515,27 @@ export function setPackGenReviewState(
 }
 
 type PackGenPersistenceDependencies = {
-  storage?: CutNFlowProjectStorage
+  storage?: KyzaProjectStorage
   now?: () => string
   createProjectId?: () => string
 }
 
 export type PackGenSaveResult =
-  | { ok: true; project: CutNFlowProjectV1; draft: CutNFlowProjectDraftV1 }
+  | { ok: true; project: KyzaProjectV1; draft: KyzaProjectDraftV1 }
   | { ok: false; reason: "not-found" | "stale" | "save-failed"; errors: string[] }
 
 const saveAndVerify = (
-  project: CutNFlowProjectV1,
-  storage?: CutNFlowProjectStorage,
+  project: KyzaProjectV1,
+  storage?: KyzaProjectStorage,
   expectedRevision?: number,
-): { ok: true; project: CutNFlowProjectV1 } | { ok: false; errors: string[] } => {
-  const saved = saveCutNFlowProject(
+): { ok: true; project: KyzaProjectV1 } | { ok: false; errors: string[] } => {
+  const saved = saveKyzaProject(
     project,
     storage,
     expectedRevision === undefined ? {} : { expectedRevision },
   )
   if (saved.ok === false) return saved
-  const verified = loadCutNFlowProject(project.id, storage)
+  const verified = loadKyzaProject(project.id, storage)
   if (verified.ok === false) return { ok: false, errors: ["The Project was not confirmed after saving.", ...verified.errors] }
   if (JSON.stringify(verified.value) !== JSON.stringify(saved.value)) {
     return { ok: false, errors: ["The saved Project did not pass verification."] }
@@ -544,11 +544,11 @@ const saveAndVerify = (
 }
 
 const savedDraft = (
-  project: CutNFlowProjectV1,
-  draft: CutNFlowProjectDraftV1,
+  project: KyzaProjectV1,
+  draft: KyzaProjectDraftV1,
   timestamp: string,
   action: "pack_draft_saved" | "cutter_created" | "cutter_updated",
-): CutNFlowProjectDraftV1 => withCalculatedCompletion({
+): KyzaProjectDraftV1 => withCalculatedCompletion({
   ...draft,
   id: project.id,
   name: project.name,
@@ -564,18 +564,18 @@ const savedDraft = (
 
 export function savePackGenDraft(
   projectId: string,
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   expectedRevision: number,
   dependencies: PackGenPersistenceDependencies = {},
 ): PackGenSaveResult {
-  const loaded = loadCutNFlowProject(projectId, dependencies.storage)
+  const loaded = loadKyzaProject(projectId, dependencies.storage)
   if (loaded.ok === false) return { ok: false, reason: "not-found", errors: loaded.errors }
   if (loaded.value.revision !== expectedRevision) {
     return { ok: false, reason: "stale", errors: ["This Project changed in another view. Reopen it before saving."] }
   }
   const timestamp = (dependencies.now ?? (() => new Date().toISOString()))()
   const nextDraft = savedDraft(loaded.value, draft, timestamp, "pack_draft_saved")
-  const nextProject: CutNFlowProjectV1 = {
+  const nextProject: KyzaProjectV1 = {
     ...loaded.value,
     revision: loaded.value.revision + 1,
     updatedAt: timestamp,
@@ -597,11 +597,11 @@ export type ConnectStandalonePackGenInput = {
 }
 
 export type ConnectStandalonePackGenResult =
-  | { ok: true; project: CutNFlowProjectV1; draft: CutNFlowProjectDraftV1; destinationUrl: string }
+  | { ok: true; project: KyzaProjectV1; draft: KyzaProjectDraftV1; destinationUrl: string }
   | { ok: false; errors: string[] }
 
 export function connectStandalonePackGenToProject(
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   input: ConnectStandalonePackGenInput,
   dependencies: PackGenPersistenceDependencies = {},
 ): ConnectStandalonePackGenResult {
@@ -651,7 +651,7 @@ export function connectStandalonePackGenToProject(
 }
 
 export type PackGenCutterResult =
-  | { ok: true; project: CutNFlowProjectV1; draft: CutNFlowProjectDraftV1; destinationUrl: string; unsupportedMappings: string[] }
+  | { ok: true; project: KyzaProjectV1; draft: KyzaProjectDraftV1; destinationUrl: string; unsupportedMappings: string[] }
   | { ok: false; reason: "not-ready" | "not-found" | "stale" | "generation-failed" | "save-failed"; errors: string[] }
 
 export type PackGenCutterReadiness =
@@ -669,7 +669,7 @@ const fieldBoolean = (fields: PackSpecificationFieldsV1, field: PackGenWorkspace
 }
 
 export function getPackGenCutterReadiness(
-  draft: Pick<CutNFlowProjectDraftV1, "workspace">,
+  draft: Pick<KyzaProjectDraftV1, "workspace">,
 ): PackGenCutterReadiness {
   if (!draft.workspace) return { ready: false, errors: ["Choose a supported pack type and starting dimensions."] }
   const fields = draft.workspace.fields
@@ -738,7 +738,7 @@ export function getPackGenCutterReadiness(
 
 export function createOrUpdateCutterFromPackGen(
   projectId: string,
-  draft: CutNFlowProjectDraftV1,
+  draft: KyzaProjectDraftV1,
   expectedRevision: number,
   dependencies: PackGenPersistenceDependencies = {},
 ): PackGenCutterResult {
@@ -751,7 +751,7 @@ export function createOrUpdateCutterFromPackGen(
     }
   }
 
-  const loaded = loadCutNFlowProject(projectId, dependencies.storage)
+  const loaded = loadKyzaProject(projectId, dependencies.storage)
   if (loaded.ok === false) return { ok: false, reason: "not-found", errors: loaded.errors }
   if (loaded.value.revision !== expectedRevision) {
     return { ok: false, reason: "stale", errors: ["This Project changed in another view. Reopen it before updating the Cutter."] }
@@ -762,7 +762,7 @@ export function createOrUpdateCutterFromPackGen(
   const timestamp = (dependencies.now ?? (() => new Date().toISOString()))()
   const action = loaded.value.cutter ? "cutter_updated" : "cutter_created"
   const nextDraft = savedDraft(loaded.value, draft, timestamp, action)
-  const nextProject = createCutNFlowProjectV1({
+  const nextProject = createKyzaProjectV1({
     id: loaded.value.id,
     revision: loaded.value.revision + 1,
     name: loaded.value.name,

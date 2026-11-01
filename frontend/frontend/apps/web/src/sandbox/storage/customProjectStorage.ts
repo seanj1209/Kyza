@@ -2,7 +2,7 @@ import type { FlowwrapSpec } from "../../types/flowwrap"
 import type { CustomPackDefinition } from "../types"
 import { normalizeSandboxConstraintProfileId } from "../constraintProfileRegistry"
 
-const STORAGE_KEY = "cutnflow.customProjects.v1"
+const STORAGE_KEY = "kyza.customProjects.v1"
 export const CURRENT_CUSTOM_PROJECT_SCHEMA_VERSION = 1
 
 export type SavedCustomProjectRecord = Readonly<{

@@ -2,7 +2,7 @@ import { getHangerSlotTransform, hangerSlotPath } from "../apps/web/src/geometry
 import { getHangerSlotAxisX } from "../apps/web/src/constraints/hangerSlots"
 import { getDefaultHangerSlotPosition, restoreLegacyHangerSlotPlacement } from "../packages/cutter-engine/actions/hangerSlotPlacement"
 import { projectFromLegacySpec } from "../packages/cutter-engine/project"
-import { synchroniseCutNFlowProject } from "../apps/web/src/project/projectUpdateService"
+import { synchroniseKyzaProject } from "../apps/web/src/project/projectUpdateService"
 import type { FlowwrapSpec, HangerSlotSpec } from "../apps/web/src/types/flowwrap"
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -51,9 +51,9 @@ for (const variant of [{ ...slot, centerY: 70 }, { ...slot, purpose: "tac-hole" 
 }
 assert(restored.hangerSlots![0].width === 30 && restored.hangerSlots![0].height === 10 && restored.hangerSlots![0].id === slot.id, "Repair preserves shape size and identity.")
 const project = projectFromLegacySpec("flowwrap", "Old automatic hanger placement", old)
-const loaded = synchroniseCutNFlowProject(project, "save-load")
+const loaded = synchroniseKyzaProject(project, "save-load")
 assert(loaded.ok && loaded.legacySpec!.hangerSlots![0].centerY === 95 && loaded.revision! > project.revision, "Loading repairs the authoritative project with a new revision, not only its SVG.")
-const loadedAgain = synchroniseCutNFlowProject(loaded.project!, "save-load")
+const loadedAgain = synchroniseKyzaProject(loaded.project!, "save-load")
 assert(loadedAgain.revision === loaded.revision, "A second load must not create another revision.")
 console.log("Hanger default centring, saved-project repair, manual/TAC preservation and idempotent revision checks passed.")
 

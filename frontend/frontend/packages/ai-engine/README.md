@@ -1,6 +1,6 @@
 # AI Engine Scaffold
 
-This is a pre-Gemini scaffold for CutNFlow.
+This is a pre-Gemini scaffold for Kyza.
 
 ## Current Scope
 - Uses `MockAiProvider` only.

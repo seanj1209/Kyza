@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../project"
+import type { KyzaProjectV1 } from "../project"
 import type { CutterExportAuditRecord, ValidationResult } from "../validation"
 import type { CutterExportFormat } from "./cutterExportService"
 import {
@@ -205,7 +205,7 @@ export const getDefaultExportTierId = (
   format === "raster-preview-pdf" ? "pdf-proof" : "illustrator-ready"
 
 export const createCutterExportMetadata = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   validation: ValidationResult,
   exportFormat: CutterExportFormat,
   exportTier: ExportTierId = getDefaultExportTierId(exportFormat),

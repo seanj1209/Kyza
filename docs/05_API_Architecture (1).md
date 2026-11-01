@@ -1,9 +1,9 @@
 ---
-document_name: Klyro API Architecture
+document_name: Kyza API Architecture
 file_name: 05_API_Architecture.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces:
   - 05_API_Architecture.md v1.0
@@ -19,11 +19,11 @@ related_sources:
   - 10_Testing_QA.md
 ---
 
-# Klyro API Architecture
+# Kyza API Architecture
 
 ## Document Purpose
 
-This document defines how the Klyro App should structure its application services, API contracts, domain-service boundaries and future backend integration.
+This document defines how the Kyza App should structure its application services, API contracts, domain-service boundaries and future backend integration.
 
 It establishes:
 
@@ -40,7 +40,7 @@ It establishes:
 - Security, observability and test requirements
 - Codex implementation rules
 
-This document is written so the Klyro App can operate safely during frontend-led development while remaining ready for a real backend and structured database.
+This document is written so the Kyza App can operate safely during frontend-led development while remaining ready for a real backend and structured database.
 
 This document does not define:
 
@@ -68,13 +68,13 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and Service Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the connected working environment.
+The Kyza App is the connected working environment.
 
 Its Beta Core is centred on:
 
@@ -86,9 +86,9 @@ Its Beta Core is centred on:
 - Export Release
 - Account & Specs
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying deterministic packaging-engineering capability.
+Kyza/Kyza Tech is the underlying deterministic packaging-engineering capability.
 
 It provides or supports:
 
@@ -120,7 +120,7 @@ It does not own:
 
 # 2. Core API Principle
 
-Klyro must behave as one connected Project-centred system.
+Kyza must behave as one connected Project-centred system.
 
 The API/service layer exists to ensure that:
 
@@ -140,7 +140,7 @@ The Project is the parent object.
 
 # 3. Architecture Layers
 
-Klyro should separate the following layers.
+Kyza should separate the following layers.
 
 ```text
 User Interface
@@ -233,7 +233,7 @@ Persistence adapters may target:
 - Test fixtures
 - Mock repositories
 
-All adapters should implement the same Klyro-owned interfaces where practical.
+All adapters should implement the same Kyza-owned interfaces where practical.
 
 ---
 
@@ -359,7 +359,7 @@ Post-beta contracts may be documented as future boundaries, but they must not de
 - Integration Service
 - Billing Service
 
-Airtable is not a Klyro runtime service.
+Airtable is not a Kyza runtime service.
 
 Airtable is the programme and task-tracking layer.
 
@@ -567,7 +567,7 @@ Rules:
 - Additive non-breaking fields may remain within the same version.
 - Breaking contract or semantic changes require a planned version change or migration.
 - Stored Project data requires migration planning.
-- Frontend service interfaces should remain Klyro-owned and should not expose provider-specific contracts.
+- Frontend service interfaces should remain Kyza-owned and should not expose provider-specific contracts.
 - Mock/local adapters should identify the same contract version.
 
 API version is separate from Project revision and document version.
@@ -1207,7 +1207,7 @@ type GenerateCutterResponse = {
 };
 ```
 
-Cutter generation must use CnF Tech deterministic services.
+Cutter generation must use Kyza Tech deterministic services.
 
 FlowAI must not calculate authoritative cutter geometry.
 
@@ -2039,7 +2039,7 @@ Rules:
 - Use scoped credentials.
 - Record integration failures.
 - Make import/export transformations explicit.
-- Do not make external platforms the Klyro source of Project truth.
+- Do not make external platforms the Kyza source of Project truth.
 
 ---
 
@@ -2048,7 +2048,7 @@ Rules:
 Airtable manages:
 
 - Actions
-- CNF IDs
+- KYZA IDs
 - Sprints
 - Bugs
 - Acceptance criteria
@@ -2060,7 +2060,7 @@ Airtable does not act as the runtime API or permanent Project database.
 If Airtable is used temporarily for prototype records:
 
 - Isolate the adapter.
-- Use Klyro-owned types.
+- Use Kyza-owned types.
 - Document the limitation.
 - Avoid coupling domain logic to Airtable field names.
 - Plan migration.
@@ -2273,7 +2273,7 @@ Where it conflicts with a validated engineering rule, the Engineering Knowledge 
 
 # 61. Final API Rule
 
-The Klyro API and service layer must make the application behave as one connected, controlled packaging-engineering product.
+The Kyza API and service layer must make the application behave as one connected, controlled packaging-engineering product.
 
 It must:
 
@@ -2304,7 +2304,7 @@ The architecture should expand only when the Beta Core workflow is reliable.
 ## Version 2.1 — 19 July 2026
 
 - Consolidated duplicate API Architecture variants into one authoritative source.
-- Reframed the source from CutNFlow platform API to Klyro App API and CnF Tech service architecture.
+- Reframed the source from Kyza platform API to Kyza App API and Kyza Tech service architecture.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Removed active dependencies on unconfirmed Development Standards and Decision Log files.
 - Replaced the old full-platform-first API scope with Beta Core and post-beta boundaries.

@@ -117,7 +117,7 @@ export function applyElementAppearance(svg: SVGSVGElement, spec: FlowwrapSpec) {
       if (target.caps.includes("fill") && (raw.fill !== undefined || (raw.color !== undefined && ["solid", "tint", "hatch"].includes(appearance.fill)))) {
         let fill = appearance.fill === "none" ? "none" : appearance.color
         if (appearance.fill === "hatch") {
-          const id = `klyro-appearance-hatch-${target.id}`
+          const id = `kyza-appearance-hatch-${target.id}`
           if (!svg.querySelector(`#${id}`)) {
             const defs = document.createElementNS(svg.namespaceURI, "defs")
             defs.innerHTML = `<pattern id="${id}" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V3" stroke="${appearance.color}" stroke-width=".4"/></pattern>`

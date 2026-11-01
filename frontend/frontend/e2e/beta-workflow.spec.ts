@@ -26,7 +26,7 @@ test.describe("@beta connected creation workflows", () => {
     const projectName = uniqueProjectName("Pack Gen K-Seal", testInfo.workerIndex)
     const projectDetails = page.getByRole("dialog", { name: "Project Details" })
     await projectDetails.getByLabel("Project Name", { exact: true }).fill(projectName)
-    await projectDetails.getByLabel("Brand (optional)", { exact: true }).fill("Klyro E2E")
+    await projectDetails.getByLabel("Brand (optional)", { exact: true }).fill("Kyza E2E")
     await projectDetails.getByLabel("Job Reference (optional)", { exact: true }).fill("E2E-KSEAL")
     await projectDetails.getByRole("button", { name: "Create Project and Cutter" }).click()
 
@@ -37,7 +37,7 @@ test.describe("@beta connected creation workflows", () => {
     const projects = await readCanonicalProjects(page)
     expect.soft(projects).toHaveLength(1)
     expect.soft(projects[0]?.name).toBe(projectName)
-    expect.soft(projects[0]?.metadata?.customerOrBrand).toBe("Klyro E2E")
+    expect.soft(projects[0]?.metadata?.customerOrBrand).toBe("Kyza E2E")
     expect.soft(projects[0]?.metadata?.jobReference).toBe("E2E-KSEAL")
     expect.soft(projects[0]?.cutter?.packType).toBe(fixture.packType)
     expect.soft(projects[0]?.projectDraft?.workspace?.fields.finishedWidthMm.value).toBe(fixture.widthMm)
@@ -103,7 +103,7 @@ test.describe("@beta connected creation workflows", () => {
     await expect.soft(page.locator('svg [data-layer-id="measurement-guides"]')).toContainText(`${fixture.widthMm}mm`)
   })
 
-  test("KLYRO-E2E-002 Builder keeps K-Seal dimensions and trim separate through Cutter handoff", async ({ page }, testInfo) => {
+  test("KYZA-E2E-002 Builder keeps K-Seal dimensions and trim separate through Cutter handoff", async ({ page }, testInfo) => {
     const fixture = BETA_PROMPTS.kSeal
     const suggestions = await generateSuggestions(
       page,
@@ -224,8 +224,8 @@ test.describe("@beta connected creation workflows", () => {
     const secondTitle = await dialog.getByRole("article").getByRole("heading").innerText()
     expect(secondTitle).not.toBe(firstTitle)
 
-    await dialog.getByRole("button", { name: "Flow Score" }).click()
-    await expect(dialog.getByRole("heading", { name: "Flow Score" })).toBeVisible()
+    await dialog.getByRole("button", { name: "Kyza Score" }).click()
+    await expect(dialog.getByRole("heading", { name: "Kyza Score" })).toBeVisible()
     await expect(dialog).toContainText(secondTitle)
     await dialog.getByRole("button", { name: /Back to Suggestions/ }).click()
     await expect(dialog.getByRole("article").getByRole("heading")).toHaveText(secondTitle)

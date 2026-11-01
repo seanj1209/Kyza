@@ -4,7 +4,7 @@ import { runInNewContext } from "node:vm"
 import ts from "typescript"
 
 const read = path => readFile(path, "utf8")
-const prefix = "apps/web/src/klyro/dashboard/"
+const prefix = "apps/web/src/kyza/dashboard/"
 const source = await read(prefix + "featureRotation.ts")
 const compiled = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText
 const exports = {}
@@ -84,17 +84,17 @@ assert.equal(state.index, 2, "Disposed rotation must not update React")
 
 const [component, art, css, pageCss, dashboard, quickLinks, cutter, carouselCss, artworkHtml] = await Promise.all([
   read(prefix + "FeatureShowcase.tsx"), read(prefix + "featureShowcaseArt.ts"), read(prefix + "featureShowcase.css"),
-  read("apps/web/src/klyro/styles/pageSurface.css"), read(prefix + "DashboardPage.tsx"), read(prefix + "QuickLinks.tsx"),
+  read("apps/web/src/kyza/styles/pageSurface.css"), read(prefix + "DashboardPage.tsx"), read(prefix + "QuickLinks.tsx"),
   read("apps/web/src/main.ts"), read("apps/web/src/ui/studioPackCarousel.css"), read("artwork.html"),
 ])
 assert.match(dashboard, /<FeatureShowcase \/>/)
-assert.doesNotMatch(dashboard, /klyro-fold-scene|KlyroMark/)
+assert.doesNotMatch(dashboard, /kyza-fold-scene|KyzaMark/)
 assert.doesNotMatch(quickLinks, /Common destinations/)
 assert.equal((component.match(/status: "planned"/g) ?? []).length, 3, "Amends v12: Legends, Artwork and Roadmap are planned")
 assert.equal((component.match(/status: "available"/g) ?? []).length, 2, "Amends v12: Workflow and Sandbox Mode are available now")
-assert.doesNotMatch(component, /klyro-feature-pause|Pause feature slideshow/)
+assert.doesNotMatch(component, /kyza-feature-pause|Pause feature slideshow/)
 for (const id of ["workflow", "sandbox", "legends", "artwork", "upcoming"]) assert.match(component, new RegExp(`id: "${id}"`))
-assert.match(component, /<KlyroMark \/>/)
+assert.match(component, /<KyzaMark \/>/)
 assert.match(component, /onFocusCapture/)
 assert.match(component, /onBlurCapture/)
 assert.match(component, /visibilitychange/)
@@ -103,7 +103,7 @@ assert.match(component, /observer.disconnect/)
 assert.match(component, /key=\{feature.id\}/, "Keep navigation button identity/focus across slide changes")
 assert.match(component, /prefers-reduced-motion: reduce/)
 assert.match(css, /@media \(prefers-reduced-motion: reduce\)/)
-assert.match(css,/data-playing="false"[^}]*klyro-feature-art \*[^}]*animation-play-state: paused/s)
+assert.match(css,/data-playing="false"[^}]*kyza-feature-art \*[^}]*animation-play-state: paused/s)
 assert.match(component,/controller\.pause\("scroll",true\)/)
 assert.match(component,/removeEventListener\("scroll",onScroll\)/)
 assert.doesNotMatch(css,/@keyframes kf-word-in[^\n]*filter: blur/)
@@ -119,8 +119,8 @@ assert.match(carouselCss, /\.start-body\s*\{[^}]*overflow-y: auto/s)
 assert.match(carouselCss, /\.start-sidebar\s*\{[^}]*overflow: visible/s)
 assert.match(pageCss, /#quick-links:is\(:hover, :focus-within\)/)
 assert.match(pageCss, /repeating-linear-gradient/)
-assert.match(pageCss, /\.klyro-navigation\s*\{[^}]*position: fixed/s)
-assert.match(pageCss, /\.klyro-navigation.is-mobile-open\s*\{[^}]*visibility: visible/s)
+assert.match(pageCss, /\.kyza-navigation\s*\{[^}]*position: fixed/s)
+assert.match(pageCss, /\.kyza-navigation.is-mobile-open\s*\{[^}]*visibility: visible/s)
 assert.doesNotMatch(pageCss, /#preview-frame|\.artwork-canvas|svg\s*\{/)
-assert.match(artworkHtml, /klyro\/artwork\/main\.tsx/)
+assert.match(artworkHtml, /kyza\/artwork\/main\.tsx/)
 console.log("Feature showcase timing, pause/resume, reduced motion, lifecycle and amendment contracts verified")

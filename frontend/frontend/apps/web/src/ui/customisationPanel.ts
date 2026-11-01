@@ -4,8 +4,8 @@ import type { FlowwrapSpec } from "../types/flowwrap"
 import type { PerfStyle } from "../types/perfs"
 import { formatMetricValue, parseMetricDraft } from "../core/formatMetric"
 import {
-  saveCutNFlowProject,
-  type CutNFlowProjectV1,
+  saveKyzaProject,
+  type KyzaProjectV1,
   type ParseResult
 } from "../../../../packages/cutter-engine/project"
 import {
@@ -75,13 +75,13 @@ type Config = {
   onChange: (next: FlowwrapSpec) => void
   getCurrentSvg?: () => SVGSVGElement | null
   getCurrentProjectName?: () => string
-  getCurrentProject?: () => CutNFlowProjectV1 | null
+  getCurrentProject?: () => KyzaProjectV1 | null
   onSaveProject?: () => Promise<void> | void
   onSaveAsProject?: () => Promise<void> | void
   onProjectEvidenceUpdated?: (
-    project: CutNFlowProjectV1,
+    project: KyzaProjectV1,
     expectedRevision?: number
-  ) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+  ) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
   onViewValidationElement?: (affectedElementId: string) => void
   onReturnToCutter?: () => void
   onShowMeasures?: () => void
@@ -379,12 +379,12 @@ export function initCustomisationPanel({
   }
 
   const persistProjectEvidence = async (
-    project: CutNFlowProjectV1,
+    project: KyzaProjectV1,
     expectedRevision?: number
   ) =>
     onProjectEvidenceUpdated
       ? onProjectEvidenceUpdated(project, expectedRevision)
-      : saveCutNFlowProject(
+      : saveKyzaProject(
           project,
           undefined,
           expectedRevision === undefined ? {} : { expectedRevision }
@@ -779,7 +779,7 @@ export function initCustomisationPanel({
   const legendSection = makeSection("Legend", { menu: "legend" })
   const legendNote = document.createElement("p")
   legendNote.className = "customisation-category-note"
-  legendNote.textContent = "Use Show legend on the right of the cutter. The Klyro legend is editable vector artwork included in exports when enabled. Item and style customisation is coming later."
+  legendNote.textContent = "Use Show legend on the right of the cutter. The Kyza legend is editable vector artwork included in exports when enabled. Item and style customisation is coming later."
   legendSection.appendChild(legendNote)
 
   // Keep the existing perf/measure actions; replace informational element lists with real appearance controls.

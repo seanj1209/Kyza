@@ -32,9 +32,9 @@ Document ownership boundaries:
 
 Where guidance overlaps, the owning document above is authoritative and other documents should link back rather than create a second competing rule.
 
-## What CutnFlow Is
+## What Kyza Is
 
-CutnFlow is a Project-centric flexible-packaging engineering platform. The current implementation is founded on a deterministic flexo cutter-guide engine; the numbered platform documents define the broader product direction around that engine.
+Kyza is a Project-centric flexible-packaging engineering platform. The current implementation is founded on a deterministic flexo cutter-guide engine; the numbered platform documents define the broader product direction around that engine.
 
 Current engine goal:
 - generate deterministic cutter-guide geometry

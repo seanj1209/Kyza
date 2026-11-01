@@ -5,7 +5,7 @@ test("@beta Legend Config V1 saves layouts, manual sizing and active items", asy
   await page.getByRole("button", { name: "Legend Config" }).click()
   const dialog = page.getByRole("dialog", { name: "Legend Config" })
   await expect(dialog).toBeVisible()
-  await expect(dialog.getByLabel("Legend preset", { exact: true })).toHaveValue("klyro-standard")
+  await expect(dialog.getByLabel("Legend preset", { exact: true })).toHaveValue("kyza-standard")
   await expect(dialog.getByLabel("Legend width")).toBeDisabled()
   await dialog.getByRole("radio", { name: "Manual" }).check()
   await dialog.getByLabel("Legend width").fill("240")

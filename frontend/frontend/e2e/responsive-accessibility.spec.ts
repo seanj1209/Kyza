@@ -88,10 +88,10 @@ test.describe("@beta theme and accessibility smoke", () => {
     })
     let scenarioIndex = 0
     for (const theme of ["dark", "light"] as const) {
-      if (await page.locator("html").getAttribute("data-klyro-theme") !== theme) {
+      if (await page.locator("html").getAttribute("data-kyza-theme") !== theme) {
         await page.getByRole("button", { name: `Switch to ${theme} theme` }).click()
       }
-      await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", theme)
+      await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", theme)
 
       for (const viewport of desktopViewports) {
         await page.setViewportSize(viewport)
@@ -159,16 +159,16 @@ test.describe("@beta theme and accessibility smoke", () => {
     expect(scenarioIndex).toBe(6)
   })
 
-  test("essential Klyro surfaces remain readable in light and dark themes", async ({ page }) => {
+  test("essential Kyza surfaces remain readable in light and dark themes", async ({ page }) => {
     await page.goto("/")
-    await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "dark")
+    await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "dark")
     const darkHero = page.getByRole("heading", { name: "Packaging workflows, made clearer." })
     await expect(darkHero).toBeVisible()
     const darkColour = await darkHero.evaluate((node) => getComputedStyle(node).color)
     expect(darkColour).not.toBe("rgba(0, 0, 0, 0)")
 
     await page.getByRole("button", { name: "Switch to light theme" }).click()
-    await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "light")
+    await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "light")
     await page.getByRole("link", { name: "Artwork Studio", exact: true }).click()
     await expect(page.getByRole("heading", { name: /From cutter guide/ })).toBeVisible()
     const suggestions = await generateSuggestions(page, BETA_PROMPTS.multipleSuggestions.prompt)
@@ -179,6 +179,6 @@ test.describe("@beta theme and accessibility smoke", () => {
     expect(lightSurface.color).not.toBe(lightSurface.background)
     await suggestions.getByRole("button", { name: "Close Suggested Pack Types" }).click()
     await page.getByRole("button", { name: "Switch to dark theme" }).click()
-    await expect(page.locator("html")).toHaveAttribute("data-klyro-theme", "dark")
+    await expect(page.locator("html")).toHaveAttribute("data-kyza-theme", "dark")
   })
 })

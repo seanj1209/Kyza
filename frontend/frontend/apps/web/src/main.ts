@@ -1,8 +1,9 @@
+import "./brandBootstrap"
 import { attachLegendPlacement } from "./ui/legendPlacement"
 import { initSandboxStudio, SANDBOX_DEFAULT_FILM_COLOUR, SANDBOX_DEFAULT_HEIGHT_MM, SANDBOX_DEFAULT_WIDTH_MM, type SandboxStudioApi } from "./ui/sandboxStudio"
 import { renderSandboxCutter } from "./renderers/sandboxCutterSvg"
 import { mountPackGen } from "./packGen"
-import "./klyro/styles/klyro.css"
+import "./kyza/styles/kyza.css"
 import "./style.css"
 import "./ui/studioPanels.css"
 import "./ui/startLanding.css"
@@ -12,9 +13,7 @@ import { createFlowAssistantDock } from "./ui/flowAssistantDock"
 import { createStudioGuide } from "./ui/studioGuide"
 import { createStudioPackCarousel } from "./ui/studioPackCarousel"
 import "./ui/landingAmends.css"
-import { KLYRO_MARK_SVG } from "./klyro/shell/klyroMark"
-import { createFlowMarkIcon } from "./klyro/shell/flowMark"
-import mainIconUrl from "./assets/Main_Icon.png"
+import { KYZA_LOGO_HTML, createKyzaMarkIcon } from "./kyza/shell/kyzaMark"
 import { initFlowwrapControls } from "./ui/controls"
 import { attachFoldLineInteractions } from "./ui/foldLineInteractions"
 import { attachOpeningInteractions } from "./ui/openingInteractions"
@@ -36,7 +35,7 @@ import { attachPaperStripInteractions } from "./ui/paperStripInteractions"
 import { attachPaperStripEditing } from "./ui/paperStripEditing"
 import { commitPaperStripStepEdit } from "../../../packages/cutter-engine/actions/paperStripSteps"
 import { initialiseSachetSteps, commitSachetStepEdit } from "../../../packages/cutter-engine/actions/sachetSteps"
-import { studioNavigationHref, getStudioDestination } from "./klyro/account/studioNavigation"
+import { studioNavigationHref, getStudioDestination } from "./kyza/account/studioNavigation"
 import { attachGussetDock } from "./ui/gussetDock"
 import { attachStepNavigation } from "./ui/stepNavigation"
 import { attachLiddingDock, openLiddingSetup } from "./ui/liddingStudio"
@@ -57,7 +56,7 @@ import { attachCanvasPan } from "./ui/canvasPan"
 import { clampPouchPreviewView, fitPouchPreviewElement, POUCH_PREVIEW_ROTATION, resolvePouchPreviewViewport, showPouchPreviewMeasures, type PouchPreviewViewport } from "./ui/pouchPreview"
 import { attachSelectionContextActions } from "./ui/selectionContextActions"
 import { getPackModule, packModules } from "./packs"
-import { loadPreferences } from "./klyro/account/preferenceService"
+import { loadPreferences } from "./kyza/account/preferenceService"
 import {
   createArtworkHandoffProject,
   getArtworkStudioAvailability
@@ -77,21 +76,21 @@ import {
 } from "./config/activeCutterState"
 import { runEngineRequest } from "../../../packages/engine-api"
 import {
-  deleteCutNFlowProject,
+  deleteKyzaProject,
   legacySpecFromProject,
-  loadCutNFlowProject,
-  listCutNFlowProjects,
+  loadKyzaProject,
+  listKyzaProjects,
   hasCutterDocument,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowCutterProjectV1,
-  type CutNFlowProjectV1,
+  saveKyzaProject,
+  type KyzaCutterProjectV1,
+  type KyzaProjectV1,
   type ParseResult
 } from "../../../packages/cutter-engine/project"
 import {
   migrateSavedProjectRecord,
-  synchroniseCutNFlowProject,
-  updateCutNFlowProject,
+  synchroniseKyzaProject,
+  updateKyzaProject,
   type ProjectUpdateReason
 } from "./project/projectUpdateService"
 import {
@@ -180,14 +179,14 @@ const layout = document.createElement("div")
 layout.className = "app-shell"
 
 const cutterAppFrame = document.createElement("div")
-cutterAppFrame.className = "klyro-app cutter-klyro-app"
+cutterAppFrame.className = "kyza-app cutter-kyza-app"
 const cutterGlobalHeader = document.createElement("header")
-cutterGlobalHeader.className = "klyro-header cutter-global-header"
+cutterGlobalHeader.className = "kyza-header cutter-global-header"
 const cutterHeaderLeading = document.createElement("div")
-cutterHeaderLeading.className = "klyro-header-leading cutter-header-leading"
+cutterHeaderLeading.className = "kyza-header-leading cutter-header-leading"
 const cutterNavigationToggle = document.createElement("button")
 cutterNavigationToggle.type = "button"
-cutterNavigationToggle.className = "klyro-icon-button klyro-navigation-toggle cutter-shell-icon-button"
+cutterNavigationToggle.className = "kyza-icon-button kyza-navigation-toggle cutter-shell-icon-button"
 cutterNavigationToggle.setAttribute("aria-label", "Expand navigation")
 cutterNavigationToggle.setAttribute("aria-expanded", "false")
 const makeLucideIcon = (paths: string, className = "") => {
@@ -218,41 +217,41 @@ const cutterIcons = {
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
   moon: '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>'
 }
-cutterNavigationToggle.appendChild(makeLucideIcon(cutterIcons.panelOpen, "klyro-desktop-toggle-icon"))
+cutterNavigationToggle.appendChild(makeLucideIcon(cutterIcons.panelOpen, "kyza-desktop-toggle-icon"))
 const cutterBrand = document.createElement("a")
-cutterBrand.className = "klyro-brand cutter-shell-brand"
+cutterBrand.className = "kyza-brand cutter-shell-brand"
 cutterBrand.href = "/"
-cutterBrand.setAttribute("aria-label", "Klyro dashboard")
-cutterBrand.innerHTML = `<span class="klyro-brand-mark">${KLYRO_MARK_SVG}</span><span class="klyro-brand-copy"><span class="klyro-brand-name">Klyro<span aria-hidden="true">.</span></span><span class="klyro-brand-product">Workflows built on Intelligence</span></span>`
+cutterBrand.setAttribute("aria-label", "Kyza dashboard")
+cutterBrand.innerHTML = KYZA_LOGO_HTML
 cutterHeaderLeading.append(cutterBrand)
 const cutterRoutePill = document.createElement("div")
-cutterRoutePill.className = "klyro-route-pill cutter-shell-route-pill"
+cutterRoutePill.className = "kyza-route-pill cutter-shell-route-pill"
 cutterRoutePill.textContent = "Cutter Studio"
 const cutterHeaderActions = document.createElement("div")
-cutterHeaderActions.className = "klyro-header-actions cutter-header-actions"
+cutterHeaderActions.className = "kyza-header-actions cutter-header-actions"
 const cutterThemeToggle = document.createElement("button")
 cutterThemeToggle.type = "button"
-cutterThemeToggle.className = "klyro-icon-button cutter-shell-icon-button"
+cutterThemeToggle.className = "kyza-icon-button cutter-shell-icon-button"
 const readCutterTheme = () => {
   try {
-    const stored = window.localStorage.getItem("klyro.theme")
+    const stored = window.localStorage.getItem("kyza.theme")
     return stored === "light" ? "light" : "dark"
   } catch {
     return "dark"
   }
 }
 const applyCutterTheme = (theme: "dark" | "light") => {
-  document.documentElement.dataset.klyroTheme = theme
+  document.documentElement.dataset.kyzaTheme = theme
   document.documentElement.dataset.theme = theme
   document.documentElement.style.colorScheme = theme
   cutterThemeToggle.replaceChildren(makeLucideIcon(theme === "dark" ? cutterIcons.sun : cutterIcons.moon))
   cutterThemeToggle.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`)
   try {
-    window.localStorage.setItem("klyro.theme", theme)
+    window.localStorage.setItem("kyza.theme", theme)
   } catch {
     // The active theme remains available when storage is restricted.
   }
-  window.dispatchEvent(new CustomEvent("klyro-theme-change", { detail: { theme } }))
+  window.dispatchEvent(new CustomEvent("kyza-theme-change", { detail: { theme } }))
 }
 let cutterTheme = readCutterTheme()
 cutterThemeToggle.addEventListener("click", () => {
@@ -264,10 +263,10 @@ cutterHeaderActions.appendChild(cutterThemeToggle)
 cutterGlobalHeader.append(cutterHeaderLeading, cutterRoutePill, cutterHeaderActions)
 
 const cutterWorkspaceShell = document.createElement("div")
-cutterWorkspaceShell.className = "klyro-workspace cutter-shell-workspace"
+cutterWorkspaceShell.className = "kyza-workspace cutter-shell-workspace"
 const cutterPrimaryNavigation = document.createElement("aside")
-cutterPrimaryNavigation.id = "klyro-navigation"
-cutterPrimaryNavigation.className = "klyro-navigation cutter-primary-navigation"
+cutterPrimaryNavigation.id = "kyza-navigation"
+cutterPrimaryNavigation.className = "kyza-navigation cutter-primary-navigation"
 const cutterNavigation = document.createElement("nav")
 cutterNavigation.setAttribute("aria-label", "Primary navigation")
 const cutterNavigationGroups = [
@@ -284,23 +283,23 @@ const cutterNavigationGroups = [
 ]
 cutterNavigationGroups.forEach(group => {
   const section = document.createElement("section")
-  section.className = "klyro-navigation-group"
+  section.className = "kyza-navigation-group"
   section.setAttribute("aria-label", group.label)
   const groupLabel = document.createElement("div")
-  groupLabel.className = "klyro-navigation-group-label"
+  groupLabel.className = "kyza-navigation-group-label"
   groupLabel.textContent = group.label
   const items = document.createElement("div")
-  items.className = "klyro-navigation-items"
+  items.className = "kyza-navigation-items"
   group.items.forEach(item => {
     const link = document.createElement("a")
-    link.className = `klyro-navigation-item cutter-navigation-item${item.active ? " is-active" : ""}`
+    link.className = `kyza-navigation-item cutter-navigation-item${item.active ? " is-active" : ""}`
     link.href = item.href
     link.setAttribute("aria-label", item.label)
     link.setAttribute("title", item.label)
     if (item.active) link.setAttribute("aria-current", "page")
-    const icon = makeLucideIcon(item.icon, "klyro-navigation-icon cutter-navigation-icon")
+    const icon = makeLucideIcon(item.icon, "kyza-navigation-icon cutter-navigation-icon")
     const label = document.createElement("span")
-    label.className = "klyro-navigation-label cutter-navigation-label"
+    label.className = "kyza-navigation-label cutter-navigation-label"
     label.textContent = item.label
     link.append(icon, label)
     items.appendChild(link)
@@ -308,12 +307,12 @@ cutterNavigationGroups.forEach(group => {
   section.append(groupLabel, items)
   cutterNavigation.appendChild(section)
 })
-cutterNavigationToggle.classList.add("klyro-rail-toggle")
-cutterNavigationToggle.setAttribute("aria-controls", "klyro-navigation")
+cutterNavigationToggle.classList.add("kyza-rail-toggle")
+cutterNavigationToggle.setAttribute("aria-controls", "kyza-navigation")
 cutterPrimaryNavigation.append(cutterNavigation, cutterNavigationToggle)
 const cutterShellMain = document.createElement("main")
 cutterShellMain.id = "cutter-shell-main"
-cutterShellMain.className = "klyro-main cutter-shell-main"
+cutterShellMain.className = "kyza-main cutter-shell-main"
 const cutterProjectTabs = document.createElement("div")
 cutterProjectTabs.className = "cutter-project-tabs"
 const cutterTabActions = document.createElement("div")
@@ -324,7 +323,7 @@ cutterAppFrame.append(cutterGlobalHeader, cutterWorkspaceShell)
 
 cutterNavigationToggle.addEventListener("click", () => {
   const expanded = cutterPrimaryNavigation.classList.toggle("is-expanded")
-  cutterNavigationToggle.replaceChildren(makeLucideIcon(expanded ? cutterIcons.panelClose : cutterIcons.panelOpen, "klyro-desktop-toggle-icon"))
+  cutterNavigationToggle.replaceChildren(makeLucideIcon(expanded ? cutterIcons.panelClose : cutterIcons.panelOpen, "kyza-desktop-toggle-icon"))
   cutterNavigationToggle.setAttribute("aria-expanded", String(expanded))
   cutterNavigationToggle.setAttribute("aria-label", expanded ? "Collapse navigation" : "Expand navigation")
 })
@@ -342,10 +341,8 @@ const mainButton = document.createElement("button")
 mainButton.type = "button"
 mainButton.className = "right-rail-button is-main"
 mainButton.setAttribute("title", "Main")
-const mainIcon = document.createElement("img")
-mainIcon.src = mainIconUrl
-mainIcon.alt = "Main"
-mainIcon.loading = "lazy"
+const mainIcon = createKyzaMarkIcon()
+mainIcon.classList.add("studio-menu-icon")
 const mainLabel = document.createElement("span")
 mainLabel.className = "right-rail-label"
 mainLabel.textContent = "Main"
@@ -756,7 +753,7 @@ for (const orientation of ["portrait", "landscape"] as const) {
   const option = document.createElement("button")
   option.type = "button"
   option.setAttribute("role", "menuitem")
-  option.textContent = `${orientation[0].toUpperCase()}${orientation.slice(1)} Klyro legend`
+  option.textContent = `${orientation[0].toUpperCase()}${orientation.slice(1)} Kyza legend`
   option.addEventListener("click", () => {
     const spec = getActiveArtboard()?.spec ?? currentSpec
     if (spec) commitActiveProjectSpec({ ...spec, cutterLegend: true, cutterLegendOrientation: orientation, cutterLegendPosition: "right" }, "canvas-interaction", { renderNext: true })
@@ -967,9 +964,9 @@ const saveArtboardToLibrary = (artboard: Artboard, name: string, forceReplaceId?
   if (!updateArtboardProjectName(artboard, name, "save-load") || !artboard.project) {
     return
   }
-  const versionedSave = saveCutNFlowProject(artboard.project)
+  const versionedSave = saveKyzaProject(artboard.project)
   if (versionedSave.ok === false) {
-    console.warn("[CutNFlow][Project Storage] Versioned save failed.", versionedSave.errors)
+    console.warn("[Kyza][Project Storage] Versioned save failed.", versionedSave.errors)
   }
   const nowIso = artboard.project.updatedAt
   const replaceId = forceReplaceId ?? artboard.savedProjectId
@@ -1122,7 +1119,7 @@ const startPackSection = document.createElement("section")
 startPackSection.className = "start-pack-section"
 const startPackIntro = document.createElement("p")
 startPackIntro.className = "start-pack-intro"
-startPackIntro.textContent = "Choose a pack, import a cutter, or tell Flow what you need."
+startPackIntro.textContent = "Choose a pack, import a cutter, or tell Kyza what you need."
 startPackSection.append(packHeader, startPackIntro, packCarousel.element)
 const mainHeader = document.createElement("div")
 mainHeader.className = "start-main-header"
@@ -1273,7 +1270,7 @@ function renderSavedProjectCards() {
         return
       }
       target.name = nextName
-      const renamed = updateCutNFlowProject({
+      const renamed = updateKyzaProject({
         project: target.project,
         reason: "save-load",
         update: { type: "replace-project", project: { ...target.project, name: nextName } }
@@ -1286,7 +1283,7 @@ function renderSavedProjectCards() {
       target.packId = renamed.project.cutter.packType
       target.spec = renamed.legacySpec
       target.updatedAt = renamed.project.updatedAt
-      saveCutNFlowProject(renamed.project)
+      saveKyzaProject(renamed.project)
       const active = getActiveArtboard()
       if (active?.savedProjectId === target.id) {
         active.name = nextName
@@ -1316,7 +1313,7 @@ function renderSavedProjectCards() {
         project: duplicateProject,
         updatedAt: duplicateProject.updatedAt
       }
-      saveCutNFlowProject(duplicateProject)
+      saveKyzaProject(duplicateProject)
       savedProjectCards = [duplicate, ...savedProjectCards]
       persistSavedProjectCards()
       renderSavedProjectCards()
@@ -1327,7 +1324,7 @@ function renderSavedProjectCards() {
         return
       }
       savedProjectCards = savedProjectCards.filter(item => item.id !== card.id)
-      deleteCutNFlowProject(card.project.id)
+      deleteKyzaProject(card.project.id)
       const active = getActiveArtboard()
       if (active?.savedProjectId === card.id) {
         active.savedProjectId = undefined
@@ -1403,7 +1400,7 @@ const chooseButton = document.createElement("button")
 chooseButton.type = "button"
 chooseButton.textContent = "Help Me Choose"
 // Help Me Choose uses the supplied Flow F mark (icon only, no wordmark).
-decorateStartAction(chooseButton, createFlowMarkIcon(), "Describe your product and explore Flow suggestions")
+decorateStartAction(chooseButton, createKyzaMarkIcon(), "Describe your product and explore Kyza suggestions")
 const choosePanel = document.createElement("div")
 choosePanel.id = "start-choose-panel"
 choosePanel.className = "start-choose-panel"
@@ -1622,7 +1619,7 @@ type Artboard = {
   name: string
   packId: string
   spec: FlowwrapSpec | null
-  project: CutNFlowProjectV1 | null
+  project: KyzaProjectV1 | null
   started: boolean
   viewBoxState: { zoom: number; panX: number; panY: number }
   savedProjectId?: string
@@ -1690,7 +1687,7 @@ let openStartCardMenu: HTMLElement | null = null
 
 loadSavedProjectCards()
 // Dashboard-created cutters are canonical Projects even before their first legacy Save.
-const canonicalRecentProjects = listCutNFlowProjects()
+const canonicalRecentProjects = listKyzaProjects()
 if (canonicalRecentProjects.ok) {
   canonicalRecentProjects.value.filter(hasCutterDocument).forEach(project => {
     const existingIndex = savedProjectCards.findIndex(card => card.project.id === project.id)
@@ -1850,13 +1847,13 @@ const cloneSpec = (spec: FlowwrapSpec | null) =>
   spec ? (JSON.parse(JSON.stringify(spec)) as FlowwrapSpec) : null
 
 const reportProjectUpdateFailure = (reason: ProjectUpdateReason, errors: string[]) => {
-  console.error(`[CutNFlow][Project Update][${reason}]`, errors)
+  console.error(`[Kyza][Project Update][${reason}]`, errors)
 }
 
 function persistActiveProjectEvidence(
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   expectedRevision?: number
-): ParseResult<CutNFlowProjectV1> {
+): ParseResult<KyzaProjectV1> {
   const active = getActiveArtboard()
   if (!active?.project || active.project.id !== project.id) {
     return { ok: false, errors: ["The active Project changed before validation evidence could be saved."] }
@@ -1864,7 +1861,7 @@ function persistActiveProjectEvidence(
   if (active.project.revision !== project.revision) {
     return { ok: false, errors: ["The active Project revision changed before validation evidence could be saved."] }
   }
-  const saved = saveCutNFlowProject(
+  const saved = saveKyzaProject(
     project,
     undefined,
     expectedRevision === undefined ? {} : { expectedRevision }
@@ -1873,7 +1870,7 @@ function persistActiveProjectEvidence(
   active.project = saved.value
   const savedCard = savedProjectCards.find(card => card.project.id === saved.value.id)
   if (savedCard && saved.value.cutter) {
-    savedCard.project = saved.value as CutNFlowCutterProjectV1
+    savedCard.project = saved.value as KyzaCutterProjectV1
     savedCard.updatedAt = saved.value.updatedAt
     persistSavedProjectCards()
   }
@@ -1916,7 +1913,7 @@ function focusCutterCanvas() {
 }
 
 function refreshActiveValidation(
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   options: { force?: boolean; trigger?: "live" | "manual" } = {},
 ) {
   const snapshot = getProjectValidationSnapshot(project, options)
@@ -1940,7 +1937,7 @@ function initialiseArtboardProject(
   reason: ProjectUpdateReason
 ) {
   const created = projectFromLegacySpec(artboard.packId, artboard.name, spec)
-  const result = synchroniseCutNFlowProject(created, reason)
+  const result = synchroniseKyzaProject(created, reason)
   if (!result.ok || !result.project || !result.legacySpec) {
     reportProjectUpdateFailure(reason, result.errors)
     return null
@@ -1964,7 +1961,7 @@ function synchroniseArtboardProject(
   if (!project) {
     return null
   }
-  const result = synchroniseCutNFlowProject(project, reason)
+  const result = synchroniseKyzaProject(project, reason)
   if (!result.ok || !result.project || !result.legacySpec) {
     reportProjectUpdateFailure(reason, result.errors)
     return null
@@ -1988,7 +1985,7 @@ function updateArtboardProjectSpec(
   })}
   const project =
     artboard.project ?? projectFromLegacySpec(artboard.packId, artboard.name, next)
-  const result = updateCutNFlowProject({
+  const result = updateKyzaProject({
     project,
     reason,
     update: { type: "replace-legacy-spec", spec: next }
@@ -2018,7 +2015,7 @@ function updateArtboardProjectName(
     artboard.project = project
     return true
   }
-  const result = updateCutNFlowProject({
+  const result = updateKyzaProject({
     project,
     reason,
     update: {
@@ -2211,20 +2208,20 @@ const exportSavedProjectCard = async (
   triggerElement: HTMLElement
 ) => {
   const getLatestProject = () => {
-    const loaded = loadCutNFlowProject(card.project.id)
+    const loaded = loadKyzaProject(card.project.id)
     if (loaded.ok && loaded.value.cutter) {
-      card.project = loaded.value as CutNFlowCutterProjectV1
+      card.project = loaded.value as KyzaCutterProjectV1
     }
     return card.project
   }
   const persistProject = (
-    project: CutNFlowProjectV1,
+    project: KyzaProjectV1,
     expectedRevision?: number
-  ): ParseResult<CutNFlowProjectV1> => {
+  ): ParseResult<KyzaProjectV1> => {
     if (project.id !== card.project.id || project.revision !== card.project.revision) {
       return { ok: false, errors: ["The saved Project changed before validation evidence could be stored."] }
     }
-    const saved = saveCutNFlowProject(
+    const saved = saveKyzaProject(
       project,
       undefined,
       expectedRevision === undefined ? {} : { expectedRevision }
@@ -2233,7 +2230,7 @@ const exportSavedProjectCard = async (
     if (!saved.value.cutter) {
       return { ok: false, errors: ["The saved Project no longer contains Cutter data."] }
     }
-    card.project = saved.value as CutNFlowCutterProjectV1
+    card.project = saved.value as KyzaCutterProjectV1
     card.spec = legacySpecFromProject(card.project)
     card.updatedAt = card.project.updatedAt
     persistSavedProjectCards()
@@ -2329,7 +2326,7 @@ const snapshotArtboard = (artboard: Artboard): Artboard => ({
   ...artboard,
   spec: cloneSpec(artboard.spec),
   project: artboard.project
-    ? synchroniseCutNFlowProject(artboard.project, "test-fixture").project ?? null
+    ? synchroniseKyzaProject(artboard.project, "test-fixture").project ?? null
     : null,
   viewBoxState: { ...artboard.viewBoxState }
 })
@@ -2370,7 +2367,7 @@ const applyUndo = () => {
     snap.spec ? projectFromLegacySpec(snap.packId, snap.name, snap.spec) : null
   )
   if (replacementProject && target.project) {
-    const undoResult = updateCutNFlowProject({
+    const undoResult = updateKyzaProject({
       project: target.project,
       reason: "undo",
       update: { type: "replace-project", project: replacementProject }
@@ -2431,7 +2428,7 @@ const renameArtboardProject = (artboard: Artboard, rawName: string) => {
         card.packId = artboard.project.cutter.packType
         card.spec = cloneSpec(artboard.spec) as FlowwrapSpec
         card.updatedAt = artboard.project.updatedAt
-        saveCutNFlowProject(artboard.project)
+        saveKyzaProject(artboard.project)
       }
       persistSavedProjectCards()
       renderSavedProjectCards()
@@ -4440,14 +4437,14 @@ function render(spec: FlowwrapSpec) {
     if (activeProject) {
       refreshActiveValidation(activeProject)
       if (import.meta.env.DEV) {
-        console.debug("[CutNFlow][Validation Centre]", validationCentreSummary)
+        console.debug("[Kyza][Validation Centre]", validationCentreSummary)
       }
     } else {
       validationCentreSummary = null
       issueEntries = collectIssuesFromSvg(svg)
       if (import.meta.env.DEV) {
         console.debug(
-          "[CutNFlow][Validation Wiring]",
+          "[Kyza][Validation Wiring]",
           getSvgFallbackValidationDebug(issueEntries, active?.packId)
         )
       }

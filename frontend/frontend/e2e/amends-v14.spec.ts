@@ -101,7 +101,7 @@ test('@beta v14 legend is per cutter, persisted, and exported as editable vector
   const svg=page.locator('#preview-canvas > svg')
   await expect(svg.locator('#cutter_legend')).toHaveCount(0)
   await page.getByRole('button',{name:'Legend layouts',exact:true}).click()
-  await page.getByRole('menuitem',{name:'Portrait Klyro legend'}).click()
+  await page.getByRole('menuitem',{name:'Portrait Kyza legend'}).click()
   await expect(svg.locator('#cutter_legend')).toBeVisible()
   await page.keyboard.press('Control+s')
   expect((await readCurrentProject(page))?.cutter?.legacySpec?.cutterLegend).toBe(true)
@@ -109,7 +109,7 @@ test('@beta v14 legend is per cutter, persisted, and exported as editable vector
   await expect(svg.locator('#cutter_legend')).toBeVisible()
   const exported=await page.evaluate(async()=>{
     const {buildExportSvgDocument}=await import('/packages/cutter-engine/export/cutterExportService.ts')
-    const projects=JSON.parse(localStorage.getItem('cutnflow.projects.v1')!)
+    const projects=JSON.parse(localStorage.getItem('kyza.projects.v1')!)
     const id=new URL(location.href).searchParams.get('projectId'),project=projects.find((p:any)=>p.id===id)
     const svg=document.querySelector<SVGSVGElement>('#preview-canvas > svg')!
     return ['svg','ai-compatible-svg'].map(format=>{
@@ -131,13 +131,13 @@ test('@beta legend toolbar selects portrait or landscape with the vector K mark 
   await createManualProjectFromDashboard(page,{name:'Legend layouts'})
   const svg=page.locator('#preview-canvas > svg')
   await page.locator('#studio-bottom-actions').getByRole('button',{name:'Legend layouts'}).click()
-  await page.getByRole('menuitem',{name:'Landscape Klyro legend'}).click()
+  await page.getByRole('menuitem',{name:'Landscape Kyza legend'}).click()
   await expect(svg.locator('#cutter_legend')).toHaveAttribute('data-orientation','landscape')
   await page.keyboard.press('Control+s')
   expect((await readCurrentProject(page))?.cutter?.legacySpec?.cutterLegendOrientation).toBe('landscape')
   const exported=await page.evaluate(async()=>{
     const {buildExportSvgDocument}=await import('/packages/cutter-engine/export/cutterExportService.ts')
-    const projects=JSON.parse(localStorage.getItem('cutnflow.projects.v1')!)
+    const projects=JSON.parse(localStorage.getItem('kyza.projects.v1')!)
     const id=new URL(location.href).searchParams.get('projectId'),project=projects.find((p:any)=>p.id===id)
     return ['svg','ai-compatible-svg'].map(format=>{
       const doc=buildExportSvgDocument(project,{format,includeLayers:true,marginMm:0},document.querySelector<SVGSVGElement>('#preview-canvas > svg')!)
@@ -148,7 +148,7 @@ test('@beta legend toolbar selects portrait or landscape with the vector K mark 
   })
   for(const item of exported){expect(item.orientation).toBe('landscape');expect(item.markPaths).toBe(4);expect(item.images).toBe(0);expect(item.background).toBe(0);expect(item.frameRight).toBeGreaterThanOrEqual(item.right)}
   await page.locator('#studio-bottom-actions').getByRole('button',{name:'Legend layouts'}).click()
-  await page.getByRole('menuitem',{name:'Portrait Klyro legend'}).click()
+  await page.getByRole('menuitem',{name:'Portrait Kyza legend'}).click()
   await expect(svg.locator('#cutter_legend')).toHaveAttribute('data-orientation','portrait')
 })
 

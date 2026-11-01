@@ -1,9 +1,9 @@
 ---
-document_name: Klyro UI Design System
+document_name: Kyza UI Design System
 file_name: 07_UI_Design_System.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Klyro
+owner: Kyza
 last_reviewed: 2026-07-19
 source_replaces:
   - 07_UI_Design_System.md
@@ -20,17 +20,17 @@ related_sources:
   - 11_Marketing_Website.md
 ---
 
-# Klyro UI Design System
+# Kyza UI Design System
 
 ## Document Purpose
 
-This document defines the visual and interaction standards for the Klyro App.
+This document defines the visual and interaction standards for the Kyza App.
 
-It converts approved Klyro design direction into a stable implementation reference for Gemini, Codex and future contributors.
+It converts approved Kyza design direction into a stable implementation reference for Gemini, Codex and future contributors.
 
 This document owns:
 
-- Klyro App visual language
+- Kyza App visual language
 - Theme behaviour
 - Typography usage
 - Application shell
@@ -67,30 +67,30 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and Brand Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-The Klyro visual system applies to:
+The Kyza visual system applies to:
 
-- The public Klyro website
-- The Klyro App
+- The public Kyza website
+- The Kyza App
 - Customer-facing services
 - Account and access experiences
 - Product communication
 - Shared interaction patterns
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the main connected working environment.
+The Kyza App is the main connected working environment.
 
 Its UI must make Dashboard, Pack Gen, Cutter Studio, Validation Centre, Export Release and Account & Specs feel like parts of one product.
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying packaging-engineering capability.
+Kyza/Kyza Tech is the underlying packaging-engineering capability.
 
-It may appear in technical context where useful, but must not compete visually with Klyro as the application brand.
+It may appear in technical context where useful, but must not compete visually with Kyza as the application brand.
 
 ## 1.4 FlowAI
 
@@ -104,7 +104,7 @@ It must not dominate the product as a generic chatbot identity.
 
 # 2. Design Position
 
-Klyro should feel:
+Kyza should feel:
 
 - Professional
 - Precise
@@ -118,7 +118,7 @@ Klyro should feel:
 - Project-centred
 - Suitable for sustained engineering work
 
-Klyro should not feel like:
+Kyza should not feel like:
 
 - A generic SaaS dashboard
 - A playful design toy
@@ -153,33 +153,33 @@ The interface should look advanced without becoming unfamiliar or difficult to o
 14. Keyboard, focus and screen-size behaviour must be considered during implementation.
 15. The UI must preserve project and selected-element state during normal navigation.
 16. Studio layouts may be denser than Dashboard and Pack Gen.
-17. Every module must use the shared Klyro shell and component language.
+17. Every module must use the shared Kyza shell and component language.
 18. Screenshots support implementation, but the written design system is authoritative.
 
 ---
 
 # 4. Brand Assets
 
-Use the approved Klyro logo assets.
+Use the approved Kyza logo assets.
 
 Rules:
 
 - Do not recreate the logo as typed text.
-- Do not redraw or alter the official Klyro mark during normal UI work.
+- Do not redraw or alter the official Kyza mark during normal UI work.
 - Use the correct logo variant for its background.
 - Light surfaces use the approved dark or primary logo.
 - Dark surfaces use the approved reverse/light logo.
 - Preserve clear space.
 - Do not distort, stretch or crop the logo.
 - Do not place the logo on a surface where it loses contrast.
-- The compact navigation state may use the approved Klyro icon where available.
-- CutNFlow/CnF Tech should not replace the Klyro brand mark in customer-facing app chrome.
+- The compact navigation state may use the approved Kyza icon where available.
+- Kyza/Kyza Tech should not replace the Kyza brand mark in customer-facing app chrome.
 
 ---
 
 # 5. Brand Colour System
 
-Klyro uses a restrained technical palette.
+Kyza uses a restrained technical palette.
 
 ## 5.1 Core Brand Colours
 
@@ -195,7 +195,7 @@ Use Spartan Red for:
 - Active navigation accents
 - Selected states
 - Important focus points
-- Klyro brand accents
+- Kyza brand accents
 - Controlled progress emphasis
 - Critical action emphasis where context supports it
 
@@ -315,7 +315,7 @@ Light mode should use:
 - Restrained borders
 - Spartan Red primary action
 - Clear field and card separation
-- Correct dark/primary Klyro logo
+- Correct dark/primary Kyza logo
 
 Light mode should feel:
 
@@ -342,7 +342,7 @@ Dark mode should use:
 - Warm off-white or cream text
 - Restrained warm borders
 - Spartan Red accent
-- Correct reverse/light Klyro logo
+- Correct reverse/light Kyza logo
 - Clear cutter and control contrast
 
 Dark mode should feel:
@@ -387,7 +387,7 @@ Verify:
 
 ## 8.1 Font Policy
 
-Preserve the approved Klyro application font stack already used by the app.
+Preserve the approved Kyza application font stack already used by the app.
 
 Do not replace the application font during a module amendment unless a separate approved brand decision requires it.
 
@@ -398,7 +398,7 @@ The font must remain:
 - Suitable for compact controls
 - Suitable for mixed-case labels
 - Clear at small sizes
-- Consistent across Klyro App modules
+- Consistent across Kyza App modules
 
 Use system fallbacks behind the approved primary font.
 
@@ -490,7 +490,7 @@ Use:
 
 - Small radius for technical controls
 - Medium radius for buttons, cards and compact panels
-- Larger radius only for major hero or modal surfaces where it suits the existing Klyro language
+- Larger radius only for major hero or modal surfaces where it suits the existing Kyza language
 - Circular treatment for approved roundel actions
 
 Avoid excessive pill and bubble styling.
@@ -560,7 +560,7 @@ Respect reduced-motion preferences.
 
 # 11. Application Shell
 
-The application shell is shared across all Klyro App modules.
+The application shell is shared across all Kyza App modules.
 
 It includes:
 
@@ -585,7 +585,7 @@ The top header contains:
 
 ### Left
 
-- Official Klyro logo or lock-up
+- Official Kyza logo or lock-up
 
 ### Centre
 
@@ -613,7 +613,7 @@ The header should:
 
 - Remain compact
 - Align controls vertically
-- Use the existing Klyro dark structural surface where accepted
+- Use the existing Kyza dark structural surface where accepted
 - Remain fixed or sticky where this is the established shell behaviour
 - Prevent page content from moving underneath it
 - Work in both themes
@@ -985,7 +985,7 @@ Current copy direction:
 ### Supporting Copy
 
 `Start with an idea, an existing specification or a production-ready brief.`  
-`Klyro guides each user through the same connected workflow at the level they need.`  
+`Kyza guides each user through the same connected workflow at the level they need.`
 `Generate pack specifications, configure cutters and prepare files with greater clarity.`  
 `Built for first-time users, designers, repro teams and packaging professionals alike.`
 
@@ -1248,7 +1248,7 @@ A working general Template Library action may be reused.
 
 Cutter Studio contains:
 
-1. Global Klyro shell
+1. Global Kyza shell
 2. Compact studio header/status area
 3. Main cutter workspace
 4. On-canvas horizontal tool dock
@@ -1968,7 +1968,7 @@ Do not remove focus outlines without providing an equivalent visible focus style
 
 # 33. Responsive Behaviour
 
-Klyro is primarily a professional desktop and laptop application.
+Kyza is primarily a professional desktop and laptop application.
 
 ## 33.1 Desktop
 
@@ -2198,7 +2198,7 @@ Current rule:
 - A large stage-based modal must not be reintroduced unless separately reapproved.
 - Useful project-detail behaviour may be retained if it does not conflict with the simplified Dashboard.
 
-## UI-GEM-002 — Klyro App Shell and Navigation
+## UI-GEM-002 — Kyza App Shell and Navigation
 
 Status:
 
@@ -2207,15 +2207,15 @@ Status:
 
 Includes:
 
-- Compact Klyro top header
+- Compact Kyza top header
 - Dynamic centre page pill
 - User and utility controls on the right
 - Tray navigation
 - Collapsed by default
-- Exact Klyro navigation grouping
+- Exact Kyza navigation grouping
 - Disabled future routes
 
-## UI-GEM-003 — Klyro Dashboard
+## UI-GEM-003 — Kyza Dashboard
 
 Status:
 
@@ -2232,7 +2232,7 @@ Includes:
 - Maximum 24 recent cards by default
 - Minimal layout
 
-## UI-GEM-004 — Klyro Pack Gen
+## UI-GEM-004 — Kyza Pack Gen
 
 Status:
 
@@ -2338,7 +2338,7 @@ Codex must not:
 
 A UI amendment is complete only when:
 
-- It matches the accepted Klyro hierarchy.
+- It matches the accepted Kyza hierarchy.
 - It uses official logo and current font.
 - Light mode works.
 - Dark mode works.
@@ -2405,7 +2405,7 @@ When a screenshot conflicts with this source, this source controls unless the sc
 
 # 43. Final UI Rule
 
-Klyro should feel like a purpose-built packaging-engineering product.
+Kyza should feel like a purpose-built packaging-engineering product.
 
 The interface must remain:
 
@@ -2436,13 +2436,13 @@ Every UI decision should improve clarity, speed, engineering confidence or workf
 
 ## Version 2.1 — 18 July 2026
 
-- Rebranded the UI source from CutNFlow platform UI to Klyro App UI.
+- Rebranded the UI source from Kyza platform UI to Kyza App UI.
 - Aligned the source with `01_Product_Architecture.md` v2.1.
 - Removed the obsolete `00_Master_Context.md` dependency.
 - Consolidated duplicate UI Design System variants.
-- Defined official Klyro brand and logo usage.
+- Defined official Kyza brand and logo usage.
 - Preserved Spartan Red, Dusky Cream and Dark Charcoal.
-- Replaced the old broad navigation with the current Klyro tray structure.
+- Replaced the old broad navigation with the current Kyza tray structure.
 - Set the main navigation to collapsed-by-default behaviour.
 - Defined the current global header.
 - Replaced the old command-centre Dashboard with the accepted minimal Dashboard.

@@ -58,7 +58,7 @@ function makeHarness(reduced = false, initialEntries = [{ isIntersecting: true }
   }
   vm.runInNewContext(compiled, context)
   const element = context.exports.createStudioGuide()
-  const node = id => element.querySelector("#klyro-guide-" + id)
+  const node = id => element.querySelector("#kyza-guide-" + id)
   const tick = duration => {
     const target = now + duration
     while (timers.size) {
@@ -130,10 +130,10 @@ batched.pagehide()
 // Amends v11: the guide is the Cutter Studio tour — entry routes first, then studio capabilities.
 const tour = makeHarness()
 const slide = () => ({ eyebrow: tour.node("eyebrow").textContent, title: tour.node("title").textContent, brief: tour.node("brief").textContent })
-assert.match(source, /id="klyro-guide-guide-title">Studio tour</)
+assert.match(source, /id="kyza-guide-guide-title">Studio tour</)
 let current = slide()
 assert.equal(current.title, "Choose how to start")
-for (const route of [/pack type/i, /Sandbox Mode/, /import a saved cutter/i, /tell Flow what you need/]) assert.match(current.brief, route)
+for (const route of [/pack type/i, /Sandbox Mode/, /import a saved cutter/i, /tell Kyza what you need/]) assert.match(current.brief, route)
 tour.click("next")
 current = slide()
 assert.equal(current.eyebrow, "Inside the studio · 2 of 4")

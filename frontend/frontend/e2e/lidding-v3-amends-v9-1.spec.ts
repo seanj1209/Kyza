@@ -79,7 +79,7 @@ test("@beta Lidding remembers growth choice and exposes it in Cutter preferences
 
 test("@beta Lidding keeps a scaling choice made in the earlier review preview", async ({ page }) => {
   await page.goto("/account#cutter")
-  await page.evaluate(() => localStorage.setItem("klyro.preferences.pack-types.lidding.scaling", "keep"))
+  await page.evaluate(() => localStorage.setItem("kyza.preferences.pack-types.lidding.scaling", "keep"))
   await page.reload()
   const behavior = page.getByRole("combobox", { name: "Scaling behavior" })
   await expect(behavior).toHaveValue("keep")

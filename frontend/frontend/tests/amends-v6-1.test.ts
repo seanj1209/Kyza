@@ -21,11 +21,11 @@ import {
 import { resolveBaseCustomisation } from "../apps/web/src/renderers/baseLayerCustomisation"
 import {
   DEFAULT_PREFERENCES,
-  KLYRO_PREFERENCES_KEY,
+  KYZA_PREFERENCES_KEY,
   loadMoveIncrementMm,
   loadPreferences,
   savePreferences
-} from "../apps/web/src/klyro/account/preferenceService"
+} from "../apps/web/src/kyza/account/preferenceService"
 import {
   isOnMoveGrid,
   snapMoveCoordinate,
@@ -199,7 +199,7 @@ assert(sweep === 648, "Parameter sweep covered every combination")
 // ── 4. Cutter Preferences ─────────────────────────────────────
 {
   const memory = (initial?: object) => {
-    const data = new Map<string, string>(initial ? [[KLYRO_PREFERENCES_KEY, JSON.stringify(initial)]] : [])
+    const data = new Map<string, string>(initial ? [[KYZA_PREFERENCES_KEY, JSON.stringify(initial)]] : [])
     return { getItem: (k: string) => data.get(k) ?? null, setItem: (k: string, v: string) => void data.set(k, v) }
   }
   assert(DEFAULT_PREFERENCES.moveIncrementMm === .25, "Mouse movement defaults to 0.25 mm")

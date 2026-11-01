@@ -33,8 +33,8 @@ import {
 import {
   getEyemarkElementRefs,
   getTearNotchElementRefs,
-  parseCutNFlowProject,
-  type CutNFlowProjectV1
+  parseKyzaProject,
+  type KyzaProjectV1
 } from "../project"
 import type { ValidationMessage, ValidationResult } from "./validationTypes"
 import { resolveSachetEyemarkPlacements } from "../../../apps/web/src/core/geometry/resolvers/resolveSachetEyemarkPlacement"
@@ -297,7 +297,7 @@ const getRotatedSafeZoneBounds = (zone: SafeZoneSpec) => {
 }
 
 const validateStructuredSpec = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   context: MutableValidationContext
 ) => {
   const spec = project.cutter.legacySpec
@@ -774,7 +774,7 @@ const validateStructuredSpec = (
 }
 
 const mapLegacyValidation = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   context: MutableValidationContext
 ) => {
   try {
@@ -837,14 +837,14 @@ const mapLegacyValidation = (
   }
 }
 
-export const validateCutNFlowProject = (value: unknown): ValidationResult => {
+export const validateKyzaProject = (value: unknown): ValidationResult => {
   const identity = getRawProjectIdentity(value)
   const context: MutableValidationContext = {
     ...identity,
     messages: []
   }
   inspectRawIdentity(value, context)
-  const parsed = parseCutNFlowProject(value)
+  const parsed = parseKyzaProject(value)
   if (parsed.ok === false) {
     addMessage(context, {
       code: "PROJECT_SCHEMA_INVALID",
@@ -876,7 +876,7 @@ export const validateCutNFlowProject = (value: unknown): ValidationResult => {
   return createResult(context)
 }
 
-export const validateLegacyFlowwrapSpec = validateCutNFlowProject
+export const validateLegacyFlowwrapSpec = validateKyzaProject
 
 export type ValidationDebugSnapshot = {
   packType?: string
@@ -918,7 +918,7 @@ const highestSeverity = (messages: ValidationMessage[]) =>
 
 export const getValidationDebugSnapshot = (value: unknown): ValidationDebugSnapshot => {
   const validation = validateForExport(value)
-  const parsed = parseCutNFlowProject(value)
+  const parsed = parseKyzaProject(value)
   if (parsed.ok === false) {
     return {
       packType: getRawProjectIdentity(value).packType,
@@ -1042,7 +1042,7 @@ export const getValidationDebugSnapshot = (value: unknown): ValidationDebugSnaps
 }
 
 export const validateForExport = (value: unknown): ValidationResult => {
-  const result = validateCutNFlowProject(value)
+  const result = validateKyzaProject(value)
   const messages = result.messages.map(message =>
     message.code === "ELEMENT_ID_MISSING"
       ? {

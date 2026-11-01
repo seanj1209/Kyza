@@ -1,5 +1,5 @@
 import type {
-  CutNFlowProjectV1,
+  KyzaProjectV1,
   ParseResult
 } from "../../../../packages/cutter-engine/project"
 import {
@@ -49,7 +49,7 @@ const severityOrder: Record<ValidationIssue["severity"], number> = {
 }
 
 export const buildPreExportReviewModel = (
-  project: CutNFlowProjectV1,
+  project: KyzaProjectV1,
   run: ValidationRun
 ): PreExportReviewModel => {
   const effectiveStatus = getEffectiveValidationStatus(run, project.revision)
@@ -139,7 +139,7 @@ const canReceiveReturnedFocus = (
 }
 
 const showPreExportReview = (input: {
-  project?: CutNFlowProjectV1 | null
+  project?: KyzaProjectV1 | null
   run?: ValidationRun
   errorMessage?: string
   triggerElement?: HTMLElement | null
@@ -174,7 +174,7 @@ const showPreExportReview = (input: {
   description.id = "pre-export-review-description"
   description.textContent = model
     ? `Revision ${model.projectRevision} checked${model.completedAt ? ` at ${new Date(model.completedAt).toLocaleString()}` : ""}.`
-    : "Klyro could not check the current cutter revision."
+    : "Kyza could not check the current cutter revision."
   headingWrap.append(eyebrow, title, description)
   const close = document.createElement("button")
   close.type = "button"
@@ -211,7 +211,7 @@ const showPreExportReview = (input: {
   const statusMessage = document.createElement("span")
   if (errorState) {
     statusTitle.textContent = model?.state === "stale" ? "Validation is no longer current." : "Validation could not complete."
-    statusMessage.textContent = input.errorMessage ?? "Klyro could not check the current cutter revision. Retry validation before export."
+    statusMessage.textContent = input.errorMessage ?? "Kyza could not check the current cutter revision. Retry validation before export."
   } else if (model?.state === "critical") {
     statusTitle.textContent = input.overrideCriticalErrors
       ? "Critical errors will be overridden for this export."
@@ -430,7 +430,7 @@ const showPreExportReview = (input: {
 
 export type PreExportReviewApproval = {
   ok: true
-  project: CutNFlowProjectV1
+  project: KyzaProjectV1
   validationRun: ValidationRun
   acknowledgement?: ValidationAcknowledgement
   exportId: string
@@ -443,10 +443,10 @@ export type PreExportReviewCancellation = {
 }
 
 export const requestPreExportReview = async (options: {
-  getLatestProject: () => CutNFlowProjectV1 | null | Promise<CutNFlowProjectV1 | null>
+  getLatestProject: () => KyzaProjectV1 | null | Promise<KyzaProjectV1 | null>
   persistProject: (
-    project: CutNFlowProjectV1
-  ) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+    project: KyzaProjectV1
+  ) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
   triggerElement?: HTMLElement | null
   fallbackFocusElement?: HTMLElement | null
   onViewElement?: (affectedElementId: string) => void
@@ -454,7 +454,7 @@ export const requestPreExportReview = async (options: {
   acknowledgedBy?: string
   overrideCriticalErrors?: boolean
   validate?: (
-    project: CutNFlowProjectV1,
+    project: KyzaProjectV1,
     options: ValidateProjectCutterOptions
   ) => ValidationRun | Promise<ValidationRun>
 }): Promise<PreExportReviewApproval | PreExportReviewCancellation> => {

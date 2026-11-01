@@ -1,4 +1,4 @@
-# CutNFlow Engine Map
+# Kyza Engine Map
 
 ## Ownership
 - `cutter-engine` owns cutter geometry, eyemarks, slit tolerance, folds, holes, live/seal boundaries, rendering/export rules, and final cutter-side validation decisions.

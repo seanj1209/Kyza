@@ -1,13 +1,13 @@
 import { createElement as createReactElement } from "react"
 import { createRoot } from "react-dom/client"
-import "./klyro/styles/klyro.css"
+import "./kyza/styles/kyza.css"
 import "./packGen.css"
 import {
   generatePackGenRecommendations,
   type PackGenRecommendation,
   type PackGenResult,
 } from "../../../packages/ai-engine"
-import type { CutNFlowProjectDraftV1, CutNFlowProjectV1 } from "../../../packages/cutter-engine/project"
+import type { KyzaProjectDraftV1, KyzaProjectV1 } from "../../../packages/cutter-engine/project"
 import { createPackGenCardViewModel } from "./packGen/packGenCardModel"
 import { PackSpecBuilderModal, type PackSpecBuilderSession } from "./packGen/PackSpecBuilderModal"
 import {
@@ -85,7 +85,7 @@ type SuggestionCarouselState = {
   suggestionCount: number
 }
 
-function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProjectV1 | undefined, initialDraft: CutNFlowProjectDraftV1) {
+function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1 | undefined, initialDraft: KyzaProjectDraftV1) {
   let project = initialProject
   let draft = initialDraft
   let overlayState: PackGenOverlayState = { type: "closed" }
@@ -103,7 +103,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProje
   const promptHeading = element("div", "pack-gen-composer-heading")
   const promptLabel = element("label", "pack-gen-label", "What are you creating?")
   promptLabel.htmlFor = "pack-gen-prompt"
-  const flowAiPresence = element("span", "pack-gen-flowai-presence", "Flow")
+  const flowAiPresence = element("span", "pack-gen-flowai-presence", "Kyza")
   promptHeading.append(promptLabel, flowAiPresence)
   const promptInput = element("textarea", "pack-gen-prompt")
   promptInput.id = "pack-gen-prompt"
@@ -174,7 +174,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProje
   const suggestionIntro = element("p", "pack-gen-help", "Flow found supported starting points based on your request. Review the key details or open a suggestion for more information.")
   suggestionIntro.id = "pack-gen-suggestions-description"
   const promptSummary = element("p", "pack-gen-prompt-summary")
-  suggestionHeading.append(element("span", "pack-gen-eyebrow", "Flow suggestions"), suggestionTitle, suggestionIntro, promptSummary)
+  suggestionHeading.append(element("span", "pack-gen-eyebrow", "Kyza suggestions"), suggestionTitle, suggestionIntro, promptSummary)
   const suggestionHeaderActions = element("div", "pack-gen-suggestion-header-actions")
   const suggestionPosition = element("span", "pack-gen-carousel-position")
   suggestionPosition.setAttribute("role", "status")
@@ -339,7 +339,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProje
     detailsView.append(
       back,
       element("span", "pack-gen-card-number", recommendation.title),
-      element("h3", undefined, "Flow Score"),
+      element("h3", undefined, "Kyza Score"),
       element("p", "pack-gen-flow-score-intro", "Review the information currently affecting this pack starting point."),
     )
     const accordion = element("div", "pack-gen-expandable-details")
@@ -437,7 +437,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProje
       element("strong", undefined, previewModel.substrate.value),
       element("small", undefined, previewModel.substrate.source),
     )
-    const further = element("button", "pack-gen-flow-score-action", "Flow Score")
+    const further = element("button", "pack-gen-flow-score-action", "Kyza Score")
     further.type = "button"
     further.dataset.carouselFocus = "flow-score"
     further.addEventListener("click", () => {
@@ -647,7 +647,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: CutNFlowProje
     projectDetailsConfirm.disabled = false
     projectDetailsCancel.disabled = false
     if (cutterResult.ok === false) {
-      projectDetailsError.textContent = "Klyro could not create the Cutter from this starting specification. Your Project and specification were saved."
+      projectDetailsError.textContent = "Kyza could not create the Cutter from this starting specification. Your Project and specification were saved."
       return
     }
     project = cutterResult.project

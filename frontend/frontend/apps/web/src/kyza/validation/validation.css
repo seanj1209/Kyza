@@ -1,0 +1,24 @@
+.validation-centre { width: min(1180px, 100%); }
+.validation-project-list { display: grid; gap: 16px; }
+.validation-project { padding: 22px; border: 1px solid var(--kyza-border); border-radius: 18px; background: var(--kyza-surface); box-shadow: var(--kyza-shadow-soft); }
+.validation-project header { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+.validation-project h3, .validation-project p { margin: 0; }
+.validation-project header p, .validation-guidance, .validation-issues span, .validation-issues small { color: var(--kyza-text-muted); }
+.validation-status-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 14px; background: var(--kyza-surface-muted); }
+.validation-status { padding: 7px 10px; border-radius: 999px; background: var(--kyza-surface-muted); }
+.validation-project.is-passed .validation-status, .validation-project.is-passed .validation-status-icon { color: #18754a; background: #e8f7ef; }
+.validation-project.is-failed .validation-status, .validation-project.is-error .validation-status, .validation-project.is-failed .validation-status-icon, .validation-project.is-error .validation-status-icon { color: #a22929; background: #fff0ef; }
+.validation-project.is-stale .validation-status, .validation-project.is-stale .validation-status-icon { color: #895b00; background: #fff6dd; }
+.validation-guidance { margin-top: 16px !important; }
+.validation-counts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 18px 0; }
+.validation-counts div { padding: 12px; border-radius: 12px; background: var(--kyza-surface-muted); }
+.validation-counts dt { color: var(--kyza-text-muted); font-size: .78rem; }
+.validation-counts dd { margin: 4px 0 0; font-weight: 700; }
+.validation-issues { margin: 0 0 18px; }
+.validation-issues summary { cursor: pointer; font-weight: 700; }
+.validation-issues ul { display: grid; gap: 10px; padding: 0; list-style: none; }
+.validation-issues li { display: grid; gap: 4px; padding: 12px; border-left: 3px solid var(--kyza-brand); background: var(--kyza-surface-muted); }
+@media (max-width: 720px) { .validation-project header { grid-template-columns: auto 1fr; } .validation-status { grid-column: 1 / -1; justify-self: start; } .validation-counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.validation-beta-review { padding: 14px; margin: 14px 0; border: 1px solid var(--kyza-border-strong); border-radius: 12px; background: var(--kyza-panel-soft); }
+.validation-beta-review strong { color: var(--kyza-accent-text); }.validation-beta-review p { margin: 7px 0; overflow-wrap: anywhere; }.validation-beta-review small { color: var(--kyza-text-muted); line-height: 1.5; }

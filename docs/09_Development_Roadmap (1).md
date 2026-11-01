@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Development Roadmap
+document_name: Kyza Development Roadmap
 file_name: 09_Development_Roadmap.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Klyro
+owner: Kyza
 last_reviewed: 2026-07-19
 source_replaces: 09_Development_Roadmap.md v1.0
 authority: Delivery sequence, release tracks, milestones, phase gates, current programme direction and beta readiness
@@ -18,11 +18,11 @@ related_sources:
   - 11_Marketing_Website.md
 ---
 
-# Klyro Development Roadmap
+# Kyza Development Roadmap
 
 ## Document Purpose
 
-This document defines the delivery roadmap for Klyro.
+This document defines the delivery roadmap for Kyza.
 
 It converts the approved product architecture into an ordered programme of work leading towards a controlled beta, followed by post-beta expansion.
 
@@ -41,7 +41,7 @@ This document owns:
 
 This document does not replace Airtable.
 
-Airtable is the active action tracker for individual tasks, owners, CNF IDs, priorities, dependencies, evidence and sprint assignment.
+Airtable is the active action tracker for individual tasks, owners, KYZA IDs, priorities, dependencies, evidence and sprint assignment.
 
 This roadmap defines why work is being performed, the order in which it should be performed and the conditions required to move to the next phase.
 
@@ -55,22 +55,22 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the master customer-facing brand.
+Kyza is the master customer-facing brand.
 
 It includes:
 
-- The public Klyro website
-- The Klyro App
+- The public Kyza website
+- The Kyza App
 - Customer-facing services
 - Account and access experiences
 - Product positioning
 - The shared visual and interaction system
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the main working product environment.
+The Kyza App is the main working product environment.
 
 The initial beta is centred on a connected workflow across:
 
@@ -81,9 +81,9 @@ The initial beta is centred on a connected workflow across:
 - Export Release
 - Account & Specs
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying packaging-engineering capability.
+Kyza/Kyza Tech is the underlying packaging-engineering capability.
 
 It provides or will provide:
 
@@ -113,11 +113,11 @@ FlowAI does not replace deterministic engineering or validation authority.
 
 # 2. Roadmap Objective
 
-The immediate objective is to deliver a controlled Klyro beta that proves one complete and reliable packaging-engineering journey.
+The immediate objective is to deliver a controlled Kyza beta that proves one complete and reliable packaging-engineering journey.
 
 The beta must allow a user to:
 
-1. Enter the Klyro App.
+1. Enter the Kyza App.
 2. Create or open a Project.
 3. Begin through Pack Gen.
 4. Use either a natural-language prompt or Build Pack.
@@ -142,16 +142,16 @@ As of 19 July 2026:
 
 Established direction:
 
-- Klyro is the customer-facing brand.
-- The Klyro App is the main connected workspace.
-- CutNFlow/CnF Tech is the underlying engineering capability.
+- Kyza is the customer-facing brand.
+- The Kyza App is the main connected workspace.
+- Kyza/Kyza Tech is the underlying engineering capability.
 - FlowAI is the intelligence and validation-explanation layer.
 - The product is project-centric.
 - Beta delivery takes priority over full long-term platform breadth.
 
 ## 3.2 Public Website
 
-The Klyro public website exists as a developed concept and working site.
+The Kyza public website exists as a developed concept and working site.
 
 Current limitations include:
 
@@ -165,9 +165,9 @@ The public website is not the immediate engineering priority.
 
 It should be aligned after the core beta workflow is stable enough to demonstrate honestly.
 
-## 3.3 Klyro App UI
+## 3.3 Kyza App UI
 
-The Klyro App has been visually reworked from the previous CutNFlow presentation.
+The Kyza App has been visually reworked from the previous Kyza presentation.
 
 Approved current directions include:
 
@@ -182,7 +182,7 @@ Approved current directions include:
 - Roundel actions for Pack Spec, Import and Save/Export
 - Revised Layers panel
 - Revised Customise panel
-- Klyro light and dark theme direction
+- Kyza light and dark theme direction
 
 These are approved design directions.
 
@@ -234,7 +234,7 @@ Artwork Studio remains post-beta/TBA unless the release boundary is changed deli
 
 # 4. Development Principles
 
-Klyro development must follow these principles.
+Kyza development must follow these principles.
 
 1. Build incrementally.
 2. Preserve working behaviour unless a task explicitly replaces it.
@@ -309,7 +309,7 @@ Do not mark work Done only because a screen is visually present.
 
 Purpose:
 
-- Align product sources with Klyro
+- Align product sources with Kyza
 - Remove obsolete dependencies
 - Establish one authoritative version per source
 - Rebuild Airtable around beta delivery
@@ -412,7 +412,7 @@ They must not be reordered simply because a future module is visually appealing.
 
 ## Goal
 
-Create a reliable Klyro-aligned source set and convert it into a streamlined beta action plan.
+Create a reliable Kyza-aligned source set and convert it into a streamlined beta action plan.
 
 ## Current Status
 
@@ -420,7 +420,7 @@ Create a reliable Klyro-aligned source set and convert it into a streamlined bet
 
 ## Completed Source Work
 
-The active Klyro v2.1 source set has been audited, adapted and cross-checked:
+The active Kyza v2.1 source set has been audited, adapted and cross-checked:
 
 1. `01_Product_Architecture.md`
 2. `04_Engineering_Knowledge_Base.md`
@@ -434,9 +434,9 @@ The active Klyro v2.1 source set has been audited, adapted and cross-checked:
 
 Cross-source alignment confirmed:
 
-- Klyro is the master customer-facing brand.
-- Klyro App is the connected working environment.
-- CutNFlow/CnF Tech is the deterministic packaging-engineering capability.
+- Kyza is the master customer-facing brand.
+- Kyza App is the connected working environment.
+- Kyza/Kyza Tech is the deterministic packaging-engineering capability.
 - FlowAI is the intelligence, explanation and guided-assistance layer.
 - Project is the parent object.
 - Beta Core and launch-gate boundaries are consistent.
@@ -459,7 +459,7 @@ Cross-source alignment confirmed:
 With the source set aligned:
 
 - Export or review the current Airtable actions.
-- Retain CNF IDs where practical.
+- Retain KYZA IDs where practical.
 - Update wording rather than creating unnecessary replacements.
 - Mark obsolete tasks Superseded.
 - Move future work to Post-Beta.
@@ -544,7 +544,7 @@ Create an implementation baseline containing:
 
 ## Goal
 
-Ensure the approved Klyro shell and recently revised pages are implemented correctly in the real app.
+Ensure the approved Kyza shell and recently revised pages are implemented correctly in the real app.
 
 ## Status
 
@@ -554,7 +554,7 @@ Ensure the approved Klyro shell and recently revised pages are implemented corre
 
 ### Global Shell
 
-- Klyro top header
+- Kyza top header
 - Dynamic active-page pill
 - Utility and user controls
 - Correct light/dark logo
@@ -1021,7 +1021,7 @@ Prove the complete beta workflow as one connected product.
 ## Required Scenario
 
 ```text
-Open Klyro
+Open Kyza
 → create Project
 → enter Pack Gen
 → use Prompt or Build Pack
@@ -1062,7 +1062,7 @@ Open Klyro
 
 ## Goal
 
-Prepare Klyro for controlled use by selected beta participants.
+Prepare Kyza for controlled use by selected beta participants.
 
 ## Status
 
@@ -1121,7 +1121,7 @@ The beta may begin only when:
 
 ## Goal
 
-Align the Klyro public website with the product that can actually be demonstrated.
+Align the Kyza public website with the product that can actually be demonstrated.
 
 ## Status
 
@@ -1131,8 +1131,8 @@ Align the Klyro public website with the product that can actually be demonstrate
 
 - Replace concepts with real app screenshots
 - Refine feature wording
-- Present Klyro as the master brand
-- Explain CnF Tech only where useful
+- Present Kyza as the master brand
+- Explain Kyza Tech only where useful
 - Present FlowAI accurately
 - Separate current and future capability
 - Add beta access, waitlist or login route as appropriate
@@ -1259,7 +1259,7 @@ These are not initial beta requirements.
 
 ## Goal
 
-Prepare Klyro for broader availability and commercial use.
+Prepare Kyza for broader availability and commercial use.
 
 ## Planned Work
 
@@ -1300,7 +1300,7 @@ Commercial launch requires:
 
 With the source set cross-aligned, priority is:
 
-1. Re-baseline Airtable against the Klyro v2.1 source set.
+1. Re-baseline Airtable against the Kyza v2.1 source set.
 2. Audit the real repository against the updated sources.
 3. Verify the app shell and recent UI amendments.
 4. Stabilise Project create/save/search/reopen.
@@ -1338,7 +1338,7 @@ Do not create the new sprint solely from the old roadmap or unverified UI state.
 
 Airtable should track:
 
-- CNF ID
+- KYZA ID
 - Task
 - Product Area
 - Launch Track
@@ -1370,7 +1370,7 @@ Airtable should track:
 
 ## 27.3 Existing IDs
 
-Retain existing CNF IDs where practical.
+Retain existing KYZA IDs where practical.
 
 When direction changes:
 
@@ -1608,7 +1608,7 @@ Roadmap-level checkpoints are:
 
 - Cross-references
 - One active version per source
-- Correct Klyro terminology
+- Correct Kyza terminology
 - Beta/post-beta clarity
 
 ## App Shell
@@ -1736,9 +1736,9 @@ The roadmap should be reviewed whenever:
 
 # 34. Beta Definition
 
-The first Klyro beta is a controlled release of the connected packaging specification and cutter workflow.
+The first Kyza beta is a controlled release of the connected packaging specification and cutter workflow.
 
-It is not the complete long-term Klyro platform.
+It is not the complete long-term Kyza platform.
 
 The beta must feel:
 
@@ -1769,7 +1769,7 @@ These remain planned without delaying proof of the core workflow.
 
 # 35. Final Roadmap Rule
 
-Klyro must be developed as one connected product, not as a collection of visually separate features.
+Kyza must be developed as one connected product, not as a collection of visually separate features.
 
 Every phase should move the product closer to a reliable journey from product requirement to validated technical output.
 
@@ -1784,7 +1784,7 @@ The roadmap must prioritise:
 - Focused beta scope
 - Evidence-based completion
 
-The platform should expand only after the core Klyro workflow is stable enough to support that expansion.
+The platform should expand only after the core Kyza workflow is stable enough to support that expansion.
 
 ---
 
@@ -1792,7 +1792,7 @@ The platform should expand only after the core Klyro workflow is stable enough t
 
 ## Cross-Source Consistency Pass — 19 July 2026
 
-- Marked all nine active Klyro v2.1 sources as audited and cross-aligned.
+- Marked all nine active Kyza v2.1 sources as audited and cross-aligned.
 - Replaced the remaining source-audit list with the completed source set.
 - Moved Airtable re-baselining to the immediate next programme action.
 - Added Stale and Error to the Validation Centre milestone.
@@ -1801,19 +1801,19 @@ The platform should expand only after the core Klyro workflow is stable enough t
 
 ## Version 2.1 — 18 July 2026
 
-- Reframed the roadmap from CutNFlow platform delivery to Klyro beta delivery.
-- Defined Klyro, the Klyro App, CutNFlow/CnF Tech and FlowAI roles.
+- Reframed the roadmap from Kyza platform delivery to Kyza beta delivery.
+- Defined Kyza, the Kyza App, Kyza/Kyza Tech and FlowAI roles.
 - Removed the nonexistent `00_Master_Context.md` requirement.
 - Replaced the previous 15-phase broad rollout with beta-focused milestones.
 - Added Source and Airtable Re-baseline as the current programme phase.
 - Added a real-code baseline milestone before new sprint planning.
-- Updated the current Klyro app and UI position.
+- Updated the current Kyza app and UI position.
 - Reclassified Artwork Studio, advanced FlowAI, press configuration, reports and administration as post-beta.
 - Added Validation Centre MVP, Export Release MVP and Account & Specs essentials as beta launch gates.
 - Made Project save, search, reopen and state restoration Beta Core.
 - Added controlled beta release gates.
 - Added public website alignment after core workflow stabilisation.
-- Added Airtable alignment and CNF ID retention rules.
+- Added Airtable alignment and KYZA ID retention rules.
 - Added Gemini/Codex reasoning-level guidance.
 - Added deployment-drift, persistence and scope-expansion risks.
 - Strengthened Definition of Done and phase completion requirements.

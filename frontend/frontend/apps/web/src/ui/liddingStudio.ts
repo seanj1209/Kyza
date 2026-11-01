@@ -1,6 +1,6 @@
 import { liddingAroundUsage, liddingContourChanges, liddingContourHeight, liddingContourWidths, liddingMinimumSlitSize, liddingOverallRepeat, liddingPullTabAngle, liddingRepeatRows, liddingSafeAreaMaximum, liddingSlitSize, liddingUniformRepeat, setLiddingOverallRepeat, setLiddingOverallSize, updateLiddingSpec, validateLiddingSpec } from "../constraints/lidding"
 import { activateLiddingLane, liddingActiveLane, liddingSynced, setLiddingSync } from "../constraints/liddingSteps"
-import { loadLiddingGrowthBehavior, saveLiddingGrowthBehavior } from "../klyro/account/preferenceService"
+import { loadLiddingGrowthBehavior, saveLiddingGrowthBehavior } from "../kyza/account/preferenceService"
 import type { FlowwrapSpec, LiddingSpec } from "../types/flowwrap"
 import "./liddingStudio.css"
 import "./packDockSync.css"
@@ -165,7 +165,7 @@ export function attachLiddingDock(host: HTMLElement, spec: FlowwrapSpec, apply: 
   const tray = document.createElement("div")
   tray.className = "lidding-dock-tray"
   let open = true
-  try { open = sessionStorage.getItem("klyro.lidding-dock-open") !== "false" } catch {}
+  try { open = sessionStorage.getItem("kyza.lidding-dock-open") !== "false" } catch {}
   const refresh = () => {
     tray.hidden = !open
     toggle.textContent = open ? "⌃" : "⌄"
@@ -174,7 +174,7 @@ export function attachLiddingDock(host: HTMLElement, spec: FlowwrapSpec, apply: 
   }
   toggle.addEventListener("click", () => {
     open = !open
-    try { sessionStorage.setItem("klyro.lidding-dock-open", String(open)) } catch {}
+    try { sessionStorage.setItem("kyza.lidding-dock-open", String(open)) } catch {}
     refresh()
   })
   refresh()
@@ -346,13 +346,13 @@ export function attachLiddingDock(host: HTMLElement, spec: FlowwrapSpec, apply: 
   navigation.setAttribute("role", "tablist")
   navigation.setAttribute("aria-label", "Lid dock sections")
   let activeTab: "config" | "stepping" = "config"
-  try { activeTab = sessionStorage.getItem("klyro.lidding-dock-tab") === "stepping" ? "stepping" : "config" } catch {}
+  try { activeTab = sessionStorage.getItem("kyza.lidding-dock-tab") === "stepping" ? "stepping" : "config" } catch {}
   const selectTab = (tab: "config" | "stepping") => {
     activeTab = tab
     dimensions.hidden = tab !== "config"
     stepping.hidden = tab !== "stepping"
     navigation.querySelectorAll<HTMLButtonElement>("button").forEach(button => button.setAttribute("aria-selected", String(button.dataset.tab === tab)))
-    try { sessionStorage.setItem("klyro.lidding-dock-tab", tab) } catch {}
+    try { sessionStorage.setItem("kyza.lidding-dock-tab", tab) } catch {}
   }
   for (const [tab, label] of [["config", "Lid Config"], ["stepping", "Stepping"]] as const) {
     const button = document.createElement("button")

@@ -9,13 +9,13 @@ import {
   prepareProjectPresentationCard,
   type CutterProjectPresentationCard,
 } from "../apps/web/src/project/projectOpenService"
-import { updateCutNFlowProject } from "../apps/web/src/project/projectUpdateService"
+import { updateKyzaProject } from "../apps/web/src/project/projectUpdateService"
 import {
-  CUTNFLOW_PROJECT_STORAGE_KEY,
-  loadCutNFlowProject,
+  KYZA_PROJECT_STORAGE_KEY,
+  loadKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage,
+  saveKyzaProject,
+  type KyzaProjectStorage,
 } from "../packages/cutter-engine/project"
 
 function assert(condition: boolean, message = "Assertion failed") {
@@ -30,7 +30,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message = "Values d
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   readonly values = new Map<string, string>()
   writeCount = 0
 
@@ -132,15 +132,15 @@ assertEqual(chooseCutterStartupSource({ status: "absent" }, true), "existing-han
 assertEqual(chooseCutterStartupSource({ status: "absent" }, false), "default")
 
 const storage = new MemoryStorage()
-storage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, JSON.stringify([project]))
-const storedBeforeOpen = storage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY)
+storage.values.set(KYZA_PROJECT_STORAGE_KEY, JSON.stringify([project]))
+const storedBeforeOpen = storage.getItem(KYZA_PROJECT_STORAGE_KEY)
 const opened = loadRequestedProject(project.id, storage)
 assert(opened.ok, "The exact canonical Project must load.")
 if (opened.ok === false) throw new Error(opened.errors.join(" "))
 assertJsonEqual(opened.value.project, project, "Every populated Project field must survive opening.")
 assertJsonEqual(opened.value.spec, project.cutter.legacySpec, "Cutter spec must come from the Project.")
 assertEqual(storage.writeCount, 0, "Opening a Project must not write storage.")
-assertEqual(storage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY), storedBeforeOpen)
+assertEqual(storage.getItem(KYZA_PROJECT_STORAGE_KEY), storedBeforeOpen)
 
 const missing = loadRequestedProject("missing-project", storage)
 assert(
@@ -149,12 +149,12 @@ assert(
 assertEqual(storage.writeCount, 0)
 
 const corruptStorage = new MemoryStorage()
-corruptStorage.values.set(CUTNFLOW_PROJECT_STORAGE_KEY, "not-json")
-const corruptBefore = corruptStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY)
+corruptStorage.values.set(KYZA_PROJECT_STORAGE_KEY, "not-json")
+const corruptBefore = corruptStorage.getItem(KYZA_PROJECT_STORAGE_KEY)
 const corrupt = loadRequestedProject(project.id, corruptStorage)
 assert(!corrupt.ok, "Corrupt storage must return a controlled failure.")
 assertEqual(corruptStorage.writeCount, 0)
-assertEqual(corruptStorage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY), corruptBefore)
+assertEqual(corruptStorage.getItem(KYZA_PROJECT_STORAGE_KEY), corruptBefore)
 
 const existingCard: CutterProjectPresentationCard = {
   id: "legacy-presentation-card",
@@ -177,7 +177,7 @@ assertEqual(reopened.created, false)
 assertEqual(reopened.cardId, created.cardId)
 assertEqual(reopened.cards.length, 1, "Repeated opening must not duplicate an in-memory card.")
 
-const edited = updateCutNFlowProject({
+const edited = updateKyzaProject({
   project: opened.value.project,
   reason: "test-fixture",
   expectedRevision: opened.value.project.revision,
@@ -185,9 +185,9 @@ const edited = updateCutNFlowProject({
 })
 assert(edited.ok && Boolean(edited.project), "An opened Project must remain editable.")
 if (!edited.project) throw new Error(edited.errors.join(" "))
-const saved = saveCutNFlowProject(edited.project, storage)
+const saved = saveKyzaProject(edited.project, storage)
 assert(saved.ok, "The edited Project must save through the canonical service.")
-const reloaded = loadCutNFlowProject(project.id, storage)
+const reloaded = loadKyzaProject(project.id, storage)
 assert(reloaded.ok, "The saved Project must retain its canonical ID.")
 if (reloaded.ok === false) throw new Error(reloaded.errors.join(" "))
 assertEqual(reloaded.value.id, project.id)
@@ -196,7 +196,7 @@ assertEqual(reloaded.value.cutter.legacySpec.width, 460)
 assertJsonEqual(reloaded.value.projectDraft, project.projectDraft)
 assertJsonEqual(reloaded.value.artwork, project.artwork)
 assertJsonEqual(reloaded.value.exportSettings, project.exportSettings)
-const canonicalCollection = JSON.parse(storage.getItem(CUTNFLOW_PROJECT_STORAGE_KEY) ?? "[]")
+const canonicalCollection = JSON.parse(storage.getItem(KYZA_PROJECT_STORAGE_KEY) ?? "[]")
 assertEqual(canonicalCollection.filter((item: { id?: string }) => item.id === project.id).length, 1)
 
 console.log("Dashboard-to-Cutter Project open handoff verified")

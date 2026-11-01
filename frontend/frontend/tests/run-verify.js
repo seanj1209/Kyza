@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process"
 
 const scripts = [
+  "test:brand-compatibility",
   "test:constraints",
   "test:metric",
   "test:selection",
@@ -13,8 +14,8 @@ const scripts = [
   "test:packgen-project",
   "test:packgen-benchmark",
   "test:layout-fixtures",
-  "test:klyro-dashboard",
-  "test:klyro-new-project",
+  "test:kyza-dashboard",
+  "test:kyza-new-project",
   "test:project-open-handoff",
   "test:project-creation",
   "test:beta-validation",
@@ -30,7 +31,7 @@ const scripts = [
   "test:amends-v11",
   "test:amends-v12",
   "test:amends-v12-ui",
-  "test:klyro-shell",
+  "test:kyza-shell",
   "test:build-routes",
 ]
 

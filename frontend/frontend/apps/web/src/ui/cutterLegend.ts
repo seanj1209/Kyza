@@ -10,7 +10,7 @@ export function mountCutterLegend(host: HTMLElement, spec: FlowwrapSpec, onChang
   button.className='cutter-legend-button'
   button.textContent='Legend'
   button.setAttribute('aria-pressed',String(!!spec.cutterLegend))
-  button.title='Include an editable Klyro legend with this cutter and its export'
+  button.title='Include an editable Kyza legend with this cutter and its export'
   button.addEventListener('click',()=>onChange({...spec,cutterLegend:!spec.cutterLegend}))
   const layoutButton=document.createElement('button')
   layoutButton.type='button'
@@ -41,7 +41,7 @@ export function mountCutterLegend(host: HTMLElement, spec: FlowwrapSpec, onChang
   const tray=document.createElement('div');tray.className='cutter-legend-tray';tray.hidden=true
   const presetLabel=document.createElement('label');presetLabel.textContent='Cutter preset'
   const preset=document.createElement('select');preset.setAttribute('aria-label','Cutter preset')
-  preset.innerHTML='<option value="default">Klyro default appearance</option><option value="custom">Custom appearance</option>'
+  preset.innerHTML='<option value="default">Kyza default appearance</option><option value="custom">Custom appearance</option>'
   preset.value=spec.baseCustomisation || Object.keys(spec.elementAppearance??{}).length?'custom':'default'
   preset.addEventListener('change',()=>{
     if(preset.value==='default')onChange({...spec,baseCustomisation:undefined,elementAppearance:undefined})

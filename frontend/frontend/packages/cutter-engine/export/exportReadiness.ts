@@ -1,4 +1,4 @@
-import type { CutNFlowProjectV1 } from "../project"
+import type { KyzaProjectV1 } from "../project"
 import type { ValidationResult } from "../validation"
 
 export type ExportReadinessState =
@@ -37,7 +37,7 @@ const EMPTY_COUNTS: ExportReadinessCounts = {
 }
 
 export const resolveExportReadiness = (input: {
-  project?: CutNFlowProjectV1 | null
+  project?: KyzaProjectV1 | null
   validation?: ValidationResult
   supported?: boolean
   createdAt?: string
@@ -74,7 +74,7 @@ export const resolveExportReadiness = (input: {
       ...context,
       counts: { ...EMPTY_COUNTS },
       advisoryNotes: [],
-      message: "Run validation before export. CutNFlow needs to check the cutter and project state first.",
+      message: "Run validation before export. Kyza needs to check the cutter and project state first.",
       createdAt
     }
   }

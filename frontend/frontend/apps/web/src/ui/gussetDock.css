@@ -1,9 +1,9 @@
-.gusset-dock { position:absolute;top:72px;left:16px;z-index:8;display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--klyro-border,#ded8d2);border-radius:16px;background:var(--klyro-surface,#faf7f3);box-shadow:0 6px 20px #0000000d;color:var(--klyro-text,#333);font:600 11px sans-serif; }
-.gusset-dock button { min-width:34px;min-height:34px;border:1px solid var(--klyro-border,#ded8d2);border-radius:9px;background:transparent;color:inherit;cursor:pointer; }
-.gusset-dock button[aria-pressed="true"] { color:var(--klyro-brand,#9e1316);border-color:currentColor; }
-.gusset-dock-tray { position:absolute;top:calc(100% + 7px);left:0;display:grid;gap:12px;width:230px;max-height:50vh;overflow:auto;padding:16px;border:1px solid var(--klyro-border,#ded8d2);border-radius:16px;background:var(--klyro-surface,#faf7f3);box-shadow:0 6px 20px #00000018; }
+.gusset-dock { position:absolute;top:72px;left:16px;z-index:8;display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--kyza-border,#ded8d2);border-radius:16px;background:var(--kyza-surface,#faf7f3);box-shadow:0 6px 20px #0000000d;color:var(--kyza-text,#333);font:600 11px sans-serif; }
+.gusset-dock button { min-width:34px;min-height:34px;border:1px solid var(--kyza-border,#ded8d2);border-radius:9px;background:transparent;color:inherit;cursor:pointer; }
+.gusset-dock button[aria-pressed="true"] { color:var(--kyza-brand,#9e1316);border-color:currentColor; }
+.gusset-dock-tray { position:absolute;top:calc(100% + 7px);left:0;display:grid;gap:12px;width:230px;max-height:50vh;overflow:auto;padding:16px;border:1px solid var(--kyza-border,#ded8d2);border-radius:16px;background:var(--kyza-surface,#faf7f3);box-shadow:0 6px 20px #00000018; }
 .gusset-dock-tray[hidden] { display:none; }
 .gusset-dock-tray label { display:grid;grid-template-columns:1fr 78px;align-items:center;gap:10px; }
-.gusset-dock-tray input { box-sizing:border-box;width:78px;min-height:32px;border:1px solid var(--klyro-border,#ded8d2);border-radius:7px;background:transparent;color:inherit;padding:5px; }
+.gusset-dock-tray input { box-sizing:border-box;width:78px;min-height:32px;border:1px solid var(--kyza-border,#ded8d2);border-radius:7px;background:transparent;color:inherit;padding:5px; }
 body:not(.studio-mode) .gusset-dock,body.preview-mode .gusset-dock,body.new-artboard-mode .gusset-dock { display:none; }
 @media(max-width:640px) { .gusset-dock { left:6px;top:48px; } }

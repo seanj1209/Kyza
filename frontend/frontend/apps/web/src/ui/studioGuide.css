@@ -9,7 +9,7 @@
   box-sizing: border-box; margin-top: 20px; flex: 0 0 auto;
   color: var(--ink); font-family: "Segoe UI Variable", "Trebuchet MS", Verdana, sans-serif;
 }
-:root[data-klyro-theme="dark"] body #start-overlay .studio-guide {
+:root[data-kyza-theme="dark"] body #start-overlay .studio-guide {
   --card: #222120; --card-raised: #2B2927; --well: #1A1918;
   --ink: #FAF7F4; --ink-muted: #C3B4A7; --line: rgba(219,200,182,.16);
   --shadow: 0 28px 60px -20px rgba(0,0,0,.7), 0 0 0 1px rgba(219,200,182,.06);
@@ -173,7 +173,7 @@
 :root body #start-overlay .studio-guide .step-count { font-size: 11px; color: var(--ink-muted); letter-spacing: .08em; text-align: center; font-variant-numeric: tabular-nums; }
 
 
-:root[data-klyro-theme="dark"] body #start-overlay .studio-guide :is(.chip, .eyebrow) { color: #E0545A; }
+:root[data-kyza-theme="dark"] body #start-overlay .studio-guide :is(.chip, .eyebrow) { color: #E0545A; }
 :root body #start-overlay .studio-guide .scene.is-active { pointer-events: none; }
 
 @media (max-width: 1000px) {

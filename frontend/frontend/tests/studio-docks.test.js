@@ -30,7 +30,7 @@ const independent=updateGussetControl(updateGussetControl(doy,'sync',false),'gus
 assert.equal(independent.doyPouch.gussetSync,false)
 const bounds=resolveDoyBounds(independent,{originX:0,liveOriginX:independent.seals.left,liveWidth:independent.width-independent.seals.left-independent.seals.right,cutterWidth:independent.width})
 assert(bounds.ovalWidth>=bounds.gussetWidth && bounds.ovalWidth<=independent.width,'Sync off keeps the oval within the available web')
-const preferences=load('apps/web/src/klyro/account/studioNavigation.ts')
+const preferences=load('apps/web/src/kyza/account/studioNavigation.ts')
 assert.equal(preferences.studioNavigationHref(),'/cutter?studio=home')
 preferences.setStudioDestination('app');assert.equal(preferences.studioNavigationHref(),'/cutter?studio=resume')
 preferences.setStudioDestination('studio');assert.equal(preferences.studioNavigationHref(),'/cutter?studio=home')

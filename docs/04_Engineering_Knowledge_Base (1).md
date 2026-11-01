@@ -1,9 +1,9 @@
 ---
-document_name: Klyro Engineering Knowledge Base
+document_name: Kyza Engineering Knowledge Base
 file_name: 04_Engineering_Knowledge_Base.md
 version: 2.1
 status: Current — Cross-Source Aligned Beta Baseline
-owner: Sean Johnston / Klyro
+owner: Sean Johnston / Kyza
 last_reviewed: 2026-07-19
 source_replaces: 04_Engineering_Knowledge_Base.md v1.1
 authority: Packaging-engineering rules, cutter construction, active defaults, validation intent, artwork/prepress rules, manufacturing knowledge and rule governance
@@ -17,11 +17,11 @@ related_sources:
   - 10_Testing_QA.md
 ---
 
-# Klyro Engineering Knowledge Base
+# Kyza Engineering Knowledge Base
 
 ## Document Purpose
 
-This document is the engineering source of truth for the Klyro App and its underlying CutNFlow/CnF Tech capability.
+This document is the engineering source of truth for the Kyza App and its underlying Kyza/Kyza Tech capability.
 
 It stores the packaging, cutter, artwork, flexographic print, colour, substrate, validation and production knowledge used to:
 
@@ -43,7 +43,7 @@ It is not only a collection of notes.
 
 Every rule intended for implementation should be identifiable, scoped, status-controlled and capable of being referenced by validation, FlowAI, tests and Airtable.
 
-`01_Product_Architecture.md` controls the Klyro product hierarchy and release boundary.
+`01_Product_Architecture.md` controls the Kyza product hierarchy and release boundary.
 
 This document controls engineering meaning.
 
@@ -55,17 +55,17 @@ There is no separate `00_Master_Context.md`.
 
 # 1. Product and Engineering Context
 
-## 1.1 Klyro
+## 1.1 Kyza
 
-Klyro is the customer-facing master brand.
+Kyza is the customer-facing master brand.
 
-## 1.2 Klyro App
+## 1.2 Kyza App
 
-The Klyro App is the connected working environment containing Pack Gen, Cutter Studio, Validation Centre, Export Release and future artwork and production capability.
+The Kyza App is the connected working environment containing Pack Gen, Cutter Studio, Validation Centre, Export Release and future artwork and production capability.
 
-## 1.3 CutNFlow / CnF Tech
+## 1.3 Kyza / Kyza Tech
 
-CutNFlow/CnF Tech is the underlying packaging-engineering capability.
+Kyza/Kyza Tech is the underlying packaging-engineering capability.
 
 It owns or uses:
 
@@ -100,7 +100,7 @@ A rule outcome must come from structured engineering or validation logic.
 
 # 2. Core Engineering Principle
 
-Klyro must be based on real manufacturing practice.
+Kyza must be based on real manufacturing practice.
 
 Engineering knowledge should prioritise:
 
@@ -175,7 +175,7 @@ Every engineering rule must use one status.
 | Status | Meaning |
 |---|---|
 | Draft | Proposed rule; not ready to act as a general default |
-| Working Standard | Current Klyro/CnF Tech default or behaviour |
+| Working Standard | Current Kyza/Kyza Tech default or behaviour |
 | Validated | Confirmed through practical production use, controlled testing or accepted technical evidence |
 | Customer Specific | Applies only to a named customer or controlled customer profile |
 | Press Specific | Applies only to a named press, machine, site or production route |
@@ -220,18 +220,18 @@ Use stable IDs.
 Recommended pattern:
 
 ```text
-CNF-[DOMAIN]-[PACK OR GLOBAL]-[NUMBER]
+KYZA-[DOMAIN]-[PACK OR GLOBAL]-[NUMBER]
 ```
 
 Examples:
 
-- `CNF-CUT-GLOBAL-001`
-- `CNF-EYE-GLOBAL-001`
-- `CNF-KSL-GEOM-001`
-- `CNF-VAL-GLOBAL-001`
-- `CNF-ART-GLOBAL-001`
+- `KYZA-CUT-GLOBAL-001`
+- `KYZA-EYE-GLOBAL-001`
+- `KYZA-KSL-GEOM-001`
+- `KYZA-VAL-GLOBAL-001`
+- `KYZA-ART-GLOBAL-001`
 
-Existing Airtable CNF task IDs remain separate from engineering rule IDs.
+Existing Airtable KYZA task IDs remain separate from engineering rule IDs.
 
 ## 4.5 Required Rule Fields
 
@@ -339,7 +339,7 @@ A pack-type, customer, machine or explicit Project rule may override them.
 
 ## 6.1 Generic Seal Width
 
-**Rule ID:** `CNF-SEAL-GLOBAL-001`  
+**Rule ID:** `KYZA-SEAL-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed as current beta fallback  
 **Applies To:** Flexible-packaging Pack Specifications without a more specific seal rule  
@@ -365,7 +365,7 @@ The older generic `10 mm` default.
 
 ## 6.2 Bleed
 
-**Rule ID:** `CNF-ART-GLOBAL-001`  
+**Rule ID:** `KYZA-ART-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 **Applies To:** Artwork-to-cutter relationship  
@@ -387,7 +387,7 @@ Artwork validation is post-beta unless a limited implementation is active.
 
 ## 6.3 Safe Zone from Inner Seal
 
-**Rule ID:** `CNF-SAFE-GLOBAL-001`  
+**Rule ID:** `KYZA-SAFE-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 **Applies To:** Critical artwork relative to seal areas  
@@ -407,7 +407,7 @@ Critical artwork within the active safe zone should create a warning or critical
 
 ## 6.4 Fold-Line Clearance
 
-**Rule ID:** `CNF-FOLD-GLOBAL-001`  
+**Rule ID:** `KYZA-FOLD-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed as current beta rule  
 **Applies To:** Critical artwork relative to fold lines  
@@ -429,7 +429,7 @@ Escalate only where the affected feature or pack rule makes the issue definitely
 
 ## 6.5 Units
 
-**Rule ID:** `CNF-DATA-GLOBAL-001`  
+**Rule ID:** `KYZA-DATA-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 **Applies To:** Engineering dimensions  
@@ -442,7 +442,7 @@ Display conversions must not alter stored engineering values.
 
 ## 6.6 Pack-Specific Priority
 
-**Rule ID:** `CNF-CUT-GLOBAL-001`  
+**Rule ID:** `KYZA-CUT-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 
@@ -509,7 +509,7 @@ Each pack type should eventually define:
 
 # 8. Pack-Type Selection Guidance
 
-**Rule ID:** `CNF-PACK-GLOBAL-001`  
+**Rule ID:** `KYZA-PACK-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 
@@ -691,7 +691,7 @@ A K-Seal Pack Specification should support, where applicable:
 
 ## 12.2 K-Seal Side Seal
 
-**Rule ID:** `CNF-KSL-SEAL-001`  
+**Rule ID:** `KYZA-KSL-SEAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current K-Seal default  
 
@@ -701,7 +701,7 @@ Default K-Seal side seals to `7.5 mm` unless the user, customer, machine or Proj
 
 ## 12.3 K-Seal Bottom Seal
 
-**Rule ID:** `CNF-KSL-SEAL-002`  
+**Rule ID:** `KYZA-KSL-SEAL-002`
 **Status:** Working Standard  
 **Certainty:** Confirmed current K-Seal default  
 
@@ -711,7 +711,7 @@ Default the K-Seal bottom seal to `7.5 mm` unless overridden.
 
 ## 12.4 K-Seal Trim
 
-**Rule ID:** `CNF-KSL-TRIM-001`  
+**Rule ID:** `KYZA-KSL-TRIM-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current K-Seal default  
 
@@ -723,7 +723,7 @@ Trim state may affect eyemark availability and web construction.
 
 ## 12.5 K-Seal Support-Arm Angle
 
-**Rule ID:** `CNF-KSL-GEOM-001`  
+**Rule ID:** `KYZA-KSL-GEOM-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current default  
 
@@ -743,7 +743,7 @@ Do not allow an unrestricted angle input.
 
 ## 12.6 K-Seal Auto-Adjustment
 
-**Rule ID:** `CNF-KSL-GEOM-002`  
+**Rule ID:** `KYZA-KSL-GEOM-002`
 **Status:** Working Standard / implementation refinement  
 **Certainty:** Confirmed principle; final equation requires code-backed validation  
 
@@ -765,7 +765,7 @@ Arm length should be derived from the intended endpoints and angle, not from an 
 
 ## 12.7 K-Seal Arm Count
 
-**Rule ID:** `CNF-KSL-GEOM-003`  
+**Rule ID:** `KYZA-KSL-GEOM-003`
 **Status:** Working Standard  
 **Certainty:** Confirmed current visual/engineering representation  
 
@@ -783,7 +783,7 @@ The arms must:
 
 ## 12.8 K-Seal Arm Thickness
 
-**Rule ID:** `CNF-KSL-GEOM-004`  
+**Rule ID:** `KYZA-KSL-GEOM-004`
 **Status:** Working Standard  
 **Certainty:** Confirmed latest direction  
 
@@ -802,7 +802,7 @@ An older fixed or doubled arm-width approach is deprecated.
 
 ## 12.9 K-Seal Arm Position and Limits
 
-**Rule ID:** `CNF-KSL-GEOM-005`  
+**Rule ID:** `KYZA-KSL-GEOM-005`
 **Status:** Working Standard  
 **Certainty:** Confirmed principle  
 
@@ -821,7 +821,7 @@ Exact coordinate names and equations must match the code-backed geometry model.
 
 ## 12.10 K-Seal Visual Union
 
-**Rule ID:** `CNF-KSL-RENDER-001`  
+**Rule ID:** `KYZA-KSL-RENDER-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current rendering requirement  
 
@@ -854,7 +854,7 @@ Use the current Eyemark Standards in this document.
 
 ## 12.12 K-Seal Tac-Hole Boundary
 
-**Rule ID:** `CNF-KSL-TAC-001`  
+**Rule ID:** `KYZA-KSL-TAC-001`
 **Status:** Working Standard requiring formal geometry names  
 **Certainty:** Confirmed behavioural limit  
 
@@ -909,7 +909,7 @@ A rendering seam without a geometry defect is a UI/rendering issue, not automati
 
 ## 13.1 Default Eyemark Size
 
-**Rule ID:** `CNF-EYE-GLOBAL-001`  
+**Rule ID:** `KYZA-EYE-GLOBAL-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current default  
 
@@ -925,7 +925,7 @@ A minimum is not a default.
 
 ## 13.2 Eyemark Count
 
-**Rule ID:** `CNF-EYE-GLOBAL-002`  
+**Rule ID:** `KYZA-EYE-GLOBAL-002`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 
@@ -943,7 +943,7 @@ Do not create a second independent eyemark settings panel in Artwork Studio or z
 
 ## 13.3 Default Edge Offset
 
-**Rule ID:** `CNF-EYE-GLOBAL-003`  
+**Rule ID:** `KYZA-EYE-GLOBAL-003`
 **Status:** Working Standard  
 **Certainty:** Confirmed current engine direction  
 
@@ -957,7 +957,7 @@ The older generic `3 mm from cutter edge` placement statement is deprecated as a
 
 ## 13.4 Eyemark Track
 
-**Rule ID:** `CNF-EYE-GLOBAL-004`  
+**Rule ID:** `KYZA-EYE-GLOBAL-004`
 **Status:** Working Standard  
 **Certainty:** Confirmed  
 
@@ -974,7 +974,7 @@ An eyemark track must not be treated as a generic safe zone.
 
 ## 13.5 Slit-Tolerance Trigger
 
-**Rule ID:** `CNF-EYE-SLIT-001`  
+**Rule ID:** `KYZA-EYE-SLIT-001`
 **Status:** Working Standard  
 **Certainty:** Confirmed current Cutter Studio behaviour  
 
@@ -1004,7 +1004,7 @@ They must not silently alter geometry.
 
 ## 13.7 Two-Eyemark Allowance
 
-**Rule ID:** `CNF-EYE-SLIT-002`  
+**Rule ID:** `KYZA-EYE-SLIT-002`
 **Status:** Working Standard / implementation behaviour  
 **Certainty:** Confirmed current direction  
 
@@ -1967,9 +1967,9 @@ Codex must not:
 
 # 39. Final Engineering Rule
 
-Klyro must not merely draw packaging.
+Kyza must not merely draw packaging.
 
-Through CutNFlow/CnF Tech, it must guide users towards packaging structures that are:
+Through Kyza/Kyza Tech, it must guide users towards packaging structures that are:
 
 - Practical
 - Manufacturable
@@ -1980,7 +1980,7 @@ Through CutNFlow/CnF Tech, it must guide users towards packaging structures that
 - Exportable
 - Controlled by the user
 
-The Engineering Knowledge Base is the technical authority that allows Klyro to become intelligent without becoming unsafe or vague.
+The Engineering Knowledge Base is the technical authority that allows Kyza to become intelligent without becoming unsafe or vague.
 
 ---
 
@@ -1996,7 +1996,7 @@ The Engineering Knowledge Base is the technical authority that allows Klyro to b
 
 ## Version 2.1 — 18 July 2026
 
-- Reframed the source around Klyro, Klyro App, CutNFlow/CnF Tech and FlowAI.
+- Reframed the source around Kyza, Kyza App, Kyza/Kyza Tech and FlowAI.
 - Removed references to the nonexistent `00_Master_Context.md`.
 - Removed dependence on unconfirmed Development Standards and Decision Log files.
 - Added stable engineering rule governance and rule-ID guidance.

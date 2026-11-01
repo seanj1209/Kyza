@@ -20,7 +20,7 @@ import type {
 export const ACTIVE_CUTTER_STATE_SCHEMA_VERSION =
   "mvp-demo-attribute-handoff-001" as const
 
-export const ACTIVE_CUTTER_STATE_STORAGE_KEY = "cutnflow.activeCutterState"
+export const ACTIVE_CUTTER_STATE_STORAGE_KEY = "kyza.activeCutterState"
 
 export type PrintRules = {
   floodPrint: boolean

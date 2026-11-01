@@ -141,7 +141,7 @@ const run = () => {
     throw new Error("Condensed recommendation card must show a main reason by default.")
   }
   if (JSON.stringify(buildableCard).includes("Pack type score") || "scoreLabel" in buildableCard) {
-    throw new Error("Flow Score details must not expose the existing ranking value as a future numeric Flow Score.")
+    throw new Error("Kyza Score details must not expose the existing ranking value as a future numeric Kyza Score.")
   }
   for (const requiredSection of [
     "why",
@@ -171,7 +171,7 @@ const run = () => {
   }, 0)
   for (const emptySection of ["why", "alternatives", "assumptions", "missing-information", "questions", "risks"]) {
     if (emptyDetailsCard.detailSections.some(section => section.id === emptySection)) {
-      throw new Error(`Flow Score must hide the empty '${emptySection}' section.`)
+      throw new Error(`Kyza Score must hide the empty '${emptySection}' section.`)
     }
   }
 

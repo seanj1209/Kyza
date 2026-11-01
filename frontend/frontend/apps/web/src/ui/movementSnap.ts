@@ -1,4 +1,4 @@
-import { DEFAULT_PREFERENCES, loadMoveIncrementMm } from "../klyro/account/preferenceService"
+import { DEFAULT_PREFERENCES, loadMoveIncrementMm } from "../kyza/account/preferenceService"
 
 /**
  * AMENDS 6.1 — mouse movement grid for selected objects/elements.

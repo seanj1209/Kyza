@@ -1,12 +1,12 @@
-import type { CutNFlowProjectV1, ParseResult } from "../../../../packages/cutter-engine/project"
+import type { KyzaProjectV1, ParseResult } from "../../../../packages/cutter-engine/project"
 import { runPreExportValidation } from "../../../../packages/cutter-engine/export/preExportValidation"
 import { createBetaReviewSnapshot, buildBetaReviewPackage, betaReviewAudit } from "../../../../packages/cutter-engine/export/betaReviewSnapshot"
 import { deliverProjectExportLocally, type SaveFilePickerLike } from "../../../../packages/cutter-engine/export/projectExportService"
 import "./betaReview.css"
 
 type BetaReviewOptions = {
-  getLatestProject: () => CutNFlowProjectV1 | null
-  persistProject: (project: CutNFlowProjectV1, expectedRevision?: number) => ParseResult<CutNFlowProjectV1> | Promise<ParseResult<CutNFlowProjectV1>>
+  getLatestProject: () => KyzaProjectV1 | null
+  persistProject: (project: KyzaProjectV1, expectedRevision?: number) => ParseResult<KyzaProjectV1> | Promise<ParseResult<KyzaProjectV1>>
   getSvg: () => SVGSVGElement | null
   trigger: HTMLElement
 }

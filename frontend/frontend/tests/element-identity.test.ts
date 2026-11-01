@@ -2,25 +2,25 @@ import { createControlSpecSynchroniser } from "../apps/web/src/project/controlSp
 import { resolveCutterElementSelection } from "../apps/web/src/project/cutterElementSelection"
 import {
   migrateSavedProjectRecord,
-  synchroniseCutNFlowProject,
-  updateCutNFlowProject,
+  synchroniseKyzaProject,
+  updateKyzaProject,
   updateEyemarkById,
   updatePerfLaneById,
   updateTearNotchById
 } from "../apps/web/src/project/projectUpdateService"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
-  duplicateCutNFlowProject,
+  duplicateKyzaProject,
   getEyemarkElementRefs,
   getPerfLaneElementRefs,
   getTearNotchElementRefs,
   legacySpecFromProject,
-  listCutNFlowProjects,
-  loadCutNFlowProject,
-  parseCutNFlowProject,
+  listKyzaProjects,
+  loadKyzaProject,
+  parseKyzaProject,
   projectFromLegacySpec,
-  saveCutNFlowProject,
-  type CutNFlowProjectStorage
+  saveKyzaProject,
+  type KyzaProjectStorage
 } from "../packages/cutter-engine/project"
 
 function assert(condition: boolean, message: string) {
@@ -33,7 +33,7 @@ function assertJsonEqual(actual: unknown, expected: unknown, message: string) {
   assert(JSON.stringify(actual) === JSON.stringify(expected), message)
 }
 
-class MemoryStorage implements CutNFlowProjectStorage {
+class MemoryStorage implements KyzaProjectStorage {
   private values = new Map<string, string>()
 
   getItem(key: string) {
@@ -139,7 +139,7 @@ assert(
   "An inactive or superseded affected Cutter element must not select a renderer object.",
 )
 
-const increased = updateCutNFlowProject({
+const increased = updateKyzaProject({
   project: oneProject,
   reason: "engine-action",
   update: { type: "replace-legacy-spec", spec: twoEyemarkSpec }
@@ -162,7 +162,7 @@ const reducedSpec: FlowwrapSpec = {
     color: "black"
   }
 }
-const reduced = updateCutNFlowProject({
+const reduced = updateKyzaProject({
   project: increased.project!,
   reason: "controls-edit",
   update: { type: "replace-legacy-spec", spec: reducedSpec }
@@ -181,7 +181,7 @@ assert(
   "Two-to-one must preserve secondary dimensions and offsets in legacySpec."
 )
 
-const unrelated = updateCutNFlowProject({
+const unrelated = updateKyzaProject({
   project: reduced.project!,
   reason: "controls-edit",
   update: { type: "patch-legacy-spec", patch: { width: 460 } }
@@ -193,7 +193,7 @@ assertJsonEqual(
   "Unrelated edits must not regenerate eyemark IDs."
 )
 
-const restored = updateCutNFlowProject({
+const restored = updateKyzaProject({
   project: unrelated.project!,
   reason: "engine-action",
   update: {
@@ -223,7 +223,7 @@ assert(
   "Canvas-style ID updates must preserve identity."
 )
 
-const switched = synchroniseCutNFlowProject(movedById.project!, "artboard-switch")
+const switched = synchroniseKyzaProject(movedById.project!, "artboard-switch")
 assert(switched.ok && Boolean(switched.project), "Artboard synchronisation must succeed.")
 assert(switched.revision === movedById.revision, "Artboard sync must not increment revision.")
 assertJsonEqual(
@@ -246,8 +246,8 @@ assertJsonEqual(
 )
 
 const storage = new MemoryStorage()
-assert(saveCutNFlowProject(switched.project!, storage).ok, "Identity project must save.")
-const loaded = loadCutNFlowProject(switched.project!.id, storage)
+assert(saveKyzaProject(switched.project!, storage).ok, "Identity project must save.")
+const loaded = loadKyzaProject(switched.project!.id, storage)
 assert(loaded.ok, "Identity project must load.")
 if (loaded.ok) {
   assertJsonEqual(
@@ -256,7 +256,7 @@ if (loaded.ok) {
     "Save/load must preserve eyemark IDs."
   )
 }
-const duplicated = duplicateCutNFlowProject(switched.project!.id, storage)
+const duplicated = duplicateKyzaProject(switched.project!.id, storage)
 assert(duplicated.ok, "Identity project must duplicate.")
 if (duplicated.ok) {
   assert(duplicated.value.id !== switched.project!.id, "Duplicate needs a new project ID.")
@@ -275,7 +275,7 @@ if (duplicated.ok) {
 
 const malformed = JSON.parse(JSON.stringify(twoProject))
 malformed.cutter.identityMap.elements[1].id = malformed.cutter.identityMap.elements[0].id
-const repaired = parseCutNFlowProject(malformed)
+const repaired = parseKyzaProject(malformed)
 assert(repaired.ok, "Duplicate eyemark IDs must be repaired safely.")
 if (repaired.ok) {
   const repairedIds = getEyemarkElementRefs(repaired.value).map(ref => ref.id)
@@ -288,7 +288,7 @@ mismatchedCount.cutter.identityMap.elements.find(
   (element: { type: string; index?: number }) =>
     element.type === "eyemark" && element.index === 1
 ).status = "active"
-const repairedCount = parseCutNFlowProject(mismatchedCount)
+const repairedCount = parseKyzaProject(mismatchedCount)
 assert(repairedCount.ok, "Active-ref/count mismatches must be repairable.")
 if (repairedCount.ok) {
   assert(
@@ -300,7 +300,7 @@ if (repairedCount.ok) {
 
 const legacyWithoutRefs = JSON.parse(JSON.stringify(twoProject))
 delete legacyWithoutRefs.cutter.identityMap
-const migrated = parseCutNFlowProject(legacyWithoutRefs)
+const migrated = parseKyzaProject(legacyWithoutRefs)
 assert(migrated.ok, "A legacy project without refs must migrate safely.")
 if (migrated.ok) {
   assert(getEyemarkElementRefs(migrated.value).length === 2, "Migration must generate both refs.")
@@ -308,9 +308,9 @@ if (migrated.ok) {
 }
 
 const legacyStorage = new MemoryStorage()
-legacyStorage.setItem("cutnflow.projects.v1", JSON.stringify([legacyWithoutRefs]))
-const firstList = listCutNFlowProjects(legacyStorage)
-const secondList = listCutNFlowProjects(legacyStorage)
+legacyStorage.setItem("kyza.projects.v1", JSON.stringify([legacyWithoutRefs]))
+const firstList = listKyzaProjects(legacyStorage)
+const secondList = listKyzaProjects(legacyStorage)
 assert(firstList.ok && secondList.ok, "Legacy identity storage must load repeatedly.")
 if (firstList.ok && secondList.ok) {
   assertJsonEqual(
@@ -401,7 +401,7 @@ assert(
   "Notch offsets must remain explicitly legacy until pack conversions exist."
 )
 
-const featureSynced = updateCutNFlowProject({
+const featureSynced = updateKyzaProject({
   project: featureProject,
   reason: "controls-edit",
   update: { type: "patch-legacy-spec", patch: { height: 205 } }
@@ -418,7 +418,7 @@ assertJsonEqual(
   "Unrelated edits must preserve tear-notch IDs."
 )
 
-const modeChanged = updateCutNFlowProject({
+const modeChanged = updateKyzaProject({
   project: featureSynced.project!,
   reason: "controls-edit",
   update: { type: "patch-legacy-spec", patch: { perfs: { mode: "continuous" } } }
@@ -437,7 +437,7 @@ assert(
 )
 const removedLaneId = syncedLanes[0]!.id!
 const survivingLaneId = syncedLanes[1]!.id!
-const laneRemoved = updateCutNFlowProject({
+const laneRemoved = updateKyzaProject({
   project: modeChanged.project!,
   reason: "controls-edit",
   update: {
@@ -457,7 +457,7 @@ assert(
 )
 
 const survivingLane = laneRemoved.legacySpec!.perfs!.lanes![0]!
-const laneAdded = updateCutNFlowProject({
+const laneAdded = updateKyzaProject({
   project: laneRemoved.project!,
   reason: "customisation-edit",
   update: {
@@ -508,7 +508,7 @@ assert(
   "DOY notch ID update must synchronise legacy values."
 )
 
-const notchDisabled = updateCutNFlowProject({
+const notchDisabled = updateKyzaProject({
   project: notchMoved.project!,
   reason: "controls-edit",
   update: {
@@ -527,8 +527,8 @@ assert(
 )
 
 const featureStorage = new MemoryStorage()
-assert(saveCutNFlowProject(notchDisabled.project!, featureStorage).ok, "Feature project must save.")
-const loadedFeatures = loadCutNFlowProject(notchDisabled.project!.id, featureStorage)
+assert(saveKyzaProject(notchDisabled.project!, featureStorage).ok, "Feature project must save.")
+const loadedFeatures = loadKyzaProject(notchDisabled.project!.id, featureStorage)
 assert(loadedFeatures.ok, "Feature project must load.")
 if (loadedFeatures.ok) {
   assertJsonEqual(
@@ -543,7 +543,7 @@ if (loadedFeatures.ok) {
   )
 }
 
-const featureDuplicate = duplicateCutNFlowProject(
+const featureDuplicate = duplicateKyzaProject(
   notchDisabled.project!.id,
   featureStorage
 )
@@ -574,7 +574,7 @@ const malformedNotchRefs = malformedFeatures.cutter.identityMap.elements.filter(
   (element: { type: string }) => element.type === "tear-notch"
 )
 malformedNotchRefs[1].id = malformedNotchRefs[0].id
-const repairedFeatures = parseCutNFlowProject(malformedFeatures)
+const repairedFeatures = parseKyzaProject(malformedFeatures)
 assert(repairedFeatures.ok, "Duplicate perf/notch IDs must be repaired safely.")
 if (repairedFeatures.ok) {
   const repairedPerfIds = getPerfLaneElementRefs(repairedFeatures.value).map(ref => ref.id)
@@ -586,11 +586,11 @@ if (repairedFeatures.ok) {
 
 const legacyFeatures = JSON.parse(JSON.stringify(featureProject))
 delete legacyFeatures.cutter.identityMap
-const migratedFeatures = parseCutNFlowProject(legacyFeatures)
+const migratedFeatures = parseKyzaProject(legacyFeatures)
 assert(migratedFeatures.ok, "Legacy perf/notch projects must generate refs.")
 if (migratedFeatures.ok) {
   assert(getPerfLaneElementRefs(migratedFeatures.value).length === 2, "Both lanes migrate.")
   assert(getTearNotchElementRefs(migratedFeatures.value).length === 2, "Both notches migrate.")
 }
 
-console.log("CutNFlow element identity tests passed.")
+console.log("Kyza element identity tests passed.")

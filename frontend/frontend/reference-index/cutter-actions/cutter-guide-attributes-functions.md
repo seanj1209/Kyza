@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This catalogue gives Gemini App Builder packaging-specific attributes and UI actions for a CutNFlow prototype. Every function below is mock-only: it may change local prototype state or show feedback, but it must not implement cutter geometry, pack generation, artwork processing, or production validation.
+This catalogue gives Gemini App Builder packaging-specific attributes and UI actions for a Kyza prototype. Every function below is mock-only: it may change local prototype state or show feedback, but it must not implement cutter geometry, pack generation, artwork processing, or production validation.
 
 ## A. Base Cutter Attributes
 
