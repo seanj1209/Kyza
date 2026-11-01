@@ -18,7 +18,7 @@ for (const source of [flowMark, logo]) {
 }
 
 // Help Me Choose uses the shared Kyza symbol, icon only.
-assert.match(main, /decorateStartAction\(chooseButton, createKyzaMarkIcon\(\), "Describe your product and explore Kyza suggestions"\)/)
+assert.match(main, /decorateStartAction\(chooseButton, createKyzaMarkIcon\(\), "Describe your product and explore Flow suggestions"\)/)
 assert.doesNotMatch(main, /chooseButton, '<path d="m12 3 2\.5 6\.5/, "The old sparkle icon is replaced")
 assert.doesNotMatch(flowMark, /<path|KYZA_MARK_PATHS/, "The owner's images must not be replaced with a traced logo")
 assert.match(flowMark, /KYZA_WORDMARK_SVG/)

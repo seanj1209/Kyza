@@ -22,6 +22,9 @@ test('v12 landing tagline, FlowAI mark and Strip Laminate naming', async ({ page
   for (let i = 0; i < 10; i++) { names.push((await carousel.locator('.slide.is-active h3').textContent()) ?? ''); await carousel.locator('.nav.next').click() }
   expect(names).toContain('Strip Film/Laminate')
   expect(names.join()).not.toContain('Lane Laminate')
+  await expect(help.locator('small')).toContainText('Flow suggestions')
+  await help.click()
+  await expect(page.locator('.pack-gen-flowai-presence')).toHaveText('Flow')
 })
 
 test('v12 3SS defaults, measures and sachet eyemark validation', async ({ page }) => {

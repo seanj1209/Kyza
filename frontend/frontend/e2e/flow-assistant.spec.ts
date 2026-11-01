@@ -3,7 +3,7 @@ import { createManualProjectFromDashboard, expect, test, readCurrentProject } fr
 test("Kyza retains the collapsed prompt and conversation while live QC remains accessible", async ({ page }) => {
   await createManualProjectFromDashboard(page, { name: "Flow reconciliation", packLabel: "Flowwrap" })
   const dock = page.locator("#flow-assistant-dock")
-  const input = dock.getByRole("textbox", { name: "Ask Kyza a question" })
+  const input = dock.getByRole("textbox", { name: "Ask Flow a question" })
   await expect(dock).toHaveAttribute("data-state", "collapsed")
   await expect(input).toBeVisible()
   for (const question of ["How do I rotate an element?", "How do I export a PDF?"]) {

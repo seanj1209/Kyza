@@ -7,7 +7,7 @@ test('v11 landing header, entry copy and centred pack indicator', async ({ page 
   await expect(page.locator('.start-studio-title')).toHaveText('Cutter Studio')
   await expect(page.locator('.start-sidebar-intro')).toHaveCount(0)
   await expect(page.locator('.start-pack-heading')).toHaveText('Get Started')
-  await expect(page.locator('.start-pack-intro')).toHaveText('Choose a pack, import a cutter, or tell Kyza what you need.')
+  await expect(page.locator('.start-pack-intro')).toHaveText('Choose a pack, import a cutter, or tell Flow what you need.')
   const sandbox = page.getByRole('button', { name: /Sandbox Mode/ })
   await expect(sandbox.locator('small')).toHaveText('For Trials and Bespoke Project Work')
   await expect(page.locator('.start-entry-action:visible strong')).toHaveText(['Sandbox Mode', 'Import Cutter', 'Help Me Choose'])

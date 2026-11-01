@@ -224,8 +224,8 @@ test.describe("@beta connected creation workflows", () => {
     const secondTitle = await dialog.getByRole("article").getByRole("heading").innerText()
     expect(secondTitle).not.toBe(firstTitle)
 
-    await dialog.getByRole("button", { name: "Kyza Score" }).click()
-    await expect(dialog.getByRole("heading", { name: "Kyza Score" })).toBeVisible()
+    await dialog.getByRole("button", { name: "Flow Score" }).click()
+    await expect(dialog.getByRole("heading", { name: "Flow Score" })).toBeVisible()
     await expect(dialog).toContainText(secondTitle)
     await dialog.getByRole("button", { name: /Back to Suggestions/ }).click()
     await expect(dialog.getByRole("article").getByRole("heading")).toHaveText(secondTitle)

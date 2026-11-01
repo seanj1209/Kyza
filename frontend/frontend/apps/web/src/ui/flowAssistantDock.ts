@@ -27,11 +27,11 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
   element.id = "flow-assistant-dock"
   element.className = "flow-assistant-dock"
   element.dataset.state = "collapsed"
-  element.setAttribute("aria-label", "Kyza assistant and quality checks")
+  element.setAttribute("aria-label", "Flow assistant and quality checks")
   const top = document.createElement("div")
   top.className = "flow-assistant-top"
   top.setAttribute("role", "tablist")
-  top.setAttribute("aria-label", "Kyza views")
+  top.setAttribute("aria-label", "Flow views")
   const chatTab = document.createElement("button")
   chatTab.type = "button"
   chatTab.id = "flow-chat-tab"
@@ -42,7 +42,7 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
   const brand = document.createElement("button")
   brand.type = "button"
   brand.className = "flow-assistant-brand"
-  brand.append(createKyzaMarkIcon(), document.createTextNode("Kyza"))
+  brand.append(createKyzaMarkIcon(), document.createTextNode("Flow"))
   const status = document.createElement("button")
   status.type = "button"
   status.className = "flow-assistant-status"
@@ -65,7 +65,7 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
   response.className = "flow-assistant-response"
   response.setAttribute("role", "status")
   response.setAttribute("aria-live", "polite")
-  response.textContent = "Ask Kyza how to use the studio, or switch to Advisories for live cutter checks."
+  response.textContent = "Ask Flow how to use the studio, or switch to Advisories for live cutter checks."
   chat.append(response)
   issuesPanel.classList.add("flow-assistant-issues")
   issuesPanel.setAttribute("role", "tabpanel")
@@ -76,8 +76,8 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
   const input = document.createElement("input")
   input.type = "text"
   input.maxLength = 500
-  input.placeholder = "Ask Kyza about your cutter…"
-  input.setAttribute("aria-label", "Ask Kyza a question")
+  input.placeholder = "Ask Flow about your cutter…"
+  input.setAttribute("aria-label", "Ask Flow a question")
   const send = document.createElement("button")
   send.type = "submit"
   send.setAttribute("aria-label", "Send message")
@@ -88,7 +88,7 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
     element.dataset.state = state
     brand.setAttribute("aria-expanded", String(state !== "collapsed"))
     toggle.textContent = state === "collapsed" ? "⌃" : "⌄"
-    toggle.setAttribute("aria-label", state === "collapsed" ? "Expand Kyza" : "Collapse Kyza")
+    toggle.setAttribute("aria-label", state === "collapsed" ? "Expand Flow" : "Collapse Flow")
     chat.hidden = state !== "chat"
     issuesPanel.hidden = state !== "issues"
     chatTab.setAttribute("aria-selected", String(state === "chat"))

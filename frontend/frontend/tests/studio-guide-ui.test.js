@@ -133,7 +133,7 @@ const slide = () => ({ eyebrow: tour.node("eyebrow").textContent, title: tour.no
 assert.match(source, /id="kyza-guide-guide-title">Studio tour</)
 let current = slide()
 assert.equal(current.title, "Choose how to start")
-for (const route of [/pack type/i, /Sandbox Mode/, /import a saved cutter/i, /tell Kyza what you need/]) assert.match(current.brief, route)
+for (const route of [/pack type/i, /Sandbox Mode/, /import a saved cutter/i, /tell Flow what you need/]) assert.match(current.brief, route)
 tour.click("next")
 current = slide()
 assert.equal(current.eyebrow, "Inside the studio · 2 of 4")

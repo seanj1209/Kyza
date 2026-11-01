@@ -128,7 +128,7 @@ assert.match(studioGuideSource, /motion\.matches \|\| !visible \|\| document\.hi
 assert.match(studioGuideSource, /const MANUAL_RESUME_DELAY = 10000/)
 assert.match(studioGuideSource, /remaining = manual \? MANUAL_RESUME_DELAY : DURATION/)
 assert.doesNotMatch(studioGuideSource, /kyza-guide-play|kyza-guide-count|mouseenter|mouseleave/)
-for (const route of ["Pack type", "Sandbox", "Import", "Kyza"]) {
+for (const route of ["Pack type", "Sandbox", "Import", "Flow"]) {
   assert.ok(studioGuideSource.includes(route), `Missing tour entry route: ${route}`)
 }
 const customisationSource = await read("apps/web/src/ui/customisationPanel.ts")
@@ -349,7 +349,7 @@ assert.match(cutterSource, /Create \$\{selectedPack\.name\}/)
 assert.doesNotMatch(cutterSource, /Custom Project · Sandbox/)
 assert.match(cutterSource, /Help Me Choose/)
 assert.match(cutterSource, /sorted\.slice\(0, 3\)/)
-assert.match(cutterSource, /Choose a pack, import a cutter, or tell Kyza what you need\./)
+assert.match(cutterSource, /Choose a pack, import a cutter, or tell Flow what you need\./)
 assert.match(cutterSource, /customProjectButton\.textContent = "Sandbox Mode"/)
 assert.match(cutterSource, /"For Trials and Bespoke Project Work"/)
 assert.doesNotMatch(cutterSource, /Create Manually/)
@@ -368,7 +368,7 @@ assert.match(navigationSource, /aria-current=\{isActive \? "page" : undefined\}/
 
 
 
-assert.match(packGenSource, /pack-gen-flowai-presence", "Kyza"/)
+assert.match(packGenSource, /pack-gen-flowai-presence", "Flow"/)
 assert.doesNotMatch(packGenSource, /FlowAI ready/)
 assert.match(packGenSource, /pack-gen-prompt-idea/)
 assert.match(packGenSource, /}, 6200\)/)
@@ -377,7 +377,7 @@ assert.match(packGenSource, /promptPanel\.classList\.remove\("is-generating"\)/)
 assert.match(packGenSource, /Build Specification/)
 assert.match(packGenSource, /Open in Cutter Studio/)
 assert.match(packGenSource, /Suggested Pack Types/)
-assert.match(packGenSource, /Kyza Score/)
+assert.match(packGenSource, /Flow Score/)
 assert.match(packGenSource, /type: "flow-score"/)
 assert.match(packGenSource, /type SuggestionCarouselState/)
 assert.match(packGenSource, /activeIndex: number/)
