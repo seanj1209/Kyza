@@ -1119,7 +1119,7 @@ const startPackSection = document.createElement("section")
 startPackSection.className = "start-pack-section"
 const startPackIntro = document.createElement("p")
 startPackIntro.className = "start-pack-intro"
-startPackIntro.textContent = "Choose a pack, import a cutter, or tell Kyza what you need."
+startPackIntro.textContent = "Choose a pack, import a cutter, or tell Flow what you need."
 startPackSection.append(packHeader, startPackIntro, packCarousel.element)
 const mainHeader = document.createElement("div")
 mainHeader.className = "start-main-header"
@@ -1400,7 +1400,7 @@ const chooseButton = document.createElement("button")
 chooseButton.type = "button"
 chooseButton.textContent = "Help Me Choose"
 // Help Me Choose uses the supplied Flow F mark (icon only, no wordmark).
-decorateStartAction(chooseButton, createKyzaMarkIcon(), "Describe your product and explore Kyza suggestions")
+decorateStartAction(chooseButton, createKyzaMarkIcon(), "Describe your product and explore Flow suggestions")
 const choosePanel = document.createElement("div")
 choosePanel.id = "start-choose-panel"
 choosePanel.className = "start-choose-panel"

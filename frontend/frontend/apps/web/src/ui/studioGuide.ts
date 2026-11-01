@@ -3,7 +3,7 @@ import "./studioGuide.css"
 // Amends v11: the guide is the Cutter Studio tour — how to start, then what the studio offers.
 // Presentation only; every capability named here exists in the current studio.
 const guideSteps = [
-  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a pack type, open Sandbox Mode for trials and bespoke work, import a saved cutter, or tell Kyza what you need." },
+  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a pack type, open Sandbox Mode for trials and bespoke work, import a saved cutter, or tell Flow what you need." },
   { scene: "precision", chapter: "Inside the studio", title: "Design with precision", text: "Geometry is held in exact millimetres. Snap the Measure tool to edges for a live readout; its reference grid refines to 600 ppi as you zoom." },
   { scene: "elements", chapter: "Inside the studio", title: "Add and position elements", text: "Place windows, hanger slots, perforations and attribute boxes. Centre and edge snapping and safe-zone fit keep them aligned." },
   { scene: "customise", chapter: "Inside the studio", title: "Customise your cutter", text: "Tune seals, folds, perforations and colours in Customise, then validate and export when it’s ready for production." }
@@ -50,7 +50,7 @@ export function createStudioGuide() {
         <g class="route fade" style="--d:.98s" transform="translate(142 120)">
           <rect class="tile" width="90" height="28" rx="9"/><rect class="route-ring" width="90" height="28" rx="9" style="--r:3.6s"/>
           <path class="accent" d="M16 5 L18.2 11.8 L25 14 L18.2 16.2 L16 23 L13.8 16.2 L7 14 L13.8 11.8 Z" style="stroke-width:1.5"/>
-          <text class="scene-label" x="32" y="14.5">Ask Kyza</text>
+          <text class="scene-label" x="32" y="14.5">Ask Flow</text>
         </g>
       </svg>
     </div>

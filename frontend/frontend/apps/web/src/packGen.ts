@@ -103,7 +103,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1
   const promptHeading = element("div", "pack-gen-composer-heading")
   const promptLabel = element("label", "pack-gen-label", "What are you creating?")
   promptLabel.htmlFor = "pack-gen-prompt"
-  const flowAiPresence = element("span", "pack-gen-flowai-presence", "Kyza")
+  const flowAiPresence = element("span", "pack-gen-flowai-presence", "Flow")
   promptHeading.append(promptLabel, flowAiPresence)
   const promptInput = element("textarea", "pack-gen-prompt")
   promptInput.id = "pack-gen-prompt"
@@ -174,7 +174,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1
   const suggestionIntro = element("p", "pack-gen-help", "Flow found supported starting points based on your request. Review the key details or open a suggestion for more information.")
   suggestionIntro.id = "pack-gen-suggestions-description"
   const promptSummary = element("p", "pack-gen-prompt-summary")
-  suggestionHeading.append(element("span", "pack-gen-eyebrow", "Kyza suggestions"), suggestionTitle, suggestionIntro, promptSummary)
+  suggestionHeading.append(element("span", "pack-gen-eyebrow", "Flow suggestions"), suggestionTitle, suggestionIntro, promptSummary)
   const suggestionHeaderActions = element("div", "pack-gen-suggestion-header-actions")
   const suggestionPosition = element("span", "pack-gen-carousel-position")
   suggestionPosition.setAttribute("role", "status")
@@ -339,7 +339,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1
     detailsView.append(
       back,
       element("span", "pack-gen-card-number", recommendation.title),
-      element("h3", undefined, "Kyza Score"),
+      element("h3", undefined, "Flow Score"),
       element("p", "pack-gen-flow-score-intro", "Review the information currently affecting this pack starting point."),
     )
     const accordion = element("div", "pack-gen-expandable-details")
@@ -437,7 +437,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1
       element("strong", undefined, previewModel.substrate.value),
       element("small", undefined, previewModel.substrate.source),
     )
-    const further = element("button", "pack-gen-flow-score-action", "Kyza Score")
+    const further = element("button", "pack-gen-flow-score-action", "Flow Score")
     further.type = "button"
     further.dataset.carouselFocus = "flow-score"
     further.addEventListener("click", () => {

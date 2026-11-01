@@ -15,7 +15,7 @@ assert.match(landingCss, /\.start-sidebar \.start-studio-title \{[^}]*font-size:
 assert.doesNotMatch(main, /sidebarIntro|start-sidebar-intro/, "The subtitle under Cutter Studio is removed")
 assert.match(main, /packHeader\.textContent = "Get Started"/)
 assert.doesNotMatch(main, /Choose a pack type/)
-assert.match(main, /startPackIntro\.textContent = "Choose a pack, import a cutter, or tell Kyza what you need\."/)
+assert.match(main, /startPackIntro\.textContent = "Choose a pack, import a cutter, or tell Flow what you need\."/)
 assert.match(main, /customProjectButton\.textContent = "Sandbox Mode"/)
 assert.match(main, /decorateStartAction\(customProjectButton, cutterIcons\.box, "For Trials and Bespoke Project Work"\)/)
 assert.doesNotMatch(main, /Create Manually/)

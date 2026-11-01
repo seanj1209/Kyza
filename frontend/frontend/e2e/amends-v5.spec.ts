@@ -51,7 +51,7 @@ test("@beta V5 legend clears the original artwork and keeps differing line style
 
 test("@beta V5 Flow answers trial questions in different wording", async ({ page }) => {
   await createManualProjectFromDashboard(page,{name:"V5 Flow"})
-  const input=page.getByRole("textbox",{name:"Ask Kyza a question"})
+  const input=page.getByRole("textbox",{name:"Ask Flow a question"})
   for(const [question,answer] of [
     ["Can I turn an object left?","Shift+L"],
     ["Where can I add more registration marks?","Eyemark Settings"],
