@@ -427,7 +427,8 @@ mainMenuItems.forEach(item => {
     if (item.id === "save-as") {
       saveCurrentProjectAs()
     }
-    console.log(`main-menu:${item.id}`)
+    if (item.id === "import") importProjectInput.click()
+    if (item.id === "settings" || item.id === "preferences") window.location.assign("/account")
     mainMenu.classList.remove("is-open")
   })
   mainMenu.appendChild(menuButton)
@@ -698,7 +699,7 @@ STUDIO_TOPBAR_ACTIONS.forEach(action => {
       setPreviewMode(!previewMode)
       return
     }
-    console.log(`studio-topbar:${action.id}`)
+    if (action.id === "user") window.location.assign("/account")
   })
   studioTopbarRight.appendChild(actionButton)
 })
@@ -744,7 +745,6 @@ const makeStudioBottomAction = (label: string, paths: string) => {
   return button
 }
 const studioPackSpecButton = makeStudioBottomAction("Pack Spec", '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 12h8M8 16h5"/>')
-const studioImportButton = makeStudioBottomAction("Import Assets", '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>')
 const studioSaveExportButton = makeStudioBottomAction("Export", '<path d="M12 15V3m-5 5 5-5 5 5M4 15v5h16v-5"/>')
 const studioLegendButton = makeStudioBottomAction("Legend", '<path d="M4 5h16M4 10h16M4 15h16M4 20h11"/>')
 studioLegendButton.setAttribute("aria-label", "Legend layouts")
@@ -781,7 +781,6 @@ studioLegendButton.addEventListener("click", () => {
   studioLegendMenu.hidden = !studioLegendMenu.hidden
   studioLegendButton.setAttribute("aria-expanded", String(!studioLegendMenu.hidden))
 })
-studioImportButton.addEventListener("click", () => console.log("main-menu:import"))
 studioSaveExportButton.addEventListener("click", () => {
   closeInspectorPanels()
   customPanelApi.showFile()
@@ -791,7 +790,7 @@ studioSaveExportButton.addEventListener("click", () => {
 const studioLegendControl = document.createElement("div")
 studioLegendControl.id = "studio-legend-control"
 studioLegendControl.append(studioLegendButton, studioLegendMenu)
-studioBottomActions.append(studioLegendControl, studioImportButton, studioPackSpecButton, studioSaveExportButton)
+studioBottomActions.append(studioLegendControl, studioPackSpecButton, studioSaveExportButton)
 const packSpecDialog = document.createElement("div")
 packSpecDialog.id = "pack-spec-dialog"
 packSpecDialog.className = "pack-spec-dialog"

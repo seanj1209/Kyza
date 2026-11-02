@@ -45,6 +45,7 @@ export function QuickLinks({ onNewProject }: QuickLinksProps) {
               type="button"
               aria-label={accessibleLabel}
               title={accessibleLabel}
+              disabled={!isNewProject && !isLegend && !isCutterPreferences}
               onClick={isNewProject ? onNewProject : isLegend ? () => setLegendOpen(true) : isCutterPreferences ? () => { window.location.href = "/account#cutter" } : undefined}
               key={label}
             >
