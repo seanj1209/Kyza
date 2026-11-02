@@ -151,16 +151,6 @@ function Page() {
             </select>
           </label>
           <small id="account-zoom-note">The floating dock + and − buttons change canvas zoom by this amount. Default: 50%.</small>
-          <div className="account-pack-preferences">
-            <h3>Pack types</h3>
-            <h4>Lidding</h4>
-            <label>Scaling behavior
-              <select value={preferences.liddingGrowthBehavior} onChange={event => setPreferences(current => ({ ...current, liddingGrowthBehavior: event.target.value as Preferences["liddingGrowthBehavior"] }))}>
-                <option value="ask">Ask each time</option><option value="keep">Keep config</option><option value="scale">Scale config</option>
-              </select>
-            </label>
-            <small>Used when an overall lidding cutter dimension increases. Reductions always scale the lid.</small>
-          </div>
           <small>Default cutter style settings will appear here when a shared style preset is available.</small>
         </section>}
         {["artwork", "notifications", "security"].includes(section) && <section className="account-panel"><h2>{section === "artwork" ? "Artwork preferences" : section === "notifications" ? "Notifications" : "Security"}</h2><p>Settings for this area are planned. Nothing changes until controls are available.</p></section>}

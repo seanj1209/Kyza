@@ -10,6 +10,8 @@ export const KYZA_JSON_EXPORT_SCHEMA_VERSION = "kyza-json-export-1" as const
 
 export type KyzaJsonExport = {
   schemaVersion: typeof KYZA_JSON_EXPORT_SCHEMA_VERSION
+  /** Full versioned Project for lossless re-import; summary fields remain compatible. */
+  projectDocument: KyzaProjectV1
   exportedAt: string
   exportPackage: ExportPackage
   project: {
@@ -82,6 +84,7 @@ export const buildKyzaJsonExport = (input: {
     : []
   return {
     schemaVersion: KYZA_JSON_EXPORT_SCHEMA_VERSION,
+    projectDocument: cloneJson(project),
     exportedAt,
     exportPackage: cloneJson(exportPackage),
     project: {

@@ -1,3 +1,4 @@
+import { isBetaPackEnabled } from "../../../../packages/shared/releaseScope"
 import "./studioPackCarousel.css"
 import { PACK_GRADIENTS, PACK_ILLUSTRATIONS } from "./studioPackIllustrations"
 
@@ -28,7 +29,7 @@ const displayNames: Record<string, string> = { flowwrap: "Flow Wrap", "paper-str
 
 export function createStudioPackCarousel(options: CarouselOptions) {
   const entries = [
-    ...[...options.packs].sort((a, b) => PACK_ORDER.indexOf(a.id) - PACK_ORDER.indexOf(b.id)).map(pack => ({
+    ...options.packs.filter(pack => isBetaPackEnabled(pack.id)).sort((a, b) => PACK_ORDER.indexOf(a.id) - PACK_ORDER.indexOf(b.id)).map(pack => ({
       ...pack, name: displayNames[pack.id] ?? pack.name, available: true,
       ...presentation[pack.id],
       description: presentation[pack.id]?.description ?? `Create a ${pack.name} cutter guide.`
@@ -91,6 +92,7 @@ export function createStudioPackCarousel(options: CarouselOptions) {
   })
   let index = -1
   const show = (position: number, notify = false) => {
+    if (!entries.length) { options.createButton.disabled = true; previous.disabled = true; next.disabled = true; return }
     const nextIndex = (position + entries.length) % entries.length
     if (nextIndex === index) return
     // Exactly one slide is exposed; no clones, neighbouring peeks or auto-cycle.

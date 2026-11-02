@@ -1,6 +1,8 @@
+import { betaProjectRestriction } from "../../../../../packages/shared/releaseScope"
+import { createPresentationStorage, unavailableProjectPresentation } from "../betaUiGuards"
 import {
   hasCutterDocument,
-  listKyzaProjects,
+  readKyzaProjectCollection,
   type KyzaProjectStorage,
   type KyzaProjectV1,
 } from "../../../../../packages/cutter-engine/project"
@@ -13,6 +15,7 @@ export interface ProjectSummary {
   readonly packType: string
   readonly updatedAt: string
   readonly revision: number
+  readonly unavailableMessage?: string
   readonly cutterSpec?: FlowwrapSpec
   readonly stageLabel:
     | "Cutter Project"
@@ -31,6 +34,7 @@ const mapProjectSummary = (project: KyzaProjectV1): ProjectSummary => {
   const hasCutter = hasCutterDocument(project)
   const packStatus = project.projectDraft?.workspace?.completion.status
   return {
+    ...(betaProjectRestriction(project) ? { unavailableMessage: betaProjectRestriction(project)! } : {}),
     id: project.id,
     name: project.name,
     packType: hasCutter
@@ -54,16 +58,6 @@ const mapProjectSummary = (project: KyzaProjectV1): ProjectSummary => {
   }
 }
 
-const makeReadOnlyStorage = (storage: KyzaProjectStorage): KyzaProjectStorage => ({
-  getItem: (key) => storage.getItem(key),
-  setItem: () => {
-    throw new Error("The Dashboard Project adapter is read-only.")
-  },
-  removeItem: () => {
-    throw new Error("The Dashboard Project adapter is read-only.")
-  },
-})
-
 const resolveBrowserStorage = (): KyzaProjectStorage | null => {
   try {
     return globalThis.localStorage ?? null
@@ -83,7 +77,7 @@ export function loadDashboardProjectSummaries(
     }
   }
 
-  const result = listKyzaProjects(makeReadOnlyStorage(storage))
+  const result = readKyzaProjectCollection(createPresentationStorage(storage))
   if (result.ok === false) {
     return {
       status: "error",
@@ -94,8 +88,17 @@ export function loadDashboardProjectSummaries(
 
   return {
     status: "ready",
-    projects: result.value
-      .map(mapProjectSummary)
+    projects: [
+      ...result.value.projects.map(mapProjectSummary),
+      ...result.value.rejectedRecords.map(record => {
+        const card = unavailableProjectPresentation(record.rawRecord, `unavailable-${record.index}`)
+        return {
+          id: card.id, name: card.name, packType: "Unavailable in this beta",
+          revision: 0, updatedAt: "", stageLabel: "Pack Setup" as const,
+          destinationUrl: "", unavailableMessage: card.message,
+        }
+      }),
+    ]
       .sort((left, right) => Date.parse(right.updatedAt) - Date.parse(left.updatedAt)),
   }
 }

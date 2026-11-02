@@ -1,3 +1,5 @@
+import { cutterUiRestriction, cutterUrlRestriction, createPresentationStorage, unavailableProjectPresentation, type UnavailableProjectPresentation } from "./kyza/betaUiGuards"
+import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE, betaProjectRestriction } from "../../../packages/shared/releaseScope"
 import "./brandBootstrap"
 import { attachLegendPlacement } from "./ui/legendPlacement"
 import { initSandboxStudio, SANDBOX_DEFAULT_FILM_COLOUR, SANDBOX_DEFAULT_HEIGHT_MM, SANDBOX_DEFAULT_WIDTH_MM, type SandboxStudioApi } from "./ui/sandboxStudio"
@@ -42,7 +44,6 @@ import { attachLiddingDock, openLiddingSetup } from "./ui/liddingStudio"
 import { refreshFittedSafeZones } from "../../../packages/cutter-engine/actions/safeZoneFit"
 import { constrainPouchSafeZone } from "../../../packages/cutter-engine/actions/safeZoneContours"
 import { constrainDoyGeometry } from "./core/geometry/resolvers/doyBounds"
-import { initCustomProjectBuilder } from "./ui/customProjectBuilder"
 import { attachSelectionInteractions } from "./ui/selectionInteractions"
 import { syncLiddingCutterSize } from "./constraints/lidding"
 import { commitLiddingLaneElements } from "./constraints/liddingSteps"
@@ -79,7 +80,8 @@ import {
   deleteKyzaProject,
   legacySpecFromProject,
   loadKyzaProject,
-  listKyzaProjects,
+  readKyzaProjectCollection,
+  importKyzaProjectJson,
   hasCutterDocument,
   projectFromLegacySpec,
   saveKyzaProject,
@@ -95,6 +97,8 @@ import {
 } from "./project/projectUpdateService"
 import {
   chooseCutterStartupSource,
+  createCutterProjectUrl,
+  createPackGenProjectUrl,
   parseRequestedProjectId,
   type RequestedProjectId
 } from "./project/projectNavigation"
@@ -273,7 +277,7 @@ const cutterNavigationGroups = [
   { label: "Workspace", items: [{ label: "Dashboard", icon: cutterIcons.gauge, href: "/" }] },
   { label: "Create", items: [
     { label: "Cutter Studio", icon: cutterIcons.scissors, href: studioNavigationHref(), active: true },
-    { label: "Artwork Studio", icon: cutterIcons.palette, href: "/artwork" }
+    ...(BETA_FEATURES.artwork ? [{ label: "Artwork Studio", icon: cutterIcons.palette, href: "/artwork" }] : [])
   ] },
   { label: "QC & Export", items: [
     { label: "Validation Centre", icon: cutterIcons.validation, href: "/validation" },
@@ -423,7 +427,8 @@ mainMenuItems.forEach(item => {
     if (item.id === "save-as") {
       saveCurrentProjectAs()
     }
-    console.log(`main-menu:${item.id}`)
+    if (item.id === "import") importProjectInput.click()
+    if (item.id === "settings" || item.id === "preferences") window.location.assign("/account")
     mainMenu.classList.remove("is-open")
   })
   mainMenu.appendChild(menuButton)
@@ -657,7 +662,7 @@ artworkStudioButton.type = "button"
 artworkStudioButton.className = "studio-topbar-text-button"
 artworkStudioButton.textContent = "Continue to Artwork Studio"
 artworkStudioButton.disabled = true
-studioTopbarRight.appendChild(artworkStudioButton)
+if (BETA_FEATURES.artwork) studioTopbarRight.appendChild(artworkStudioButton)
 const studioActionButtons = new Map<string, HTMLButtonElement>()
 const errorsPanel = document.createElement("div")
 errorsPanel.id = "studio-errors-panel"
@@ -694,7 +699,7 @@ STUDIO_TOPBAR_ACTIONS.forEach(action => {
       setPreviewMode(!previewMode)
       return
     }
-    console.log(`studio-topbar:${action.id}`)
+    if (action.id === "user") window.location.assign("/account")
   })
   studioTopbarRight.appendChild(actionButton)
 })
@@ -740,7 +745,6 @@ const makeStudioBottomAction = (label: string, paths: string) => {
   return button
 }
 const studioPackSpecButton = makeStudioBottomAction("Pack Spec", '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z M14 2v6h6M8 12h8M8 16h5"/>')
-const studioImportButton = makeStudioBottomAction("Import Assets", '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>')
 const studioSaveExportButton = makeStudioBottomAction("Export", '<path d="M12 15V3m-5 5 5-5 5 5M4 15v5h16v-5"/>')
 const studioLegendButton = makeStudioBottomAction("Legend", '<path d="M4 5h16M4 10h16M4 15h16M4 20h11"/>')
 studioLegendButton.setAttribute("aria-label", "Legend layouts")
@@ -777,7 +781,6 @@ studioLegendButton.addEventListener("click", () => {
   studioLegendMenu.hidden = !studioLegendMenu.hidden
   studioLegendButton.setAttribute("aria-expanded", String(!studioLegendMenu.hidden))
 })
-studioImportButton.addEventListener("click", () => console.log("main-menu:import"))
 studioSaveExportButton.addEventListener("click", () => {
   closeInspectorPanels()
   customPanelApi.showFile()
@@ -787,7 +790,7 @@ studioSaveExportButton.addEventListener("click", () => {
 const studioLegendControl = document.createElement("div")
 studioLegendControl.id = "studio-legend-control"
 studioLegendControl.append(studioLegendButton, studioLegendMenu)
-studioBottomActions.append(studioLegendControl, studioImportButton, studioPackSpecButton, studioSaveExportButton)
+studioBottomActions.append(studioLegendControl, studioPackSpecButton, studioSaveExportButton)
 const packSpecDialog = document.createElement("div")
 packSpecDialog.id = "pack-spec-dialog"
 packSpecDialog.className = "pack-spec-dialog"
@@ -923,7 +926,7 @@ const packCarousel = createStudioPackCarousel({
 })
 startButton.className = "create"
 const setSelectedStartPack = (packId: string) => {
-  const resolvedPackId = getPackModule(packId)?.id ?? packModules[0]?.id ?? ""
+  const resolvedPackId = getPackModule(packId)?.id
   if (!resolvedPackId) return
   selectedStartPackId = resolvedPackId
   startSelect.value = resolvedPackId
@@ -1056,7 +1059,7 @@ const launchSelectedPackProject = () => {
     updateArtboardTabs()
   }
   active.packId = selectedStartPackId || startSelect.value
-  const nextPack = getPackModule(active.packId) ?? packModules[0]
+  const nextPack = getPackModule(active.packId)
   if (!nextPack) {
     return
   }
@@ -1119,7 +1122,7 @@ const startPackSection = document.createElement("section")
 startPackSection.className = "start-pack-section"
 const startPackIntro = document.createElement("p")
 startPackIntro.className = "start-pack-intro"
-startPackIntro.textContent = "Choose a pack, import a cutter, or tell Flow what you need."
+startPackIntro.textContent = "Choose a pack, import a supported project JSON file, or tell Flow what you need."
 startPackSection.append(packHeader, startPackIntro, packCarousel.element)
 const mainHeader = document.createElement("div")
 mainHeader.className = "start-main-header"
@@ -1140,6 +1143,8 @@ function openSavedProjectCard(cardId: string) {
   if (!card) {
     return
   }
+  const restriction = cutterUiRestriction(card.packId, card.spec, card.project)
+  if (restriction) { showRequestedProjectError(restriction); return }
   let active = getActiveArtboard()
   if (!active) {
     active = createArtboard()
@@ -1153,7 +1158,7 @@ function openSavedProjectCard(cardId: string) {
   active.started = true
   active.savedProjectId = card.id
   active.viewBoxState = { zoom: 1, panX: 0, panY: 0 }
-  const nextPack = getPackModule(active.packId) ?? packModules[0]
+  const nextPack = getPackModule(active.packId)
   if (!nextPack || !loadedSpec) {
     return
   }
@@ -1171,11 +1176,28 @@ function openSavedProjectCard(cardId: string) {
 function renderSavedProjectCards() {
   startGrid.innerHTML = ""
   openStartCardMenu = null
-  if (savedProjectCards.length === 0) {
+  if (savedProjectCards.length === 0 && unavailableProjectCards.length === 0) {
     startGrid.classList.add("is-empty")
     return
   }
   startGrid.classList.remove("is-empty")
+  unavailableProjectCards.forEach(card => {
+    const item = document.createElement("article")
+    item.className = "start-file-card"
+    const button = document.createElement("button")
+    button.type = "button"
+    button.className = "start-file-card-open"
+    button.disabled = true
+    button.title = card.message
+    button.setAttribute("aria-label", `${card.name}: unavailable in this beta`)
+    const name = document.createElement("strong")
+    name.textContent = card.name
+    const status = document.createElement("span")
+    status.textContent = "Unavailable in this beta"
+    button.append(name, status)
+    item.append(button)
+    startGrid.append(item)
+  })
   const sorted = [...savedProjectCards].sort((a, b) =>
     a.updatedAt < b.updatedAt ? 1 : -1
   )
@@ -1185,12 +1207,15 @@ function renderSavedProjectCards() {
     const openButton = document.createElement("button")
     openButton.type = "button"
     openButton.className = "start-file-card-open"
-    openButton.setAttribute("aria-label", `Open ${card.name}`)
+    const restriction = cutterUiRestriction(card.packId, card.spec, card.project)
+    openButton.disabled = Boolean(restriction)
+    openButton.title = restriction ?? `Open ${card.name}`
+    openButton.setAttribute("aria-label", restriction ? `${card.name}: unavailable in this beta` : `Open ${card.name}`)
     const projectGlyph = document.createElement("span")
     projectGlyph.className = "start-file-card-glyph"
     projectGlyph.setAttribute("aria-hidden", "true")
     try {
-      const preview = getPackModule(card.packId)?.render(card.spec as never, { renderMode: "artwork" })
+      const preview = restriction ? undefined : getPackModule(card.packId)?.render(card.spec as never, { renderMode: "artwork" })
       if (preview) {
         preview.removeAttribute("width")
         preview.removeAttribute("height")
@@ -1221,13 +1246,14 @@ function renderSavedProjectCards() {
     dateOverlay.className = "start-file-card-date-overlay"
     dateOverlay.textContent = formatSavedDate(card.updatedAt)
     const version = document.createElement("span")
-    version.textContent = `Version V${card.project.revision}`
+    version.textContent = restriction ? "Unavailable in this beta" : `Version V${card.project.revision}`
     projectDetails.append(nameOverlay, projectGlyph, dateOverlay, version)
     openButton.appendChild(projectDetails)
     const menuButton = document.createElement("button")
     menuButton.type = "button"
     menuButton.className = "start-file-card-menu-trigger"
     menuButton.textContent = "⋮"
+    menuButton.disabled = Boolean(restriction)
     menuButton.setAttribute("aria-label", `Options for ${card.name}`)
     menuButton.setAttribute("aria-expanded", "false")
     const menu = document.createElement("div")
@@ -1391,11 +1417,52 @@ const decorateStartAction = (button: HTMLButtonElement, icon: string | SVGSVGEle
 }
 decorateStartAction(resumeWorkButton, cutterIcons.scissors, "Continue your current cutter project")
 decorateStartAction(customProjectButton, cutterIcons.box, "For Trials and Bespoke Project Work")
-const importCutterButton = document.createElement("button")
-importCutterButton.type = "button"
-importCutterButton.textContent = "Import Cutter"
-decorateStartAction(importCutterButton, '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>', "Import a saved custom cutter JSON file")
-importCutterButton.addEventListener("click", () => customProjectBuilderApi.importCutter())
+const importProjectButton = document.createElement("button")
+importProjectButton.type = "button"
+importProjectButton.textContent = "Import Project"
+decorateStartAction(importProjectButton, '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>', "Open a supported Kyza project JSON file")
+const importProjectInput = document.createElement("input")
+importProjectInput.type = "file"
+importProjectInput.accept = "application/json,.json"
+importProjectInput.hidden = true
+importProjectInput.setAttribute("aria-label", "Choose a Kyza project JSON file")
+const importProjectStatus = document.createElement("p")
+importProjectStatus.setAttribute("role", "status")
+importProjectStatus.setAttribute("aria-live", "polite")
+importProjectStatus.hidden = true
+const showImportProjectError = (message: string) => {
+  importProjectStatus.hidden = false
+  importProjectStatus.textContent = message
+  importProjectStatus.setAttribute("role", "alert")
+}
+importProjectButton.addEventListener("click", () => importProjectInput.click())
+importProjectInput.addEventListener("change", async () => {
+  const file = importProjectInput.files?.[0]
+  importProjectInput.value = ""
+  if (!file) return
+  importProjectStatus.hidden = true
+  if (file.size > 10 * 1024 * 1024) {
+    showImportProjectError("Choose a project JSON file smaller than 10 MB.")
+    return
+  }
+  importProjectButton.disabled = true
+  importProjectButton.setAttribute("aria-busy", "true")
+  try {
+    const imported = importKyzaProjectJson(await file.text())
+    if (imported.ok === false) {
+      showImportProjectError(imported.errors.join(" "))
+      return
+    }
+    window.location.assign(hasCutterDocument(imported.value)
+      ? createCutterProjectUrl(imported.value.id)
+      : createPackGenProjectUrl(imported.value.id))
+  } catch {
+    showImportProjectError("The project file could not be imported. Your saved work has not been changed.")
+  } finally {
+    importProjectButton.disabled = false
+    importProjectButton.removeAttribute("aria-busy")
+  }
+})
 const chooseButton = document.createElement("button")
 chooseButton.type = "button"
 chooseButton.textContent = "Help Me Choose"
@@ -1415,7 +1482,7 @@ chooseButton.addEventListener("click", () => {
     choosePanel.querySelector<HTMLTextAreaElement>("textarea")?.focus()
   }
 })
-startFeatureRow.append(resumeWorkButton, customProjectButton, importCutterButton, chooseButton, choosePanel)
+startFeatureRow.append(resumeWorkButton, importProjectButton, importProjectInput, importProjectStatus, chooseButton, choosePanel)
 const startPackCanvas = document.createElement("div")
 startPackCanvas.className = "start-pack-canvas"
 startPackCanvas.append(startPackSection, startFeatureRow)
@@ -1428,56 +1495,12 @@ startBody.appendChild(startMain)
 startShell.appendChild(startTopbar)
 startShell.appendChild(startBody)
 
-const customProjectBuilderApi = initCustomProjectBuilder({
-  host: startShell,
-  getDefaultPackId: () =>
-    (selectedStartPackId || packModules[0]?.id || "flowwrap") as
-      | "flowwrap"
-      | "doy-pouch"
-      | "pillow-pack"
-      | "k-seal-pouch"
-      | "sachet-3-side-seal"
-      | "sachet-4-side-seal",
-  onBuild: result => {
-    let active = getActiveArtboard()
-    if (!active || active.started) {
-      active = createArtboard()
-      activeArtboardId = active.id
-      updateArtboardTabs()
-    }
-    active.packId = result.definition.basePackId
-    const nextPack = getPackModule(active.packId) ?? packModules[0]
-    if (!nextPack) {
-      return
-    }
-    pack = nextPack
-    applyMeasureDefaultsForPack(nextPack.id)
-    const resolvedSpec = cloneSpec(result.resolvedSpec)
-    if (!resolvedSpec) {
-      return
-    }
-    active.name = result.definition.label.trim() || formatProjectName(pack.name, resolvedSpec)
-    const initialisedSpec = initialiseArtboardProject(active, resolvedSpec, "pack-created")
-    if (!initialisedSpec) {
-      return
-    }
-    active.started = true
-    active.savedProjectId = undefined
-    active.viewBoxState = { zoom: 1, panX: 0, panY: 0 }
-    viewBoxState = { ...active.viewBoxState }
-    currentSpec = initialisedSpec
-    updateArtboardTabs()
-    controlsApi?.syncSpecFromProject(currentSpec)
-    customPanelApi.setSpec(currentSpec)
-    hideStartOverlay()
-    render(currentSpec)
-  }
-})
 startOverlay.appendChild(startShell)
 
 // ── Sandbox Studio UI ──────────────────────────────────────
 let sandboxStudioApi: SandboxStudioApi | null = null
 const openSandboxStudio = (forceNew = false, initial?: { name: string; width: number; height: number; film: string }) => {
+  if (!BETA_FEATURES.sandbox) { showRequestedProjectError(BETA_RESTRICTION_MESSAGE); return }
   let active = getActiveArtboard()
   if (forceNew || !active || active.started) {
     persistActiveCutterReturnState()
@@ -1680,6 +1703,8 @@ let issueEntries: IssueEntry[] = []
 let validationCentreSummary: ValidationCentreSummary | null = null
 let validationSelectionMessage: string | null = null
 let savedProjectCards: SavedProjectCard[] = []
+let preservedSavedProjectRecords: unknown[] = []
+let unavailableProjectCards: UnavailableProjectPresentation[] = []
 let undoStack: Artboard[] = []
 let undoLocked = false
 let copyBuffer: { kind: "safe-zone" | "window" | "attribute-box" | "hanger-slot"; payload: unknown } | null = null
@@ -1687,9 +1712,13 @@ let openStartCardMenu: HTMLElement | null = null
 
 loadSavedProjectCards()
 // Dashboard-created cutters are canonical Projects even before their first legacy Save.
-const canonicalRecentProjects = listKyzaProjects()
+const canonicalRecentProjects = readKyzaProjectCollection(createPresentationStorage(window.localStorage))
 if (canonicalRecentProjects.ok) {
-  canonicalRecentProjects.value.filter(hasCutterDocument).forEach(project => {
+  canonicalRecentProjects.value.rejectedRecords.forEach(record => {
+    const card = unavailableProjectPresentation(record.rawRecord, `canonical-unavailable-${record.index}`)
+    if (!unavailableProjectCards.some(existing => existing.id === card.id)) unavailableProjectCards.push(card)
+  })
+  canonicalRecentProjects.value.projects.filter(hasCutterDocument).forEach(project => {
     const existingIndex = savedProjectCards.findIndex(card => card.project.id === project.id)
     const card: SavedProjectCard = {
       id: existingIndex >= 0 ? savedProjectCards[existingIndex].id : project.id,
@@ -1713,7 +1742,7 @@ setSelectedStartPack(selectedStartPackId)
 
 const persistActiveCutterReturnState = () => {
   const active = getActiveArtboard()
-  if (!active?.started || !active.spec) {
+  if (!active?.started || !active.spec || cutterUiRestriction(active.packId, active.spec, active.project) || active.sandbox) {
     return
   }
   const returnProject = createCurrentProject({
@@ -2153,6 +2182,8 @@ const resizeSelectedEditableObjects = (delta: number) => {
 }
 
 function loadSavedProjectCards() {
+  preservedSavedProjectRecords = []
+  unavailableProjectCards = []
   try {
     const raw = window.localStorage.getItem(SAVED_PROJECTS_STORAGE_KEY)
     if (!raw) {
@@ -2166,9 +2197,11 @@ function loadSavedProjectCards() {
     }
     savedProjectCards = parsed
       .filter(item => item && typeof item === "object")
-      .map(item => {
+      .map((item, index) => {
         const migrated = migrateSavedProjectRecord(item)
         if (!migrated.ok) {
+          preservedSavedProjectRecords.push(item)
+          unavailableProjectCards.push(unavailableProjectPresentation(item, `legacy-unavailable-${index}`))
           return null
         }
         const { cardId: id, project } = migrated.value
@@ -2190,7 +2223,7 @@ function loadSavedProjectCards() {
 function persistSavedProjectCards() {
   window.localStorage.setItem(
     SAVED_PROJECTS_STORAGE_KEY,
-    JSON.stringify(savedProjectCards)
+    JSON.stringify([...savedProjectCards, ...preservedSavedProjectRecords])
   )
 }
 
@@ -2362,6 +2395,8 @@ const applyUndo = () => {
   if (!target) {
     return
   }
+  const restriction = cutterUiRestriction(snap.packId, snap.spec, snap.project)
+  if (restriction || snap.sandbox) { showRequestedProjectError(restriction ?? BETA_RESTRICTION_MESSAGE); return }
   undoLocked = true
   const replacementProject = snap.project ?? (
     snap.spec ? projectFromLegacySpec(snap.packId, snap.name, snap.spec) : null
@@ -2393,7 +2428,7 @@ const applyUndo = () => {
   activeArtboardId = target.id
   updateArtboardTabs()
   if (target.started && target.spec) {
-    pack = getPackModule(target.packId) ?? packModules[0]
+    pack = getPackModule(target.packId)
     currentSpec = cloneSpec(target.spec)
     viewBoxState = { ...target.viewBoxState }
     controlsApi?.syncSpecFromProject(currentSpec)
@@ -2579,7 +2614,6 @@ const showStartOverlay = (artboard: Artboard) => {
   validationCentreSummary = null
   renderIssuePanel()
   flowDock.collapse()
-  customProjectBuilderApi.close()
   closeSandboxStudio()
   closeInspectorPanels()
   setSelectedStartPack(artboard.packId || selectedStartPackId)
@@ -2595,7 +2629,6 @@ const hideStartOverlay = () => {
   setPouchPreviewMode(false)
   document.body.style.zoom = `${CUTTER_PAGE_ZOOM_PERCENT}%`
   setPreviewMode(false)
-  customProjectBuilderApi.close()
   closeSandboxStudio()
   startOverlay.classList.remove("is-visible")
   document.body.classList.remove("start-mode")
@@ -2893,6 +2926,11 @@ const createArtboard = () => {
 }
 
 const setActiveArtboard = (id: string) => {
+  const candidate = artboards.find(item => item.id === id)
+  if (candidate) {
+    const restriction = cutterUiRestriction(candidate.packId, candidate.spec, candidate.project)
+    if (restriction || candidate.sandbox) { showRequestedProjectError(restriction ?? BETA_RESTRICTION_MESSAGE); return }
+  }
   if (id === activeArtboardId) {
     const same = getActiveArtboard()
     if (same && !same.started) {
@@ -2924,7 +2962,7 @@ const setActiveArtboard = (id: string) => {
     return
   }
   hideStartOverlay()
-  pack = getPackModule(artboard.packId) ?? packModules[0]
+  pack = getPackModule(artboard.packId)
   if (!pack) {
     return
   }
@@ -4192,7 +4230,7 @@ newArtboardButton.addEventListener("click", () => {
     return
   }
   artboard.packId = newArtboardSelect.value
-  const nextPack = getPackModule(artboard.packId) ?? packModules[0]
+  const nextPack = getPackModule(artboard.packId)
   if (!nextPack) {
     return
   }
@@ -4223,6 +4261,9 @@ newArtboardButton.addEventListener("click", () => {
 })
 
 function render(spec: FlowwrapSpec) {
+  const active = getActiveArtboard()
+  const restriction = cutterUiRestriction(active?.packId ?? pack.id, spec, active?.project)
+  if (restriction || active?.sandbox) { showRequestedProjectError(restriction ?? BETA_RESTRICTION_MESSAGE); return }
   if(spec.sachet && !spec.sachet.activeStepId){
     spec=initialiseSachetSteps(spec)
     currentSpec=spec
@@ -4536,7 +4577,10 @@ const hydrateStartupArtboard = () => {
   if (!startupActiveCutterState?.project || !startupActiveCutterState.spec) {
     return false
   }
-  const nextPack = getPackModule(startupActiveCutterState.project.packType) ?? packModules[0]
+  const restriction = cutterUiRestriction(startupActiveCutterState.project.packType, startupActiveCutterState.spec, startupActiveCutterState.project)
+  const stateRestriction = restriction ?? betaProjectRestriction(startupActiveCutterState)
+  if (stateRestriction) { showRequestedProjectError(stateRestriction); return true }
+  const nextPack = getPackModule(startupActiveCutterState.project.packType)
   if (!nextPack) {
     return false
   }
@@ -4616,6 +4660,8 @@ const hydrateRequestedProject = (request: RequestedProjectId) => {
     showRequestedProjectError(loaded.errors.join(" "))
     return false
   }
+  const restriction = cutterUiRestriction(loaded.value.project.cutter.packType, loaded.value.spec, loaded.value.project)
+  if (restriction) { showRequestedProjectError(restriction); return false }
   const nextPack = getPackModule(loaded.value.project.cutter.packType)
   if (!nextPack) {
     showRequestedProjectError(
@@ -4690,7 +4736,10 @@ const startupSource = chooseCutterStartupSource(
 
 const sandboxParams = new URLSearchParams(window.location.search)
 const requestedSandbox = sandboxParams.get("studio") === "sandbox"
-if (requestedSandbox) {
+const urlRestriction = cutterUrlRestriction(sandboxParams)
+if (urlRestriction) {
+  showRequestedProjectError(urlRestriction)
+} else if (requestedSandbox) {
   const width = Number(sandboxParams.get("width"))
   const height = Number(sandboxParams.get("height"))
   const film = sandboxParams.get("substrate") ?? "clear"
@@ -4712,7 +4761,7 @@ if (requestedSandbox) {
   if(!resume && active)showStartOverlay(active)
 }
 
-if (choosingPack) {
+if (choosingPack && !urlRestriction) {
   const active = getActiveArtboard()
   if (active) showStartOverlay(active)
   chooseButton.click()

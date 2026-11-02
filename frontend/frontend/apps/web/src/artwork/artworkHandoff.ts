@@ -1,3 +1,4 @@
+import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE } from "../../../../packages/shared/releaseScope"
 import {
   createCurrentProject,
   type CurrentProject
@@ -15,6 +16,9 @@ export type ArtworkStudioAvailabilityInput = {
 export const getArtworkStudioAvailability = (
   input: ArtworkStudioAvailabilityInput
 ) => {
+  if (!BETA_FEATURES.artwork) {
+    return { enabled: false, message: BETA_RESTRICTION_MESSAGE }
+  }
   if (!input.routeAvailable) {
     return { enabled: false, message: "Artwork Studio is not available yet for this workflow." }
   }

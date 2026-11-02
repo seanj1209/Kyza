@@ -196,7 +196,7 @@ const increaseTdEyemarkCutterWidth = (payload: IncreaseTdEyemarksPayload) => {
 
   if (!increase.enabled) {
     return {
-      error: createInvalidPayloadError(increase.reason)
+      error: createInvalidPayloadError("reason" in increase ? increase.reason : "Cutter width increase is not available.")
     }
   }
 

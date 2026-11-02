@@ -6,7 +6,6 @@ import { defineConfig, type Plugin } from "vite"
 const cleanRouteEntries: Record<string, string> = {
   "/cutter": "/cutter.html",
   "/ai-studio": "/ai-studio.html",
-  "/artwork": "/artwork.html",
   "/validation": "/validation.html",
   "/account": "/account.html",
 }
@@ -45,7 +44,6 @@ export default defineConfig({
         main: resolve(__dirname, "index.html"),
         cutter: resolve(__dirname, "cutter.html"),
         aiStudio: resolve(__dirname, "ai-studio.html"),
-        artwork: resolve(__dirname, "artwork.html"),
         validation: resolve(__dirname, "validation.html"),
         account: resolve(__dirname, "account.html"),
       },

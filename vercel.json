@@ -1,5 +1,10 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/artwork", "destination": "/?notice=beta-scope", "permanent": false },
+    { "source": "/artwork.html", "destination": "/?notice=beta-scope", "permanent": false },
+    { "source": "/artwork/:path*", "destination": "/?notice=beta-scope", "permanent": false }
+  ],
   "installCommand": "npm --prefix frontend/frontend ci --ignore-scripts",
   "buildCommand": "npm --prefix frontend/frontend run build",
   "outputDirectory": "frontend/frontend/dist",
@@ -7,7 +12,6 @@
     { "source": "/app", "destination": "/index.html" },
     { "source": "/ai-studio", "destination": "/ai-studio.html" },
     { "source": "/cutter", "destination": "/cutter.html" },
-    { "source": "/artwork", "destination": "/artwork.html" },
     { "source": "/validation", "destination": "/validation.html" },
     { "source": "/account", "destination": "/account.html" }
   ],

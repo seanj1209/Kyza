@@ -1,3 +1,4 @@
+import { BETA_FEATURES } from "../../../../../packages/shared/releaseScope"
 import { useEffect, type ComponentType } from "react"
 import {
   Palette,
@@ -32,7 +33,7 @@ const navigationGroups: Array<{ label: string; items: NavigationItem[] }> = [
     label: "Create",
     items: [
       { label: "Cutter Studio", icon: Scissors, href: "/cutter" },
-      { label: "Artwork Studio", icon: Palette, href: "/artwork" },
+      ...(BETA_FEATURES.artwork ? [{ label: "Artwork Studio", icon: Palette, href: "/artwork" }] : []),
     ],
   },
   {

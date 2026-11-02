@@ -9,6 +9,7 @@
     "verbatimModuleSyntax": false
   },
   "include": [
+    "tests/beta-release-scope.test.ts",
     "tests/brand-compatibility.test.ts",
     "tests/flowwrap-constraints.test.ts",
     "tests/kseal-validation-fixtures.ts",

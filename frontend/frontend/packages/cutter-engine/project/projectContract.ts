@@ -1,4 +1,5 @@
 import type { FlowwrapSpec } from "../types"
+import { betaProjectRestriction } from "../../shared/releaseScope"
 import { normaliseLegacyProjectBrand } from "./brandCompatibility"
 import {
   KYZA_EXPORT_RECORD_VERSION,
@@ -903,6 +904,8 @@ export const isKyzaProjectV1 = (value: unknown): value is KyzaProjectV1 =>
 export const migrateKyzaProject = (
   value: unknown
 ): ParseResult<KyzaProjectV1> => {
+  const restriction = betaProjectRestriction(value)
+  if (restriction) return { ok: false, errors: [restriction] }
   if (!isRecord(value)) {
     return { ok: false, errors: ["Project must be an object."] }
   }

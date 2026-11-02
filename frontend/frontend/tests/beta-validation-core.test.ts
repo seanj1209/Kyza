@@ -1,5 +1,6 @@
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import { getPackModule } from "../apps/web/src/packs"
+import { plainWebPack } from "../apps/web/src/packs/plainWebPack"
 import { updateEyemarkById } from "../apps/web/src/project/projectUpdateService"
 import { getProjectValidationSnapshot } from "../apps/web/src/validation/activeValidation"
 import { exportProjectSvg } from "../packages/cutter-engine/export/cutterExportService"
@@ -42,7 +43,8 @@ const timestamp = "2026-07-21T09:00:00.000Z"
 const now = () => timestamp
 
 const defaultsFor = (packType: string) => {
-  const pack = getPackModule(packType)
+  // Legacy geometry remains testable without enabling it in the Beta registry.
+  const pack = packType === "plain-web" ? plainWebPack : getPackModule(packType)
   if (!pack) throw new Error(`Missing pack fixture: ${packType}`)
   return pack.getDefaults()
 }

@@ -381,6 +381,14 @@ export const importKyzaProjectJson = (
   } catch {
     return { ok: false, errors: ["Imported Kyza project is not valid JSON."] }
   }
+  // Save/Export JSON carries both a human summary and the complete Project.
+  // Never mistake the summary for a complete document or infer missing geometry.
+  if (typeof value === "object" && value !== null && "schemaVersion" in value && value.schemaVersion === "kyza-json-export-1") {
+    if (!("projectDocument" in value)) {
+      return { ok: false, errors: ["This older export does not include a complete Project backup. Re-export the project from its original workspace before importing."] }
+    }
+    value = value.projectDocument
+  }
   const parsed = parseKyzaProject(value)
   return parsed.ok === true
     ? saveKyzaProject(parsed.value, storage)

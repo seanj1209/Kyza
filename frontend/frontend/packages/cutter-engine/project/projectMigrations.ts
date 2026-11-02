@@ -1,4 +1,5 @@
 import type { FlowwrapSpec } from "../types"
+import { betaProjectRestriction } from "../../shared/releaseScope"
 import {
   parseKyzaProject,
   projectFromLegacySpec
@@ -169,6 +170,8 @@ const migrateLegacySavedCard = (
 export const migrateStoredProjectRecord = (
   value: unknown
 ): ParseResult<StoredProjectMigration> => {
+  const restriction = betaProjectRestriction(value)
+  if (restriction) return { ok: false, errors: [restriction] }
   if (!isRecord(value)) {
     return { ok: false, errors: ["Project record must be an object."] }
   }

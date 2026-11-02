@@ -28,7 +28,7 @@ function ProjectCutterPreview({ project }: { project: ProjectSummary }) {
     preview.replaceChildren()
 
     const packModule = project.cutterSpec ? getPackModule(project.packType) : undefined
-    if (!packModule || !project.cutterSpec) return
+    if (!packModule || !project.cutterSpec || project.unavailableMessage) return
 
     try {
       const svg = packModule.render(project.cutterSpec as never, { renderMode: "artwork" })
@@ -42,7 +42,7 @@ function ProjectCutterPreview({ project }: { project: ProjectSummary }) {
     }
 
     return () => preview.replaceChildren()
-  }, [project.cutterSpec, project.packType])
+  }, [project.cutterSpec, project.packType, project.unavailableMessage])
 
   return (
     <span className="kyza-project-preview" ref={previewRef}>
@@ -118,16 +118,16 @@ export function RecentProjects({ projects, hasSearchTerm, errorMessage, onNewPro
         <div className="kyza-project-grid">
           {projects.map((project) => (
             <article className={`kyza-project-card${openMenuId === project.id ? " is-menu-open" : ""}`} key={project.id}>
-              <a className="kyza-project-card-link" href={project.destinationUrl} aria-label={`Open ${project.name}`} title={`Open ${project.name}`}>
+              <a className="kyza-project-card-link" href={project.unavailableMessage ? undefined : project.destinationUrl} aria-disabled={Boolean(project.unavailableMessage)} aria-label={project.unavailableMessage ? `${project.name}: unavailable in this beta` : `Open ${project.name}`} title={project.unavailableMessage ?? `Open ${project.name}`}>
                 <span className="kyza-project-card-content">
                 <strong>{project.name}</strong>
                 <ProjectCutterPreview project={project} />
-                <time dateTime={project.updatedAt}>{dateFormatter.format(new Date(project.updatedAt))}</time>
-                <span>Version V{project.revision}</span>
+                <time dateTime={project.updatedAt}>{project.updatedAt ? dateFormatter.format(new Date(project.updatedAt)) : "Saved work retained"}</time>
+                <span>{project.unavailableMessage ? "Unavailable in this beta" : `Version V${project.revision}`}</span>
                 </span>
-                <span className="kyza-project-open" aria-hidden="true">Open</span>
+                <span className="kyza-project-open" aria-hidden="true">{project.unavailableMessage ? "Unavailable" : "Open"}</span>
               </a>
-              <button className="kyza-project-menu-button" type="button" aria-label={`Project actions for ${project.name}`} aria-expanded={openMenuId === project.id} onClick={() => setOpenMenuId(current => current === project.id ? undefined : project.id)}><EllipsisVertical aria-hidden="true" size={18} /></button>
+              <button className="kyza-project-menu-button" type="button" disabled={Boolean(project.unavailableMessage)} aria-label={`Project actions for ${project.name}`} aria-expanded={openMenuId === project.id} onClick={() => setOpenMenuId(current => current === project.id ? undefined : project.id)}><EllipsisVertical aria-hidden="true" size={18} /></button>
               {openMenuId === project.id && <div className="kyza-project-menu" role="menu">
                 <button type="button" role="menuitem" disabled title="Available with post-Beta folders">Move to</button>
                 <button type="button" role="menuitem" disabled title="Available in the post-Beta Quick Export release">Quick Export</button>
