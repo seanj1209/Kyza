@@ -1,4 +1,4 @@
-import { createKyzaMarkIcon } from "../kyza/shell/kyzaMark"
+import { createFlowLogo } from "../kyza/shell/flowLogo"
 import "./flowAssistantDock.css"
 
 export type FlowValidationCounts = { critical: number; warning: number; advisory: number; pass: number }
@@ -42,7 +42,7 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
   const brand = document.createElement("button")
   brand.type = "button"
   brand.className = "flow-assistant-brand"
-  brand.append(createKyzaMarkIcon(), document.createTextNode("Flow"))
+  brand.append(createFlowLogo())
   const status = document.createElement("button")
   status.type = "button"
   status.className = "flow-assistant-status"

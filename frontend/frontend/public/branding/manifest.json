@@ -1,6 +1,8 @@
 {
-  "description": "Unmodified owner-supplied Kyza PNG assets",
+  "description": "Owner-supplied Kyza assets and exact Flow flagship artwork; Flow display asset is a lossless crop only.",
   "sha256": {
+    "flow-assist-light.png": "97c685573ab60e90ccb94dc095560e6bd8d07eb41690cff2bcfd1003da206835",
+    "flow-assist-original.png": "2ab6467ee949bc00437cd482e87e1337a1a0f08b134b56fa125f485cb067ca30",
     "kyza-horizontal-dark.png": "755abd45ceb6ec50e57cbfe68e40a3a85b97d58406e905d90191a572887528d8",
     "kyza-horizontal-light.png": "66d3f632031c9ef6b444570fd31f89c2debc4149681594797cce2a6fce9068e7",
     "kyza-symbol-dark.png": "14e232dc361cc6db85bb30b8d6c608d2a68f1d5e5a703da360bca92610382ae8",

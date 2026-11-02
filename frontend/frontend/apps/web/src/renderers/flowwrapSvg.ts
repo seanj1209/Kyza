@@ -374,6 +374,7 @@ function renderSubMeasureGroups(
   const subDimY = originY - SUB_DIMENSION_OFFSET
   const boundaries = [originX, liveOriginX]
   const foldXs = (spec.foldLines ?? [])
+    .filter(line => line.orientation === "vertical")
     .map(line => liveOriginX + line.offset)
     .filter(x => x > liveOriginX && x < liveOriginX + liveWidth)
     .sort((a, b) => a - b)
@@ -387,34 +388,38 @@ function renderSubMeasureGroups(
   boundaries.push(liveOriginX + liveWidth)
   boundaries.push(originX + cutterWidth)
 
-  const subWidthLayer = document.createElementNS(SVG_NS, "g")
-  subWidthLayer.setAttribute("id", "sub_measure_width")
-  subWidthLayer.setAttribute(
-    "data-text-size",
-    SUB_DIMENSION_TEXT_SIZE.toString()
-  )
-  subWidthLayer.setAttribute(
-    "data-stroke-width",
-    SUB_DIMENSION_STROKE_WIDTH.toString()
-  )
-  subWidthLayer.setAttribute("data-cap", SUB_DIMENSION_CAP.toString())
-  annotationLayer.appendChild(subWidthLayer)
-  for (let i = 0; i < boundaries.length - 1; i += 1) {
-    const startX = boundaries[i]
-    const endX = boundaries[i + 1]
-    const length = Math.max(0, endX - startX)
-    if (length <= 0) {
-      continue
-    }
-    dimensionLine(
-      subWidthLayer,
-      startX,
-      subDimY,
-      endX,
-      subDimY,
-      formatMm(length),
-      { x: 0, y: -4 }
+  // K-Seal supplies its own width spans; the inherited DOY row overlaps them.
+  if (!spec.kSealPouch) {
+    const subWidthLayer = document.createElementNS(SVG_NS, "g")
+    subWidthLayer.setAttribute("id", "sub_measure_width")
+    subWidthLayer.setAttribute(
+      "data-text-size",
+      SUB_DIMENSION_TEXT_SIZE.toString()
     )
+    subWidthLayer.setAttribute(
+      "data-stroke-width",
+      SUB_DIMENSION_STROKE_WIDTH.toString()
+    )
+    subWidthLayer.setAttribute("data-cap", SUB_DIMENSION_CAP.toString())
+    annotationLayer.appendChild(subWidthLayer)
+    for (let i = 0; i < boundaries.length - 1; i += 1) {
+      const startX = boundaries[i]
+      const endX = boundaries[i + 1]
+      const length = Math.max(0, endX - startX)
+      if (length <= 0) {
+        continue
+      }
+      dimensionLine(
+        subWidthLayer,
+        startX,
+        subDimY,
+        endX,
+        subDimY,
+        formatMm(length),
+        { x: 0, y: -4 }
+      )
+    }
+
   }
 
   if (spec.doyPouch) {

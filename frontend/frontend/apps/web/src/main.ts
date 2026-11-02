@@ -1,6 +1,7 @@
 import { cutterUiRestriction, cutterUrlRestriction, createPresentationStorage, unavailableProjectPresentation, type UnavailableProjectPresentation } from "./kyza/betaUiGuards"
 import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE, betaProjectRestriction } from "../../../packages/shared/releaseScope"
 import "./brandBootstrap"
+import { createFlowLogo } from "./kyza/shell/flowLogo"
 import { attachLegendPlacement } from "./ui/legendPlacement"
 import { initSandboxStudio, SANDBOX_DEFAULT_FILM_COLOUR, SANDBOX_DEFAULT_HEIGHT_MM, SANDBOX_DEFAULT_WIDTH_MM, type SandboxStudioApi } from "./ui/sandboxStudio"
 import { renderSandboxCutter } from "./renderers/sandboxCutterSvg"
@@ -35,6 +36,8 @@ import { attachWindowInteractions } from "./ui/windowInteractions"
 import { attachKSealPouchInteractions } from "./ui/kSealPouchInteractions"
 import { attachPaperStripInteractions } from "./ui/paperStripInteractions"
 import { attachPaperStripEditing } from "./ui/paperStripEditing"
+import { createPreSlitView } from "./ui/preSlitView"
+import { updatePaperStripContrast } from "./constraints/paperStripAppearance"
 import { commitPaperStripStepEdit } from "../../../packages/cutter-engine/actions/paperStripSteps"
 import { initialiseSachetSteps, commitSachetStepEdit } from "../../../packages/cutter-engine/actions/sachetSteps"
 import { studioNavigationHref, getStudioDestination } from "./kyza/account/studioNavigation"
@@ -1466,8 +1469,7 @@ importProjectInput.addEventListener("change", async () => {
 const chooseButton = document.createElement("button")
 chooseButton.type = "button"
 chooseButton.textContent = "Help Me Choose"
-// Help Me Choose uses the supplied Flow F mark (icon only, no wordmark).
-decorateStartAction(chooseButton, createKyzaMarkIcon(), "Describe your product and explore Flow suggestions")
+decorateStartAction(chooseButton, createFlowLogo(), "Describe your product and explore Flow suggestions")
 const choosePanel = document.createElement("div")
 choosePanel.id = "start-choose-panel"
 choosePanel.className = "start-choose-panel"
@@ -1695,6 +1697,7 @@ let viewBoxState: { zoom: number; panX: number; panY: number } = {
 let pendingArtboardId: string | null = null
 let previewMode = false
 let pouchPreviewActive = false
+const preSlitView = createPreSlitView(() => { if (currentSpec) render(currentSpec) })
 let pouchPreviewFace: "fop" | "bop" = "fop"
 let pouchPreviewShowTrim = true
 /** Bounds of the face shown in Pouch Preview; zoom and pan stay inside it. */
@@ -2072,7 +2075,7 @@ function commitActiveProjectSpec(
   if (!active) {
     return null
   }
-  const updatedSpec = updateArtboardProjectSpec(active, syncLiddingCutterSize(next), reason)
+  const updatedSpec = updateArtboardProjectSpec(active, syncLiddingCutterSize(updatePaperStripContrast(active.spec, next)), reason)
   if (!updatedSpec) {
     return null
   }
@@ -2285,7 +2288,9 @@ const exportSavedProjectCard = async (
     ? getPackModule(approval.project.cutter?.packType ?? card.packId)
     : undefined
   const exportSpec = approval.project.cutter?.legacySpec ?? card.spec
-  const svg = module?.render(cloneSpec(exportSpec) as FlowwrapSpec)
+  const openArtboard = artboards.find(item => item.project?.id === approval.project.id)
+  const svg = module?.render(cloneSpec(exportSpec) as FlowwrapSpec,
+    preSlitView.renderOptions(openArtboard?.id ?? "", module.id))
   if (svg) applyBaseLayerCustomisation(svg, exportSpec)
   const picker = "showSaveFilePicker" in window
     ? (window as unknown as { showSaveFilePicker: SaveFilePickerLike }).showSaveFilePicker.bind(window)
@@ -3989,6 +3994,7 @@ try {
   controlsApi = initFlowwrapControls({
     container: controlsBody,
     initialSpec,
+    getPackId: () => pack.id,
     baseModelPanelHost,
     attributesPanelHost,
     enablePackPanel: false,
@@ -4017,7 +4023,7 @@ try {
         return
       }
       const updated = commitActiveProjectSpec(active.spec?.lidding ? commitLiddingLaneElements(active.spec, next) : next, changeReason, {
-        syncControls: false,
+        syncControls: Boolean(next.paperStrip && active.spec?.substrate !== next.substrate),
         renderNext: active.started
       })
       if (!updated) {
@@ -4275,7 +4281,8 @@ function render(spec: FlowwrapSpec) {
 
   try {
     const setMeasurementActive = controlsApi?.setMeasurementActive ?? (() => {})
-    const svg = pack.render(spec)
+    preSlitView.sync(activeArtboardId, pack.id)
+    const svg = pack.render(spec, preSlitView.renderOptions(activeArtboardId, pack.id))
     applyBaseLayerCustomisation(svg, spec)
     applyLayerStateToSvg(svg)
     layerManager.setAvailableLayerIds(collectAvailableLayerIds(svg, spec))

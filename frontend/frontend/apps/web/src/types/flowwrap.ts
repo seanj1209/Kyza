@@ -290,6 +290,7 @@ export type RenderMode = "edit" | "artwork" | "export"
 
 export type RenderOptions = {
   renderMode?: RenderMode
+  paperStripView?: "normal" | "pre-slit"
 }
 
 export interface FlowwrapSpec {

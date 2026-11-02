@@ -107,7 +107,7 @@
 
 /* V3: compact switches just above the composer, branded Flow mark and arrow submit. */
 .flow-assistant-brand { display:flex; align-items:center; gap:6px; }
-.flow-assistant-brand .kyza-assistant-mark { width:19px; height:19px; flex:none; }
+:root body #preview #flow-assistant-dock .flow-assistant-logo { width:66px; height:25px; flex:none; }
 .flow-assistant-tabs { padding:3px 12px 5px; }
 .flow-assistant-tabs button { font-size:11px; padding:5px 10px; }
 .flow-assistant-form { position:relative; }

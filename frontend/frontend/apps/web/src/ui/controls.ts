@@ -60,7 +60,7 @@ import { formatMetricValue, parseMetricDraft } from "../core/formatMetric"
 import { runEngineRequest } from "../../../../packages/engine-api"
 import { addTextDirection } from "../../../../packages/cutter-engine/actions/textDirection"
 import { createControlSpecSynchroniser } from "../project/controlSpecSynchronisation"
-import type { FoldLineSpec } from "../geometry/foldLines"
+import type { FoldLineOrientation, FoldLineSpec } from "../geometry/foldLines"
 import { HANGER_SLOT_STYLES, hangerSlotPath } from "../geometry/hangerSlotShapes"
 import type { FlowwrapSpec, HalfMoonCutoutSpec, HangerSlotSpec, SafeZoneSpec, WindowSpec, WindowShape } from "../types/flowwrap"
 import type { EyeMarkColor, EyeMarkSpec } from "../types/eyeMarks"
@@ -71,6 +71,7 @@ export type ControlsSpecChangeReason = "controls-edit" | "engine-action"
 type FlowwrapUIConfig = {
   container: HTMLElement
   initialSpec: FlowwrapSpec
+  getPackId?: () => string
   onChange: (spec: FlowwrapSpec, reason: ControlsSpecChangeReason) => void
   onMeasureToggle?: (enabled: boolean) => void
   onPanToggle?: (enabled: boolean) => void
@@ -544,6 +545,7 @@ function cloneZone(zone: SafeZoneSpec, updates: Partial<SafeZoneSpec>) {
 export function initFlowwrapControls({
   container,
   initialSpec,
+  getPackId = () => "",
   onChange,
   onMeasureToggle,
   onPanToggle,
@@ -777,6 +779,7 @@ export function initFlowwrapControls({
   }
   const attributePanels = new Map<string, HTMLElement>()
   let selectElementCategory: ((category: string) => void) | undefined
+  let syncElementGroups = () => {}
   const hangerSlotList = document.createElement("div")
   hangerSlotList.className = "safe-zone-list"
   hangerSlotList.style.gridColumn = "1 / -1"
@@ -790,6 +793,29 @@ export function initFlowwrapControls({
     attributesPanelHost.appendChild(menu)
 
     const groupBodies = new Map<string, HTMLElement>()
+    const groups = new Map<string, { tab: HTMLButtonElement; panel: HTMLElement }>()
+    const disabledControls = new Map<HTMLButtonElement | HTMLInputElement | HTMLSelectElement, boolean>()
+    syncElementGroups = () => {
+      for (const id of ["openings", "die-cut"]) {
+        const group = groups.get(id)
+        if (!group) continue
+        const excluded = getPackId() === "plain-film"
+        if (excluded && group.tab.getAttribute("aria-selected") === "true") elementTabs.select("basic")
+        group.tab.hidden = excluded
+        group.tab.disabled = excluded
+        group.panel.style.display = excluded ? "none" : ""
+        group.panel.inert = excluded
+        group.panel.querySelectorAll<HTMLButtonElement | HTMLInputElement | HTMLSelectElement>("button, input, select").forEach(control => {
+          if (excluded) {
+            if (!disabledControls.has(control)) disabledControls.set(control, control.disabled)
+            control.disabled = true
+          } else if (disabledControls.has(control)) {
+            control.disabled = disabledControls.get(control)!
+            disabledControls.delete(control)
+          }
+        })
+      }
+    }
     const createGroup = (id: string, label: string, open = false) => {
       const group = document.createElement("section")
       group.className = "elements-category"
@@ -799,7 +825,8 @@ export function initFlowwrapControls({
       const grid = document.createElement("div")
       grid.className = "attributes-menu"
       group.append(heading, grid)
-      elementTabs.add(id, label, group)
+      const tab = elementTabs.add(id, label, group)
+      groups.set(id, { tab, panel: group })
       groupBodies.set(id, grid)
     }
 
@@ -1013,6 +1040,7 @@ export function initFlowwrapControls({
       switch (id) {
         case "fold":
           addFoldLine()
+          openPanel("fold")
           return true
         case "safe":
           addSafeZone()
@@ -1161,12 +1189,6 @@ export function initFlowwrapControls({
       createFloatingPanel("tear", "Tear Notch", tearNotchSection.section)
       createMenuButton("die-cut", "tear", "Tear Notch", undefined, "TN")
     }
-    if (gussetArchSection?.section) {
-      createMenuButton("basic","gusset-arch","Gusset",undefined,"GA",()=>{
-        const toggle=document.querySelector<HTMLButtonElement>('.gusset-dock button[aria-expanded]')
-        if(toggle?.getAttribute("aria-expanded")==="false")toggle.click()
-      })
-    }
     if (sachetStepSection?.section) {
       createFloatingPanel("sachet-step", "Stepping", sachetStepSection.section)
 
@@ -1222,6 +1244,7 @@ export function initFlowwrapControls({
     createMenuButton("perforation", "hot-needle", "Hot Needle")
     createMenuButton("perforation", "scribe", "Scribe")
     syncLiddingMenus()
+    syncElementGroups()
   }
 
   const safeZoneList = document.createElement("div")
@@ -1260,6 +1283,15 @@ export function initFlowwrapControls({
     activeDurationMs: 1500
   })
   addFoldLineButton.appendChild(addFoldLineIcon)
+
+  const foldLineDirections = [
+    { value: "vertical", label: "Vertical" },
+    { value: "horizontal", label: "Horizontal" }
+  ]
+  const newFoldLineDirection = createSelect(
+    "New fold line direction", "vertical", foldLineDirections, () => {}
+  )
+  newFoldLineDirection.field.setAttribute("data-role", "new-fold-line-direction")
 
   const addSafeZoneButton = document.createElement("button")
   addSafeZoneButton.type = "button"
@@ -2423,9 +2455,14 @@ export function initFlowwrapControls({
     if (!spec.foldLines) {
       return
     }
-    spec.foldLines = spec.foldLines.map((line: FoldLineSpec, i: number) =>
-      i === index ? { ...line, ...updates } : line
-    )
+    spec.foldLines = spec.foldLines.map((line: FoldLineSpec, i: number) => {
+      if (i !== index) return line
+      const updated = { ...line, ...updates }
+      const maxOffset = updated.orientation === "horizontal"
+        ? spec.height
+        : Math.max(0, resolveFlowwrapGeometry(spec).liveRect.width)
+      return { ...updated, offset: Math.max(0, Math.min(updated.offset, maxOffset)) }
+    })
     emitChange()
     renderFoldLines()
   }
@@ -2473,16 +2510,25 @@ export function initFlowwrapControls({
       header.appendChild(removeButton)
 
       const fields = document.createElement("div")
-      fields.className = "fold-line-hidden-fields"
+      fields.className = "fold-line-fields"
+
+      const directionField = createSelect(
+        "Direction", line.orientation, foldLineDirections,
+        next => updateFoldLine(index, { orientation: next as FoldLineOrientation })
+      )
+      directionField.field.setAttribute("data-role", "fold-line-direction")
+      fields.appendChild(directionField.field)
 
       const offsetField = createNumberInput(
-        "X Offset (mm)",
+        line.orientation === "horizontal" ? "Offset from cutter top (mm)" : "X Offset (mm)",
         line.offset,
         { min: 0, step: 0.1 },
         next => updateFoldLine(index, { offset: next })
       )
+      offsetField.input.max = String(line.orientation === "horizontal"
+        ? spec.height
+        : Math.max(0, resolveFlowwrapGeometry(spec).liveRect.width))
       offsetField.field.setAttribute("data-role", "fold-line-offset")
-      offsetField.field.style.display = "none"
       fields.appendChild(offsetField.field)
 
       row.appendChild(header)
@@ -3771,10 +3817,11 @@ export function initFlowwrapControls({
   const addFoldLine = () => {
     const geometry = resolveFlowwrapGeometry(spec)
     const liveWidth = Math.max(0, geometry.liveRect.width)
+    const orientation = newFoldLineDirection.select.value as FoldLineOrientation
     const nextLine: FoldLineSpec = {
-      id: `fold-${Date.now()}`,
-      orientation: "vertical",
-      offset: liveWidth / 2
+      id: `fold-${crypto.randomUUID()}`,
+      orientation,
+      offset: (orientation === "horizontal" ? spec.height : liveWidth) / 2
     }
     const lines = spec.foldLines ? [...spec.foldLines, nextLine] : [nextLine]
     spec = { ...spec, foldLines: lines }
@@ -3786,6 +3833,7 @@ export function initFlowwrapControls({
   addFoldLineButton.addEventListener("click", addFoldLine)
 
   foldSection.body.classList.add("fold-line-panel-body")
+  foldSection.body.appendChild(newFoldLineDirection.field)
   foldSection.body.appendChild(addFoldLineButton)
   foldSection.body.appendChild(foldLineList)
 
@@ -4203,6 +4251,7 @@ export function initFlowwrapControls({
   updateKSealVisibility(spec)
   updateSachetVisibility(spec)
   updatePaperStripVisibility(spec)
+  syncElementGroups()
   function updateDoyVisibility(next: FlowwrapSpec) {
     const enabled = Boolean(next.doyPouch || next.kSealPouch)
     if (usesAttributesPanel) {
@@ -4503,6 +4552,7 @@ export function initFlowwrapControls({
     renderHalfMoonCutouts()
     renderPackSpecificControls()
     syncLiddingMenus()
+    syncElementGroups()
     renderFoldLines()
   }
 

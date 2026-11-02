@@ -26,6 +26,7 @@ export const isSachetClearanceScope = (spec: Pick<FlowwrapSpec, "sachet">) => sp
 
 /** Pouches use entered clearance; 3 mm is a production default, not a new hard minimum. */
 export function getMinimumSealClearanceMm(spec: Pick<FlowwrapSpec, "sachet" | "doyPouch" | "kSealPouch">, packId?:string) {
+  if (packId === "plain-film") return 0
   return isSachetClearanceScope(spec) ? SACHET_MIN_SEAL_CLEARANCE_MM : packId==="pillow-pack" ? 3 : spec.doyPouch || spec.kSealPouch ? 0 : MIN_SEAL_CLEARANCE_MM
 }
 
@@ -123,7 +124,8 @@ export function validateFlowwrapSpec(spec: FlowwrapSpec,packId?:string): Validat
     PARAMETER_CONSTRAINTS.eyeMarks.count.max,
     2
   )
-  const plainFilmContext = isPlainFilmContext(spec)
+  const optionalSeals = packId === "plain-film" || packId === "paper-strip"
+  const plainFilmContext = optionalSeals || isPlainFilmContext(spec)
 
   if (spec.width < minWidth) {
     errors.push("Width must be greater than 0mm.")
@@ -135,6 +137,10 @@ export function validateFlowwrapSpec(spec: FlowwrapSpec,packId?:string): Validat
 
   if (!plainFilmContext && spec.seal < minSeal) {
     errors.push("Seal must be greater than 0mm.")
+  }
+  if (optionalSeals && (!Number.isFinite(spec.seal) || spec.seal < 0 ||
+    Object.values(spec.seals ?? {}).some(value => !Number.isFinite(value) || value < 0))) {
+    errors.push("Seal dimensions must be finite, non-negative millimetre values.")
   }
 
   if (

@@ -1,5 +1,6 @@
 import type { BaseLayerCustomisationSpec, FlowwrapSpec } from "../types/flowwrap"
 import { applyElementAppearance, KSEAL_SIDE_SEAL_DEFAULTS } from "./elementAppearance"
+import { paperStripEyeColor } from "../constraints/paperStripAppearance"
 
 const EYE_MARK_DEFAULTS: Record<string, string> = {
   black: "#000000",
@@ -18,7 +19,8 @@ const sanitizeHex = (value: string, fallback: string) =>
 export function resolveBaseCustomisation(
   spec: FlowwrapSpec
 ): BaseLayerCustomisationSpec {
-  const eyeMarkDefault = EYE_MARK_DEFAULTS[spec.eyeMarks?.color ?? "black"] ?? "#000000"
+  const strip = Boolean(spec.paperStrip)
+  const eyeMarkDefault = EYE_MARK_DEFAULTS[strip && spec.eyeMarks?.color !== "dark-blue" ? paperStripEyeColor(spec) : spec.eyeMarks?.color ?? "black"] ?? "#000000"
   const doySeal = Boolean(spec.doyPouch && !spec.kSealPouch)
   const sidePouchSeal = Boolean(spec.sideSealPouch)
   // AMENDS 6.1: on K Seal the Seals customise owns the side seals (#2eb774, 32%, solid).
@@ -37,10 +39,10 @@ export function resolveBaseCustomisation(
       opacity: clamp(spec.baseCustomisation?.eyemark?.opacity ?? 1, 0, 1)
     },
     seals: {
-      style: ["dashed", "dotted"].includes(spec.baseCustomisation?.seals?.style ?? "") ? spec.baseCustomisation!.seals.style : "default",
+      style: ["default", "dashed", "dotted"].includes(spec.baseCustomisation?.seals?.style ?? "") ? spec.baseCustomisation!.seals.style : strip ? "dashed" : "default",
       thickness: clamp(spec.baseCustomisation?.seals?.thickness ?? 0.6, 0.1, 10),
       color: sanitizeHex(spec.baseCustomisation?.seals?.color ?? sealColourDefault, sealColourDefault),
-      opacity: clamp(spec.baseCustomisation?.seals?.opacity ?? sealOpacityDefault, 0, 1)
+      opacity: clamp(spec.baseCustomisation?.seals?.opacity ?? (strip ? 0.7 : sealOpacityDefault), 0, 1)
     }
   }
 }
@@ -87,7 +89,7 @@ export function applyBaseLayerCustomisation(svg: SVGSVGElement, spec: FlowwrapSp
   const doyVisual = doySeal ? svg.querySelector<SVGGElement>('[data-role="doy-seal-visual"]') : null
   if (doyVisual) doyVisual.setAttribute("opacity", custom.seals.opacity.toString())
   sealRects.forEach(node => {
-    node.setAttribute("fill", custom.seals.color)
+    node.setAttribute("fill", spec.paperStrip ? "none" : custom.seals.color)
     node.setAttribute("stroke", doySeal || sidePouchSeal ? "none" : custom.seals.color)
     node.setAttribute("stroke-width", custom.seals.thickness.toString())
     node.setAttribute("opacity", doyVisual ? "1" : custom.seals.opacity.toString())

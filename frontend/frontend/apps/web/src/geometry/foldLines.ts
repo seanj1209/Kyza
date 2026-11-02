@@ -3,6 +3,7 @@ export type FoldLineOrientation = "vertical" | "horizontal"
 export interface FoldLineSpec {
   id: string
   orientation: FoldLineOrientation
+  /** Millimetres from live-area left for vertical lines, cutter top for horizontal lines. */
   offset: number
 }
 
@@ -41,7 +42,7 @@ export function buildFoldLines(
       }
     }
 
-    const y = cutterOriginY + cutterHeight / 2
+    const y = cutterOriginY + clamp(line.offset, 0, cutterHeight)
     return {
       id: line.id,
       x1: cutterOriginX,

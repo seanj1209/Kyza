@@ -77,6 +77,7 @@ const PACKS_WITH_RENDERER_PARITY_EYEMARK_POSITION = new Set([
   "pillow-pack",
   "doy-pouch",
   "k-seal-pouch",
+  "plain-film",
   "paper-strip"
 ])
 
@@ -88,7 +89,9 @@ const hasKnownEyemarkAllowedZone = (
   PACKS_WITH_KNOWN_EYEMARK_SEAL_ZONES.has(packType) &&
   !(count === 1 && position === "centre")
 
-const packRequiresSeals = (packType: string) => packType !== "plain-web" && packType !== "plain-film" && packType !== "lidding"
+const packRequiresSeals = (packType: string) => packType !== "plain-web" && packType !== "plain-film" && packType !== "paper-strip" && packType !== "lidding"
+
+const eyemarkUsesWholeCutter = (packType: string) => packType === "plain-film"
 
 const resolvePackValidationGeometry = (spec: FlowwrapSpec, packType: string) => {
   if (packType !== "k-seal-pouch") {
@@ -565,7 +568,7 @@ const validateStructuredSpec = (
         if (!rect) {
           continue
         }
-        const placement = getEyemarkPlacementArea(
+        const placement = eyemarkUsesWholeCutter(packType) ? geometry.cutterRect : getEyemarkPlacementArea(
           eyeMarks.position,
           index,
           eyeMarks.count,
@@ -573,7 +576,7 @@ const validateStructuredSpec = (
           geometry.seals
         )
         const positionIsResolved = PACKS_WITH_RENDERER_PARITY_EYEMARK_POSITION.has(packType)
-        const allowedZoneIsResolved = hasKnownEyemarkAllowedZone(
+        const allowedZoneIsResolved = eyemarkUsesWholeCutter(packType) || hasKnownEyemarkAllowedZone(
           packType,
           eyeMarks.count,
           eyeMarks.position
@@ -760,14 +763,13 @@ const validateStructuredSpec = (
         fieldPath: "cutter.legacySpec.foldLines"
       })
     }
-    if (line.orientation === "horizontal") {
+    if (line.orientation === "horizontal" && (line.offset < 0 || line.offset > geometry.cutterRect.height)) {
       addMessage(context, {
-        code: "FOLD_HORIZONTAL_OFFSET_UNSUPPORTED",
-        severity: "warning",
-        message: `Horizontal fold line "${line.id}" is currently rendered at centre; persisted offset semantics remain incomplete.`,
+        code: "FOLD_OFFSET_INVALID",
+        severity: "error",
+        message: `Horizontal fold line "${line.id}" must stay inside the cutter height.`,
         elementIds: [line.id],
-        fieldPath: "cutter.legacySpec.foldLines",
-        fixable: false
+        fieldPath: "cutter.legacySpec.foldLines"
       })
     }
   })
@@ -979,7 +981,7 @@ export const getValidationDebugSnapshot = (value: unknown): ValidationDebugSnaps
           return null
         }
         const positionIsResolved = PACKS_WITH_RENDERER_PARITY_EYEMARK_POSITION.has(packType)
-        const allowedZone = pouchZones ? (eyeMarks.count===1 ? pouchZones.center : pouchZones.bands[index]??null) : hasKnownEyemarkAllowedZone(
+        const allowedZone = eyemarkUsesWholeCutter(packType) ? geometry.cutterRect : pouchZones ? (eyeMarks.count===1 ? pouchZones.center : pouchZones.bands[index]??null) : hasKnownEyemarkAllowedZone(
           packType,
           eyeMarks.count,
           eyeMarks.position

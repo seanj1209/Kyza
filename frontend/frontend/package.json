@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "test:paper-strip-qa": "node tests/paper-strip-pre-slit.test.js",
     "dev": "vite",
     "build": "vite build && node scripts/duplicate-app-entry.mjs",
     "preview": "vite preview",

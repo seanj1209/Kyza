@@ -9,7 +9,8 @@ import { createBaseSpecDefaults, createEyeMarkDefaults, createSachetDefaults } f
 import { composeSachetPack, composePlainWebPack } from "../core/packComposer"
 import { renderResolvedSachet } from "../renderers/sachetSvg"
 import { renderSideSealPouch } from "../renderers/sideSealPouchSvg"
-import { renderResolvedPlainWeb } from "../renderers/plainWebSvg"
+import { renderPlainFilm } from "../renderers/plainFilmSvg"
+import { createPackValidator } from "../engines/validation-engine/createPackValidator"
 import type { FlowwrapSpec, RenderOptions } from "../types/flowwrap"
 import type { PackModule } from "./packModule"
 
@@ -64,6 +65,6 @@ export const plainFilmPack: PackModule<FlowwrapSpec, ReturnType<typeof composePl
     plainWeb: { guideLines: [] },
   }),
   resolveGeometry: spec => composePlainWebPack(spec).geometry,
-  validate: spec => composePlainWebPack(spec).validation,
-  render: spec => renderResolvedPlainWeb(composePlainWebPack(spec).layout, spec),
+  validate: createPackValidator("plain-film"),
+  render: (spec, options) => renderPlainFilm(spec, options),
 }
