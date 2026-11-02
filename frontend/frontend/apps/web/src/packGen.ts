@@ -521,8 +521,7 @@ function renderPackGenWorkspace(host: HTMLElement, initialProject: KyzaProjectV1
     try {
       const result = generatePackGenRecommendations(prompt)
       if (!result.ok) {
-        console.error("[Pack Gen] Flow recommendation failure", result.errors)
-        setStatus("Flow could not generate suggestions from this request. Review the prompt and try again.", "error")
+        setStatus(result.errors.join(" ") || "No supported Beta starting point matched this request.", "error")
         return
       }
       if (result.recommendations.length === 0) {
