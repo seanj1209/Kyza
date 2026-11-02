@@ -1,3 +1,4 @@
+import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE } from "../../../../../packages/shared/releaseScope"
 import "../../brandBootstrap"
 import { StrictMode, useState, useEffect, useRef, useCallback, type ReactNode } from "react"
 import { createRoot } from "react-dom/client"
@@ -747,7 +748,7 @@ createRoot(root).render(
   <StrictMode>
     <KyzaThemeProvider>
       <KyzaRouteShell routeLabel="Artwork Studio" skipLabel="Skip to Artwork Studio">
-        <ArtworkPreview />
+        {BETA_FEATURES.artwork ? <ArtworkPreview /> : <section role="alert"><h1>Artwork Studio is unavailable in this beta</h1><p>{BETA_RESTRICTION_MESSAGE}</p><a href="/cutter">Open Cutter Studio</a></section>}
       </KyzaRouteShell>
     </KyzaThemeProvider>
   </StrictMode>

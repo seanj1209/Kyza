@@ -1,5 +1,4 @@
 import { packModules } from "../apps/web/src/packs"
-import { plainWebPack } from "../apps/web/src/packs/plainWebPack"
 import type { FlowwrapSpec } from "../apps/web/src/types/flowwrap"
 import {
   KYZA_PROJECT_COORDINATE_SPACE,
@@ -239,7 +238,7 @@ const legacyWorkspaceWithoutTrim = createKyzaProjectV1({
 const legacyWorkspaceWithoutTrimParsed = parseKyzaProject(JSON.parse(JSON.stringify(legacyWorkspaceWithoutTrim)))
 assert(legacyWorkspaceWithoutTrimParsed.ok, "Stored Pack Gen workspaces created before trimMm must remain readable.")
 
-const registeredPackModules = [...packModules, plainWebPack]
+const registeredPackModules = packModules
 registeredPackModules.forEach(packModule => {
   const spec = packModule.getDefaults()
   const wrapped = projectFromLegacySpec(packModule.id, packModule.name, spec, {

@@ -1,3 +1,4 @@
+import { isBetaPackEnabled, BETA_RESTRICTION_MESSAGE } from "../../../../../packages/shared/releaseScope"
 import { useEffect, useState } from "react"
 import { packModules } from "../../packs"
 import { getPackGenFieldPolicy } from "../../packGen/packGenFieldPolicy"
@@ -29,10 +30,7 @@ export function QuickProjectModal({ open, onClose }: Props) {
   const choosePack = (id: string) => {
     setPackId(id)
     setError("")
-    if (id === "sandbox") {
-      setWidth(540); setHeight(250); setEyemarks(0); setSubstrate("clear")
-      return
-    }
+    if (!isBetaPackEnabled(id)) { setError(BETA_RESTRICTION_MESSAGE); return }
     const defaults = getPackGenFieldPolicy(id).deterministicDefaults
     setWidth(Number(defaults.finishedWidthMm ?? 0))
     setHeight(Number(defaults.finishedHeightMm ?? 0))
@@ -49,14 +47,10 @@ export function QuickProjectModal({ open, onClose }: Props) {
     if (busy) return
     if (!name.trim()) { setError("Enter a Project name."); return }
     if (!packId) { setError("Choose a pack type."); return }
+    if (!isBetaPackEnabled(packId)) { setError(BETA_RESTRICTION_MESSAGE); return }
     if (!Number.isFinite(width) || width <= 0 || !Number.isFinite(height) || height <= 0) { setError("Enter a width and height greater than 0 mm."); return }
     setBusy(true)
     setError("")
-    if (packId === "sandbox") {
-      const params = new URLSearchParams({ studio: "sandbox", name: name.trim(), width: String(width), height: String(height), substrate })
-      window.location.assign(`/cutter?${params.toString()}`)
-      return
-    }
     try {
       let draft = createStandalonePackGenDraft()
       draft = setPackGenField(draft, "packType", packId)
@@ -82,7 +76,7 @@ export function QuickProjectModal({ open, onClose }: Props) {
       <header><div><span className="kyza-eyebrow">NEW PROJECT</span><h2 id="quick-project-title">Start a cutter</h2><p>Set the essentials, then refine the cutter in Studio.</p></div><button type="button" onClick={onClose} aria-label="Close new Project" disabled={busy}>×</button></header>
       <div className="quick-project-fields">
         <label>Project name<input autoFocus value={name} maxLength={PROJECT_CREATION_FIELD_LIMITS.projectName} onChange={event => setName(event.target.value)} /></label>
-        <label>Pack type<select value={packId} onChange={event => choosePack(event.target.value)}><option value="">Select a pack type</option>{packModules.map(pack => <option key={pack.id} value={pack.id}>{pack.name}</option>)}<option value="sandbox">Sandbox</option></select></label>
+        <label>Pack type<select value={packId} onChange={event => choosePack(event.target.value)}><option value="">Select a pack type</option>{packModules.map(pack => <option key={pack.id} value={pack.id}>{pack.name}</option>)}</select></label>
         <label>{pouch ? "Pouch width (mm)" : "Starting width (mm)"}<input type="number" min="0.1" step="0.1" value={width || ""} onChange={event => setWidth(Number(event.target.value))} /></label>
         <label>{pouch ? "Pouch height (mm)" : "Starting height (mm)"}<input type="number" min="0.1" step="0.1" value={height || ""} onChange={event => setHeight(Number(event.target.value))} /></label>
         <fieldset><legend>Eyemarks</legend><div className="quick-project-eyemarks">{([0, 1, 2] as const).map(count => <button key={count} type="button" aria-pressed={eyemarks === count} onClick={() => chooseEyemarks(count)}>{count}</button>)}</div></fieldset>

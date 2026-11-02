@@ -3,7 +3,7 @@ import "./studioGuide.css"
 // Amends v11: the guide is the Cutter Studio tour — how to start, then what the studio offers.
 // Presentation only; every capability named here exists in the current studio.
 const guideSteps = [
-  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a pack type, open Sandbox Mode for trials and bespoke work, import a saved cutter, or tell Flow what you need." },
+  { scene: "start", chapter: "Get started", title: "Choose how to start", text: "Pick a supported pack type, use Import Project to reopen a project JSON file, resume saved work, or tell Flow what you need." },
   { scene: "precision", chapter: "Inside the studio", title: "Design with precision", text: "Geometry is held in exact millimetres. Snap the Measure tool to edges for a live readout; its reference grid refines to 600 ppi as you zoom." },
   { scene: "elements", chapter: "Inside the studio", title: "Add and position elements", text: "Place windows, hanger slots, perforations and attribute boxes. Centre and edge snapping and safe-zone fit keep them aligned." },
   { scene: "customise", chapter: "Inside the studio", title: "Customise your cutter", text: "Tune seals, folds, perforations and colours in Customise, then validate and export when it’s ready for production." }
@@ -24,7 +24,7 @@ export function createStudioGuide() {
   </header>
 
   <div class="stage" aria-hidden="true">
-    <!-- Scene 1: the four ways into Cutter Studio -->
+    <!-- Scene 1: supported ways into Cutter Studio -->
     <div class="scene" data-scene="start" aria-hidden="true">
       <svg viewBox="0 0 240 160">
         <circle class="redfill origin" cx="24" cy="80" r="7"/>
@@ -39,13 +39,13 @@ export function createStudioGuide() {
         </g>
         <g class="route fade" style="--d:.66s" transform="translate(142 48)">
           <rect class="tile" width="90" height="28" rx="9"/><rect class="route-ring" width="90" height="28" rx="9" style="--r:2.2s"/>
-          <rect class="accent sandbox-dash" x="8" y="7" width="16" height="14" rx="2" style="stroke-width:1.6"/>
-          <text class="scene-label" x="32" y="14.5">Sandbox</text>
+          <rect class="accent" x="8" y="7" width="16" height="14" rx="2" style="stroke-width:1.6"/>
+          <text class="scene-label" x="32" y="14.5">Saved work</text>
         </g>
         <g class="route fade" style="--d:.82s" transform="translate(142 84)">
           <rect class="tile" width="90" height="28" rx="9"/><rect class="route-ring" width="90" height="28" rx="9" style="--r:2.9s"/>
           <path class="accent" d="M16 6 V17 M11.5 13 L16 17.5 L20.5 13 M9 18 V22 H23 V18" style="stroke-width:1.6"/>
-          <text class="scene-label" x="32" y="14.5">Import</text>
+          <text class="scene-label" x="32" y="14.5">Project JSON</text>
         </g>
         <g class="route fade" style="--d:.98s" transform="translate(142 120)">
           <rect class="tile" width="90" height="28" rx="9"/><rect class="route-ring" width="90" height="28" rx="9" style="--r:3.6s"/>

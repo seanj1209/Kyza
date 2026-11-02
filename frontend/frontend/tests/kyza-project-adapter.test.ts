@@ -76,7 +76,7 @@ const olderProject = projectFromLegacySpec("pillow-pack", "Retail Wrap", spec, {
   createdAt: "2026-07-01T09:00:00.000Z",
   updatedAt: "2026-07-02T09:00:00.000Z",
 })
-const newerProject = projectFromLegacySpec("flow-wrap", "Bakery Launch", spec, {
+const newerProject = projectFromLegacySpec("flowwrap", "Bakery Launch", spec, {
   id: "project-bakery-202",
   createdAt: "2026-07-03T09:00:00.000Z",
   updatedAt: "2026-07-04T09:00:00.000Z",
@@ -90,7 +90,7 @@ assertJsonEqual(validResult.projects.map((project) => project.id), ["project-bak
 assertJsonEqual(validResult.projects[0], {
   id: "project-bakery-202",
   name: "Bakery Launch",
-  packType: "flow-wrap",
+  packType: "flowwrap",
   updatedAt: "2026-07-04T09:00:00.000Z",
   revision: 1,
   cutterSpec: spec,
@@ -175,9 +175,19 @@ const legacyWithoutId = { ...olderProject, id: undefined }
 const legacyRaw = JSON.stringify([legacyWithoutId])
 legacyStorage.values.set(KYZA_PROJECT_STORAGE_KEY, legacyRaw)
 const legacyResult = loadDashboardProjectSummaries(legacyStorage)
-assertEqual(legacyResult.status, "error", "A migration that requires persistence must fail read-only.")
+assertEqual(legacyResult.status, "ready", "Legacy Projects can be presented using an in-memory migration.")
 assertEqual(legacyStorage.writeCount, 0)
 assertEqual(legacyStorage.getItem(KYZA_PROJECT_STORAGE_KEY), legacyRaw)
+
+const excludedStorage = new MemoryStorage()
+const excludedRaw = JSON.stringify([{ ...olderProject, cutter: { ...olderProject.cutter, packType: "lidding" } }])
+excludedStorage.values.set(KYZA_PROJECT_STORAGE_KEY, excludedRaw)
+const excludedResult = loadDashboardProjectSummaries(excludedStorage)
+assertEqual(excludedResult.status, "ready")
+assert(Boolean(excludedResult.projects[0]?.unavailableMessage), "Excluded saved work should appear as unavailable")
+assertEqual(excludedResult.projects[0]?.destinationUrl, "", "Excluded project must not have an open destination")
+assertEqual(excludedStorage.getItem(KYZA_PROJECT_STORAGE_KEY), excludedRaw)
+assertEqual(excludedStorage.writeCount, 0)
 
 console.log("Kyza read-only Project adapter and search verified")
 

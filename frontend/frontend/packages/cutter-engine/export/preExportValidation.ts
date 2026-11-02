@@ -2,6 +2,7 @@ import type {
   KyzaProjectV1,
   ParseResult
 } from "../project"
+import { betaProjectRestriction } from "../../shared/releaseScope"
 import {
   BETA_CUTTER_RULESET_VERSION,
   getEffectiveValidationStatus,
@@ -233,6 +234,7 @@ export const createValidationAcknowledgement = (input: {
 }
 
 export type ExportAuthorizationErrorCode =
+  | "beta_scope_restricted"
   | "pre_export_required"
   | "stale_validation"
   | "ruleset_mismatch"
@@ -256,6 +258,8 @@ export const authorizeProjectExport = (input: {
   userId?: string
 }): ExportAuthorizationResult => {
   const { project, validationRun } = input
+  const restriction = betaProjectRestriction(project)
+  if (restriction) return { ok: false, code: "beta_scope_restricted", errors: [restriction] }
   if (validationRun.trigger !== "pre_export") {
     return { ok: false, code: "pre_export_required", errors: ["Run pre-export validation before exporting."] }
   }

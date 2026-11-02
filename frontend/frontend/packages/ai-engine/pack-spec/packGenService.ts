@@ -1,4 +1,5 @@
 import { getPackModule } from "../../../apps/web/src/packs"
+import { isBetaPackEnabled, BETA_RESTRICTION_MESSAGE } from "../../shared/releaseScope"
 import type { FlowwrapSpec } from "../../../apps/web/src/types/flowwrap"
 import type {
   PackGenConfidence,
@@ -706,7 +707,11 @@ export const generatePackGenRecommendations = (rawPrompt: string): PackGenResult
   const profile = getProfile(extractedSignals)
   const band = getSizeBand(profile, extractedSignals)
   const rankedSuitabilities = scorePackTypeSuitability(extractedSignals, rawPrompt)
+    .filter(item => isBetaPackEnabled(item.packType))
   const selectedSuitabilities = selectSuitabilities(rankedSuitabilities, extractedSignals, profile)
+  if (selectedSuitabilities.length === 0) {
+    return { ok: false, input, extractedSignals, recommendations: [], errors: [BETA_RESTRICTION_MESSAGE] }
+  }
   const questions = [
     ...(!extractedSignals.productWeightG && !extractedSignals.productVolumeMl ? ["What is the target fill weight or volume?"] : []),
     ...(!extractedSignals.packTypeHint || ["bag", "pouch"].includes(extractedSignals.packTypeHint)

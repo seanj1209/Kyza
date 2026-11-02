@@ -3,6 +3,7 @@ import type {
   KyzaProjectV1,
   ParseResult
 } from "../project"
+import { betaProjectRestriction } from "../../shared/releaseScope"
 import { toPackSpecificationPackTypeId } from "../project"
 import {
   KYZA_EXPORT_RECORD_VERSION,
@@ -152,6 +153,8 @@ export const prepareProjectExport = (input: {
   exportedAt?: string
   userId?: string
 }): PrepareProjectExportResult => {
+  const restriction = betaProjectRestriction(input.project)
+  if (restriction) return { ok: false, code: "beta_scope_restricted", errors: [restriction] }
   if (!input.project.cutter) {
     return { ok: false, code: "cutter_unavailable", errors: ["The Project has no Cutter Specification to export."] }
   }

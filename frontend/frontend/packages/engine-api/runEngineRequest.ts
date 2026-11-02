@@ -2,12 +2,12 @@ import type {
   EngineApiRequest,
   EngineApiResponse
 } from "../shared/engine-api/types"
+import { BETA_RESTRICTION_MESSAGE } from "../shared/releaseScope"
 import {
   createInvalidPayloadError,
   createUnsupportedEngineError
 } from "./errors"
 import { isEngineApiRequestLike, isEngineName } from "./guards"
-import { runArtworkActionRequest } from "./runArtworkActionRequest"
 import { runCutterActionRequest } from "./runCutterActionRequest"
 import { runPackGenerateRequest } from "./runPackGenerateRequest"
 
@@ -66,11 +66,13 @@ export const runEngineRequest = (
 
   switch (request.engine) {
     case "pack-generator":
-      return runPackGenerateRequest(request)
+      return runPackGenerateRequest({ ...request, engine: "pack-generator" })
     case "cutter":
-      return runCutterActionRequest(request)
+      return runCutterActionRequest({ ...request, engine: "cutter" })
     case "artwork":
-      return runArtworkActionRequest(request)
+      return { success: false, engine: "artwork", action: request.action,
+        requestId: request.requestId, warnings: [],
+        errors: [{ code: "BETA_SCOPE_RESTRICTED", message: BETA_RESTRICTION_MESSAGE }] }
     default: {
       const error = createUnsupportedEngineError(request.engine, {
         action: request.action
