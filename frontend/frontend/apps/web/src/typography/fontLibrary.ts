@@ -61,7 +61,8 @@ export async function prepareTypographySource<T extends SVGSVGElement|string|und
     node.setAttribute("dominant-baseline","alphabetic")
   }
   if(outline) {
-    await Promise.all(nodes.map(async node=>{
+    const outlineFonts=[...new Map(nodes.map(node=>[fontKey(node.getAttribute("data-font-family")!,Number(node.getAttribute("font-weight"))),node])).values()]
+    await Promise.all(outlineFonts.map(async node=>{
       const family = node.getAttribute("data-font-family")!, weight = Number(node.getAttribute("font-weight")), key = fontKey(family,weight)
       if (!metrics.has(key)) {
         const response = await fetch(fontPath(family,weight)+".json")

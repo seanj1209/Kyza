@@ -112,6 +112,8 @@ test('only explicit point-size fixes text; parent resize, nudge, rotation and pe
 
 test('self-hosted fonts embed in SVG; Illustrator output outlines text and PDF proof renders',async({page})=>{
   test.setTimeout(90000)
+  const outlineRequests:string[]=[]
+  page.on('request',request=>{if(/\/fonts\/.+\.json$/.test(request.url()))outlineRequests.push(request.url())})
   await fixture(page)
   const result=await page.evaluate(async()=>{
     const {FONT_GROUPS,ensureFont,prepareTypographySource,fontAlias}=await import('/apps/web/src/typography/fontLibrary.ts')
@@ -124,6 +126,7 @@ test('self-hosted fonts embed in SVG; Illustrator output outlines text and PDF p
       for(const [key,value] of Object.entries({'font-kerning':'none','font-variant-ligatures':'none','data-font-family':family,'font-family':fontAlias(family),'font-size':'4','font-weight':String(weight),x:String(weight===400?20:100),y:String(10+index*15),'dominant-baseline':'central','text-anchor':'middle',fill:'#123456'}))text.setAttribute(key,value)
       text.textContent='Kyza 123 £';svg.append(text)
     }
+    svg.append(svg.firstElementChild!.cloneNode(true))
     const editable=await prepareTypographySource(svg,false),outlined=await prepareTypographySource(svg,true)
     const raster=async(node:SVGSVGElement)=>{
       const copy=node.cloneNode(true) as SVGSVGElement
@@ -143,7 +146,9 @@ test('self-hosted fonts embed in SVG; Illustrator output outlines text and PDF p
   })
   await writeFile('test-results/typography-editable.png',Buffer.from(result.editablePNG.split(',')[1],'base64'))
   await writeFile('test-results/typography-outlined.png',Buffer.from(result.outlinedPNG.split(',')[1],'base64'))
-  expect(result).toMatchObject({families:10,embedded:true,editableText:20,outlinedText:0,external:false,pdfHeader:'%PDF-1.4'})
+  expect(result).toMatchObject({families:10,embedded:true,editableText:21,outlinedText:0,external:false,pdfHeader:'%PDF-1.4'})
+  expect(outlineRequests).toHaveLength(20)
+  expect(new Set(outlineRequests).size).toBe(20)
   expect(result.inkMismatch).toBeLessThan(.22);expect(result.paths).toBeGreaterThan(100);expect(result.pdfBytes).toBeGreaterThan(1000);expect(result.labels.every(label=>label==='Kyza 123 £')).toBe(true)
 })
 
