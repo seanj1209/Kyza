@@ -12,7 +12,10 @@ import { renderCutterLegend } from "../renderers/cutterLegend"
 import { pouchEyemarkPlacements } from "../../../../packages/cutter-engine/actions/pouchEyemarkZones"
 import { refreshFittedSafeZones } from "../../../../packages/cutter-engine/actions/safeZoneFit"
 
+import { plainFilmPack } from "./amends7Packs"
+
 export const packModules = [
+  plainFilmPack,
   flowwrapPack,
   paperStripPack,
   pillowPack,

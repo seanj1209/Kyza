@@ -178,7 +178,7 @@ test('PDF v1 measurements, no default film dash and four Flow statuses',async({p
 
 test('actual studio Custom Label inserts text only and starts inline editing',async({page})=>{
   await page.goto('/cutter.html?studio=home')
-  await page.getByRole('button',{name:'Create Flowwrap cutter guide',exact:true}).click()
+  await page.getByRole('button',{name:'Create Plain Film cutter guide',exact:true}).click()
   await page.getByRole('button',{name:'Elements',exact:true}).click()
   await page.getByRole('tab',{name:'Labels',exact:true}).click()
   await page.getByRole('button',{name:'Custom Label',exact:true}).click()

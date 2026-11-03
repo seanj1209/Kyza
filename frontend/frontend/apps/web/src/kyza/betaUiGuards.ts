@@ -3,7 +3,7 @@ import type { KyzaProjectStorage } from "../../../../packages/cutter-engine/proj
 
 export function cutterUiRestriction(packId: unknown, spec: unknown, project?: unknown): string | null {
   return !isBetaPackEnabled(packId) ? BETA_RESTRICTION_MESSAGE
-    : betaProjectRestriction(project) ?? betaSpecRestriction(spec)
+    : betaProjectRestriction(project) ?? betaSpecRestriction(spec, packId)
 }
 
 export function cutterUrlRestriction(params: URLSearchParams): string | null {

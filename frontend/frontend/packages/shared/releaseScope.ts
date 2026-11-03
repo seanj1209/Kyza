@@ -3,7 +3,7 @@
  * This defines shipped product scope; deployment authentication is separate.
  */
 export const BETA_PACK_IDS = [
-  "flowwrap", "pillow-pack", "doy-pouch", "k-seal-pouch",
+  "plain-film", "flowwrap", "pillow-pack", "doy-pouch", "k-seal-pouch",
   "sachet-3-side-seal", "sachet-4-side-seal", "paper-strip",
 ] as const
 
@@ -17,9 +17,9 @@ export const isBetaPackEnabled = (value: unknown): boolean =>
   typeof value === "string" && (BETA_PACK_IDS as readonly string[]).includes(value)
 
 /** Inspect a legacy specification without modifying it. */
-export const betaSpecRestriction = (spec: unknown): string | null => {
+export const betaSpecRestriction = (spec: unknown, packId?: unknown): string | null => {
   if (!record(spec)) return null // Structural validation owns malformed values.
-  if (spec.sandbox || spec.customPackDefinition || spec.customDefinition || spec.lidding || spec.sideSealPouch || spec.plainWeb) {
+  if (spec.sandbox || spec.customPackDefinition || spec.customDefinition || spec.lidding || spec.sideSealPouch || (spec.plainWeb && packId !== "plain-film")) {
     return BETA_RESTRICTION_MESSAGE
   }
   for (const key of ["packId", "packType"] as const) {
@@ -34,12 +34,12 @@ export const betaProjectRestriction = (value: unknown): string | null => {
   if (value.sandbox || value.customDefinition || value.customPackDefinition) return BETA_RESTRICTION_MESSAGE
   if (record(value.cutter)) {
     if (!isBetaPackEnabled(value.cutter.packType)) return BETA_RESTRICTION_MESSAGE
-    const restriction = betaSpecRestriction(value.cutter.legacySpec)
+    const restriction = betaSpecRestriction(value.cutter.legacySpec, value.cutter.packType)
     if (restriction) return restriction
   }
   if (value.packId !== undefined && !isBetaPackEnabled(value.packId)) return BETA_RESTRICTION_MESSAGE
   if (record(value.spec)) {
-    const restriction = betaSpecRestriction(value.spec)
+    const restriction = betaSpecRestriction(value.spec, value.packId)
     if (restriction) return restriction
   }
   const draft = record(value.projectDraft) ? value.projectDraft : null
