@@ -33,8 +33,9 @@ export function createPackValidator(packId: string): PackValidator {
     case "k-seal-pouch":
       return validateKSealPack
     case "plain-web":
-    case "plain-film":
       return validatePlainWebPack
+    case "plain-film":
+      return spec => validatePlainWebSpec(spec, "plain-film")
     case "paper-strip":
       return validatePaperStripPack
     case "sachet-4-side-seal":

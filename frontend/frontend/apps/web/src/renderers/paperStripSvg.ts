@@ -1,10 +1,11 @@
 import type { ResolvedPaperStripLayout } from "../core/geometry/resolvers/resolvePaperStripLayout"
 import type { FlowwrapSpec } from "../types/flowwrap"
-import { renderPaperStripMeasurements } from "./paperStripMeasurements"
+import { getPaperStripMainWidthOffset, renderPaperStripMeasurements } from "./paperStripMeasurements"
 import type { RenderOptions } from "../types/flowwrap"
 import { getPaperStripStepSpec, paperStripActiveStep, paperStripSynced } from "../../../../packages/cutter-engine/actions/paperStripSteps"
 import { renderPaperStripStepElements } from "./paperStripStepElements"
 import { applySubstrateAppearance } from "./substrateAppearance"
+import { resolveBaseCustomisation } from "./baseLayerCustomisation"
 
 const SVG_NS = "http://www.w3.org/2000/svg"
 const DEFAULT_PAPER_COLOR = "#8B5A2B"
@@ -40,9 +41,14 @@ export function renderResolvedPaperStrip(
   options: RenderOptions = {}
 ): SVGSVGElement {
   const renderMode = options.renderMode ?? "edit"
+  const preSlit = options.paperStripView === "pre-slit"
+  const seals = resolveBaseCustomisation(spec).seals
   const svg = document.createElementNS(SVG_NS, "svg")
+  svg.setAttribute("data-paper-strip-view", preSlit ? "pre-slit" : "normal")
+  const measureScale = Math.max(.65, Math.min(2, Math.max(layout.cutterRect.width, layout.cutterRect.height) / 310))
+  const paddingY = Math.max(FRAME_PADDING_Y, getPaperStripMainWidthOffset(measureScale) + 8)
   const frameWidth = layout.totalWidth + FRAME_PADDING_X * 2
-  const frameHeight = layout.totalHeight + FRAME_PADDING_Y * 2
+  const frameHeight = layout.totalHeight + paddingY * 2
   svg.setAttribute("xmlns", SVG_NS)
   svg.setAttribute("viewBox", `0 0 ${frameWidth} ${frameHeight}`)
   svg.setAttribute("width", "100%")
@@ -59,7 +65,7 @@ export function renderResolvedPaperStrip(
   const contentRoot = document.createElementNS(SVG_NS, "g")
   contentRoot.setAttribute(
     "transform",
-    `translate(${FRAME_PADDING_X} ${FRAME_PADDING_Y})`
+    `translate(${FRAME_PADDING_X} ${paddingY})`
   )
 
   const cutterLayer = createGroup("cutter-outline", "cutter_outline")
@@ -180,7 +186,7 @@ export function renderResolvedPaperStrip(
   }
 
   layout.instances.forEach(instance => {
-    appendRect(substrateLayer, instance.cutterRect, {
+    if (!preSlit) appendRect(substrateLayer, instance.cutterRect, {
       fill: substrateFill,
       opacity: substrateOpacity.toString()
     })
@@ -192,6 +198,20 @@ export function renderResolvedPaperStrip(
       "data-role": "cutter-outline"
     })
 
+    if (preSlit) {
+      // Slit boundaries share the cutter layer; the stock and all technical
+      // elements remain in the project but never enter this view's SVG.
+      const edges = new Set(instance.clearStripRects.flatMap(rect => [rect.x, rect.x + rect.width]))
+      edges.forEach(x => {
+        if (x <= instance.cutterRect.x || x >= instance.cutterRect.x + instance.cutterRect.width) return
+        const line = document.createElementNS(SVG_NS, "line")
+        Object.entries({ x1: x, x2: x, y1: instance.cutterRect.y, y2: instance.cutterRect.y + instance.cutterRect.height,
+          stroke: "#111111", "stroke-width": 0.6, "data-role": "pre-slit-cut" }).forEach(([key, value]) => line.setAttribute(key, String(value)))
+        cutterLayer.appendChild(line)
+      })
+      return
+    }
+
     ;([
       instance.sealRects.top,
       instance.sealRects.bottom,
@@ -202,10 +222,11 @@ export function renderResolvedPaperStrip(
         return
       }
       appendRect(sealLayer, rect, {
-        fill: "#d97706",
-        opacity: "0.18",
-        stroke: "#d97706",
-        "stroke-width": "0.2",
+        fill: "none",
+        opacity: String(seals.opacity),
+        stroke: seals.color,
+        "stroke-width": String(seals.thickness),
+        "stroke-dasharray": seals.style === "dashed" ? "3 2" : seals.style === "dotted" ? ".5 1.5" : "none",
         "data-role": "seal-rect"
       })
     })
@@ -222,11 +243,24 @@ export function renderResolvedPaperStrip(
   if (mainMeasuresEnabled || subMeasuresEnabled) {
     renderPaperStripMeasurements(measurementLayer, layout, {
       main: mainMeasuresEnabled,
-      sub: subMeasuresEnabled
+      sub: subMeasuresEnabled,
+      preSlit
     })
   }
 
   svg.appendChild(artboardBackground)
+  if (preSlit) {
+    // Export the entire selected view even if the editor is zoomed or panned.
+    // These frame bounds include the main/sub dimensions and every repeat.
+    svg.setAttribute("data-origin-x", "0")
+    svg.setAttribute("data-origin-y", "0")
+    svg.setAttribute("data-cutter-width", String(frameWidth))
+    svg.setAttribute("data-cutter-height", String(frameHeight))
+    contentRoot.appendChild(cutterLayer)
+    contentRoot.appendChild(measurementLayer)
+    svg.appendChild(contentRoot)
+    return svg
+  }
   // Construction is behind every step's content, not appended over it.
   contentRoot.prepend(substrateLayer,sealLayer,cutterLayer)
   contentRoot.appendChild(foldLayer)

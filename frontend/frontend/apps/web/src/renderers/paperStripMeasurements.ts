@@ -189,7 +189,8 @@ function getOverallLayoutRect(layout: ResolvedPaperStripLayout) {
 
 function renderMainPaperStripMeasurements(
   layer: SVGGElement,
-  layout: ResolvedPaperStripLayout
+  layout: ResolvedPaperStripLayout,
+  preSlit = false
 ) {
   const meta = layout.measurements
   const overallRect = getOverallLayoutRect(layout)
@@ -197,6 +198,7 @@ function renderMainPaperStripMeasurements(
   const mainTopY =
     overallRect.y -
     getPaperStripMainWidthOffset(measureScale)
+  if (layout.instances.length > 1) {
   dimensionLineWithCaps(
     layer,
     overallRect.x,
@@ -208,6 +210,7 @@ function renderMainPaperStripMeasurements(
     0,
     "paper-strip-measure-main-width"
   )
+  }
 
   layout.instances.forEach(instance => {
     const cutterLeft = instance.cutterRect.x
@@ -225,6 +228,7 @@ function renderMainPaperStripMeasurements(
       `paper-strip-measure-main-step-width:${instance.index}`
     )
 
+    if (preSlit) return
     const contentTopY = stepTopY + MAIN_DIMENSION_OFFSET * measureScale
     const liveRight = instance.liveRect.x + instance.liveRect.width
     const segments = [
@@ -348,14 +352,15 @@ export function splitPaperStripSegmentsAtFolds<T extends { start: number; end: n
 
 function renderSubPaperStripMeasurements(
   layer: SVGGElement,
-  layout: ResolvedPaperStripLayout
+  layout: ResolvedPaperStripLayout,
+  preSlit = false
 ) {
   layout.instances.forEach(instance => {
     const subTopY = instance.cutterRect.y + instance.cutterRect.height + DIMENSION_OFFSET
     const cutterRight = instance.cutterRect.x + instance.cutterRect.width
     const liveRight = instance.liveRect.x + instance.liveRect.width
     const horizontalSegments =
-      instance.clearStripRects.length > 0 || instance.clearStripRect
+      preSlit || instance.clearStripRects.length > 0 || instance.clearStripRect
         ? getPaperStripHorizontalSegments(instance)
         : [
             {
@@ -378,7 +383,7 @@ function renderSubPaperStripMeasurements(
             }
           ]
 
-    splitPaperStripSegmentsAtFolds(horizontalSegments, instance.foldXs).forEach(segment => {
+    splitPaperStripSegmentsAtFolds(horizontalSegments, preSlit ? [] : instance.foldXs).forEach(segment => {
       if (segment.end <= segment.start || segment.value <= 0) {
         return
       }
@@ -400,7 +405,7 @@ function renderSubPaperStripMeasurements(
 export function renderPaperStripMeasurements(
   layer: SVGGElement,
   layout: ResolvedPaperStripLayout,
-  options: { main: boolean; sub: boolean }
+  options: { main: boolean; sub: boolean; preSlit?: boolean }
 ) {
   layer.setAttribute("data-measure-scale",String(Math.max(.65,Math.min(2,Math.max(layout.cutterRect.width,layout.cutterRect.height)/310))))
   clearPaperStripMeasureGroups(layer)
@@ -409,11 +414,11 @@ export function renderPaperStripMeasurements(
   }
 
   if (options.main) {
-    renderMainPaperStripMeasurements(layer, layout)
+    renderMainPaperStripMeasurements(layer, layout, options.preSlit)
   }
 
   if (!options.sub) {
     return
   }
-  renderSubPaperStripMeasurements(layer, layout)
+  renderSubPaperStripMeasurements(layer, layout, options.preSlit)
 }

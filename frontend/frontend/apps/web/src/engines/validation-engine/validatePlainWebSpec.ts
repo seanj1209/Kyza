@@ -47,8 +47,8 @@ function validateGuideLine(
   }
 }
 
-export function validatePlainWebSpec(spec: FlowwrapSpec): PackValidationResult {
-  const baseValidation = validateFlowwrapSpec(normalizePlainFilmSpec(spec))
+export function validatePlainWebSpec(spec: FlowwrapSpec, packId = "plain-web"): PackValidationResult {
+  const baseValidation = validateFlowwrapSpec(packId === "plain-film" ? spec : normalizePlainFilmSpec(spec), packId)
   const errors = [...baseValidation.errors]
   const warnings = [...(baseValidation.warnings ?? [])]
 

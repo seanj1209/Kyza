@@ -23,7 +23,8 @@ class MemoryStorage {
   setItem(key: string, value: string) { this.values.set(key, value) }
   removeItem(key: string) { this.values.delete(key) }
 }
-assert(packModules.length === 7, "Only seven pack constructions may be offered")
+assert(packModules.length === 8, "Only eight approved pack constructions may be offered")
+assert(packModules[0].id === "plain-film" && packModules[1].id === "flowwrap", "Plain Film must lead the registry, then Flowwrap")
 for (const packId of BETA_PACK_IDS) {
   const module = getPackModule(packId)
   assert(module, `${packId} must be available`)
@@ -40,7 +41,7 @@ for (const packId of BETA_PACK_IDS) {
   assert(JSON.stringify(imported.value.cutter.legacySpec) === JSON.stringify(project.cutter.legacySpec), "JSON backup must retain complete geometry")
 }
 const base = projectFromLegacySpec("flowwrap", "Valid beta project", getPackModule("flowwrap")!.getDefaults())
-for (const disabled of ["lidding", "lidding-film", "plain-film", "plain-web", "2-side-seal-pouch", "3-side-seal-pouch", "sandbox", "unknown"]) {
+for (const disabled of ["lidding", "lidding-film", "plain-web", "2-side-seal-pouch", "3-side-seal-pouch", "sandbox", "unknown"]) {
   assert(!getPackModule(disabled), `${disabled} must not resolve via the registry`)
   const forbidden = { ...base, id: `old-${disabled}`, cutter: { ...base.cutter, packType: disabled } }
   assert(!parseKyzaProject(forbidden).ok, `${disabled} must fail project admission`)
@@ -61,9 +62,10 @@ for (const disabled of ["lidding", "lidding-film", "plain-film", "plain-web", "2
   const authorized = authorizeProjectExport({ project: forbidden, exportFormat: "svg", validationRun: {} as never })
   assert(authorized.ok === false && authorized.code === "beta_scope_restricted", "Low-level export must reject disabled work too")
 }
-for (const query of ["studio=sandbox", "packId=lidding", "pack=plain-web", "studio=home&studio=sandbox", "packId=flowwrap&packId=plain-film"]) {
+for (const query of ["studio=sandbox", "packId=lidding", "pack=plain-web", "studio=home&studio=sandbox", "packId=plain-film&packId=lidding"]) {
   assert(cutterUrlRestriction(new URLSearchParams(query)), "Direct or duplicate URL values must not unlock excluded work")
 }
+assert(!cutterUrlRestriction(new URLSearchParams("studio=home&packId=plain-film")), "Plain Film direct URL is allowed")
 assert(!cutterUrlRestriction(new URLSearchParams("studio=home&packId=flowwrap")), "Allowed URL must remain usable")
 const rawStorage = new MemoryStorage()
 rawStorage.setItem("draft", "original")
@@ -79,4 +81,4 @@ for (const prompt of ["Create a 250g SUP", "nuts", "flowwrap", "sauce sachet", "
   if (["lidding film", "plain web"].includes(prompt)) assert(!result.ok, "Unsupported request must explain unavailability")
 }
 assert(!runEngineRequest({ engine: "artwork", action: "generate", requestId: "scope", payload: {} }).success, "Artwork engine must remain disabled")
-console.log("Beta release scope: seven packs, saved work, imports, guidance, engines and export guards passed.")
+console.log("Beta release scope: eight packs, saved work, imports, guidance, engines and export guards passed.")

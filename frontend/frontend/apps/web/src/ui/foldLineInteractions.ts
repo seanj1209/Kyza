@@ -1,13 +1,14 @@
 import { clearMeasurementAnnotations, updateMeasurementAnnotations } from "./measurementAnnotations"
-import { snapMoveCoordinate } from "./movementSnap"
+import { snapMoveWithin } from "./movementSnap"
 import { updateSubMeasuresLayer } from "../renderers/flowwrapSvg"
 import { updateSachetMeasuresLayer } from "../renderers/sachetSvg"
 import type { FlowwrapSpec } from "../types/flowwrap"
-import type { FoldLineSpec } from "../geometry/foldLines"
+import { buildFoldLines, type FoldLineSpec } from "../geometry/foldLines"
 
 type DragState = {
   lineId: string
   startX: number
+  startY: number
   originOffset: number
 }
 
@@ -31,8 +32,6 @@ export function attachFoldLineInteractions(
   onMeasurementActive?: (active: boolean) => void
 ) {
   let drag: DragState | null = null
-  const step = 1
-  const snap = (value: number) => Math.round(value / step) * step
   let pendingSpec = spec
 
   const getLayerMeta = () => {
@@ -47,26 +46,37 @@ export function attachFoldLineInteractions(
     }
   }
 
-  const getLiveBounds = () => {
+  const getCutterBounds = () => {
     const sealLayer = svg.querySelector("g#seal_areas")
-    const liveY = Number(sealLayer?.getAttribute("data-origin-y") ?? "0")
-    const liveHeight = Number(sealLayer?.getAttribute("data-live-height") ?? "0")
-    return { liveY, liveHeight }
+    return {
+      x: Number(sealLayer?.getAttribute("data-origin-x") ?? "0"),
+      y: Number(sealLayer?.getAttribute("data-origin-y") ?? "0"),
+      width: Number(sealLayer?.getAttribute("data-cutter-width") ?? spec.width),
+      height: Number(sealLayer?.getAttribute("data-cutter-height") ?? spec.height)
+    }
+  }
+
+  const getLineSegment = (line: FoldLineSpec) => {
+    const { liveX, minX, maxX } = getLayerMeta()
+    const cutter = getCutterBounds()
+    return buildFoldLines([line], liveX, cutter.x, cutter.y, cutter.width, cutter.height, minX, maxX)[0]
   }
 
   const updateLineDom = (line: FoldLineSpec) => {
-    const { liveX, minX, maxX } = getLayerMeta()
-    const x = Math.max(minX, Math.min(liveX + line.offset, maxX))
+    const segment = getLineSegment(line)
     const lines = svg.querySelectorAll<SVGLineElement>(
       `[data-line-id="${line.id}"]`
     )
     lines.forEach(el => {
-      if (el.hasAttribute("x1")) {
-        el.setAttribute("x1", x.toString())
+      for (const key of ["x1", "y1", "x2", "y2"] as const) {
+        if (el.hasAttribute(key)) el.setAttribute(key, segment[key].toString())
       }
-      if (el.hasAttribute("x2")) {
-        el.setAttribute("x2", x.toString())
-      }
+    })
+  }
+
+  for (const line of spec.foldLines ?? []) {
+    svg.querySelectorAll(`[data-line-id="${line.id}"]`).forEach(el => {
+      el.setAttribute("cursor", line.orientation === "horizontal" ? "row-resize" : "col-resize")
     })
   }
 
@@ -92,6 +102,7 @@ export function attachFoldLineInteractions(
     drag = {
       lineId,
       startX: event.clientX,
+      startY: event.clientY,
       originOffset: line.offset
     }
     svg.setPointerCapture(event.pointerId)
@@ -102,17 +113,26 @@ export function attachFoldLineInteractions(
     if (!drag || !pendingSpec.foldLines) {
       return
     }
-    const start = getSvgPoint(svg, drag.startX, event.clientY)
+    const start = getSvgPoint(svg, drag.startX, drag.startY)
     const current = getSvgPoint(svg, event.clientX, event.clientY)
     const rawDx = current.x - start.x
-    const dx = snap(rawDx)
+    const rawDy = current.y - start.y
 
     const nextLines = pendingSpec.foldLines.map(line => {
       if (line.id !== drag!.lineId) {
         return line
       }
-      // AMENDS 6.1: the fold offset lands on the mouse movement grid.
-      const updated = { ...line, offset: snapMoveCoordinate(drag!.originOffset + rawDx) }
+      const horizontal = line.orientation === "horizontal"
+      const { liveX, minX, maxX } = getLayerMeta()
+      const updated = {
+        ...line,
+        offset: snapMoveWithin(
+          drag!.originOffset + (horizontal ? rawDy : rawDx),
+          horizontal ? 0 : minX - liveX,
+          horizontal ? getCutterBounds().height : maxX - liveX,
+          drag!.originOffset
+        )
+      }
       updateLineDom(updated)
       return updated
     })
@@ -123,21 +143,21 @@ export function attachFoldLineInteractions(
 
     const moved = nextLines.find(line => line.id === drag!.lineId)
     if (moved) {
-      const { liveX } = getLayerMeta()
-      const { liveY, liveHeight } = getLiveBounds()
+      const segment = getLineSegment(moved)
+      const horizontal = moved.orientation === "horizontal"
       const active = updateMeasurementAnnotations({
         svg,
         spec: pendingSpec,
         objectRect: {
-          x: liveX + moved.offset,
-          y: liveY,
-          width: 0,
-          height: liveHeight
+          x: segment.x1,
+          y: segment.y1,
+          width: segment.x2 - segment.x1,
+          height: segment.y2 - segment.y1
         },
-        deltaX: dx,
-        deltaY: 0,
-        allowHorizontal: true,
-        allowVertical: false,
+        deltaX: horizontal ? 0 : moved.offset - drag.originOffset,
+        deltaY: horizontal ? moved.offset - drag.originOffset : 0,
+        allowHorizontal: !horizontal,
+        allowVertical: horizontal,
         excludeFoldId: moved.id
       })
       if (onMeasurementActive) {

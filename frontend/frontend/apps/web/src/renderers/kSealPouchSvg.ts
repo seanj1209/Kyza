@@ -1211,7 +1211,7 @@ export function renderResolvedKSealPouch(
         segment.endX,
         segment.y,
         segment.label,
-        -SUB_DIMENSION_TEXT_OFFSET,
+        0,
         segment.row,
         segment.index
       )

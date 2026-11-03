@@ -103,6 +103,10 @@ export function applyElementAppearance(svg: SVGSVGElement, spec: FlowwrapSpec) {
     nodes.forEach(node => {
       const role = node.getAttribute("data-role") ?? ""
       if (/hit|handle|move|rotate|warning|drag/.test(role) || node.getAttribute("fill") === "transparent") return
+      if (role === "attribute-box-label") {
+        const box = spec.attributeBoxes?.find(box => box.id === node.getAttribute("data-box-id"))
+        if (box?.texts?.[node.getAttribute("data-text-key") ?? ""]) return
+      }
       const sub = node.closest('[id^="sub_measure"], [data-role^="kseal-submeasure"], [data-role^="paper-strip-measure"]:not([data-role^="paper-strip-measure-main"])')
       if (target.id === "main" && (sub || node.closest('[data-role="perf-measures"]'))) return
       if (target.id !== "gusset-seals" && target.caps.includes("opacity") && raw.opacity !== undefined) node.setAttribute("opacity", String(appearance.opacity))

@@ -1,3 +1,4 @@
+import { textReference } from "../../../apps/web/src/renderers/attributeText"
 import type { FlowwrapSpec } from "../types"
 
 export type SelectionTransformCommand =
@@ -265,7 +266,7 @@ export function transformSelectedElements(
             height: source.height
           }
         }
-        return resizeRect(item)
+        return resizeRect({...item,textReference:textReference(item)})
       })
       spec = { ...spec, attributeBoxes }
     }

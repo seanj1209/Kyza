@@ -729,8 +729,8 @@ const horizontalFold = validateKyzaProject(
   )
 )
 assert(
-  hasCode(horizontalFold, "FOLD_HORIZONTAL_OFFSET_UNSUPPORTED"),
-  "Incomplete horizontal fold semantics must be a structured warning."
+  !hasCode(horizontalFold, "FOLD_HORIZONTAL_OFFSET_UNSUPPORTED"),
+  "Supported horizontal offsets must not produce an obsolete warning."
 )
 
 const malformed = validateKyzaProject({ schemaVersion: 1, id: "broken" })

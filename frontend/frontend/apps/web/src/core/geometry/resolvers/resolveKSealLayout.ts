@@ -179,6 +179,14 @@ export function resolveKSealLayout(spec: FlowwrapSpec): ResolvedKSealLayout {
     },
     {
       row: "top",
+      index: 2,
+      startX: originX + leftBottomSealCentre,
+      endX: originX + rightBottomSealCentre,
+      y: topMeasureY,
+      label: formatMm(rightBottomSealCentre - leftBottomSealCentre)
+    },
+    {
+      row: "top",
       index: 3,
       startX: originX + rightBottomSealCentre,
       endX: originX + width,

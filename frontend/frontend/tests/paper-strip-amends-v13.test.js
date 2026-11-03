@@ -55,7 +55,11 @@ exports.renderPaperStripMeasurements(layer, layout, { main: true, sub: true })
 
 const roles = layer.children.map(node => node.attributes["data-role"])
 const mainRows = layer.children.filter(node => node.attributes["data-role"]?.startsWith("paper-strip-measure-main"))
-assert.ok(mainRows.some(node => node.attributes["data-role"] === "paper-strip-measure-main-width"), "Full layout width is a main measure")
+assert.ok(!mainRows.some(node => node.attributes["data-role"] === "paper-strip-measure-main-width"), "A single cutter omits the duplicate overall-width row")
+const steppedLayer = new SvgNode()
+const stepped = {...layout, measurements:{...layout.measurements,overallWidth:808},instances:[layout.instances[0],{...layout.instances[0],index:1,cutterRect:{...cutter,x:408}}]}
+exports.renderPaperStripMeasurements(steppedLayer,stepped,{main:true,sub:false})
+assert.ok(steppedLayer.children.some(node=>node.attributes["data-role"]==="paper-strip-measure-main-width" && node.children.some(child=>child.textContent==="W 808mm")), "Two cutters show their entire width including the gap")
 assert.ok(mainRows.some(node => node.attributes["data-role"] === "paper-strip-measure-main-step-width:0"), "Each stepped cutter receives a main width measure")
 for (const role of ["paper-strip-measure-main-left-seal:0", "paper-strip-measure-main-working-area:0", "paper-strip-measure-main-right-seal:0"]) {
   assert.ok(roles.includes(role), `Missing main breakdown: ${role}`)

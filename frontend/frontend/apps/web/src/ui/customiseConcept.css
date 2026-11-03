@@ -45,3 +45,7 @@
 :root body #customisation-panel .customise-reset { align-self: flex-end; font-size: 12px; color: var(--kyza-text-muted); background: transparent; border: 1px solid var(--kyza-border-strong); border-radius: 10px; padding: 8px 12px; }
 :root body #customisation-panel :is(button,input,select):focus-visible { outline: 2px solid var(--kyza-accent-text); outline-offset: 2px; }
 @media (max-width: 600px) { :root body #customisation-panel .studio-vertical-tabs { grid-template-columns: 44px minmax(0,1fr); } :root body #customisation-panel .studio-vertical-navigation { padding: 8px 4px; } :root body #customisation-panel :is(.customise-target-content,.customise-targets) { padding-left: 10px; padding-right: 10px; } :root body #customisation-panel .customisation-row { grid-template-columns: 1fr; gap: 6px; } :root body #customisation-panel .customisation-row:has(> .customise-unit) { grid-template-columns: minmax(0,1fr) auto; } :root body #customisation-panel .customisation-row:has(> .customise-unit) > span:first-child { grid-column: 1 / -1; } :root body #customisation-panel .customise-summary { grid-template-columns: 64px minmax(0,1fr); } }
+
+:root body #customisation-panel .customise-selected-object { flex:1; width:100%; }
+:root body #customisation-panel .customise-general-elements { display:flex; flex-direction:column; min-height:0; width:100%; }
+:root body #customisation-panel :is(.customise-selected-object,.customise-general-elements)[hidden] { display:none; }

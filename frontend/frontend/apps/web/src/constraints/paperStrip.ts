@@ -309,7 +309,7 @@ export function getMigratedPaperStripClearStripAttributes(
 }
 
 export function validatePaperStripSpec(spec: FlowwrapSpec): PackValidationResult {
-  const baseValidation = validateFlowwrapSpec(spec)
+  const baseValidation = validateFlowwrapSpec(spec, "paper-strip")
   const errors = [...baseValidation.errors]
   const warnings = [...(baseValidation.warnings ?? [])]
   if(spec.paperStrip?.stepping?.syncMirror===false){
@@ -317,7 +317,7 @@ export function validatePaperStripSpec(spec: FlowwrapSpec): PackValidationResult
     for(const [index,elements] of Object.entries(spec.paperStrip.stepping.elementsByStep??{})){
       if(Number(index)===active || Number(index)>=(spec.paperStrip.stepping.stepCount??1))continue
       const collections=["attributeBoxes","safeZones","windows","hangerSlots","halfMoonCutouts","eyeMarks","foldLines","perfs"] as const
-      const validation=validateFlowwrapSpec({...spec,...Object.fromEntries(collections.map(key=>[key,elements[key]]))})
+      const validation=validateFlowwrapSpec({...spec,...Object.fromEntries(collections.map(key=>[key,elements[key]]))}, "paper-strip")
       errors.push(...validation.errors.map(message=>`Step ${Number(index)+1}: ${message}`))
       warnings.push(...(validation.warnings??[]).map(message=>`Step ${Number(index)+1}: ${message}`))
     }

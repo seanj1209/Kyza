@@ -75,8 +75,9 @@ assert(
 const kSealDefaults = getPackModule("k-seal-pouch")?.getDefaults()
 if (!kSealDefaults?.kSealPouch) throw new Error("Missing K Seal defaults.")
 const kSealLayout = resolveKSealLayout(kSealDefaults)
-assert(kSealLayout.topMeasureSegments.length === 2, "K Seal must replace the old three-part top submeasure row with two pack-height spans.")
-const [leftPackHeight, rightPackHeight] = kSealLayout.topMeasureSegments
+assert(kSealLayout.topMeasureSegments.length === 3, "K Seal shows two pack-height spans joined by the gusset width.")
+const [leftPackHeight, gussetSpan, rightPackHeight] = kSealLayout.topMeasureSegments
+assert(gussetSpan.endX - gussetSpan.startX === 2 * kSealLayout.geometry.gussetSize, "Gusset measure is twice the gusset input.")
 assert(leftPackHeight.startX === kSealLayout.originX, "Left K Seal pack height must start at the cutter edge.")
 assert(rightPackHeight.endX === kSealLayout.originX + kSealLayout.width, "Right K Seal pack height must end at the cutter edge.")
 assert(leftPackHeight.endX === kSealLayout.originX + kSealLayout.geometry.leftFoldX, "Left K Seal pack height must end on the bottom-seal centre line.")

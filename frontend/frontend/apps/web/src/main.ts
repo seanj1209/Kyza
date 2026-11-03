@@ -1,6 +1,8 @@
 import { cutterUiRestriction, cutterUrlRestriction, createPresentationStorage, unavailableProjectPresentation, type UnavailableProjectPresentation } from "./kyza/betaUiGuards"
 import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE, betaProjectRestriction } from "../../../packages/shared/releaseScope"
+import { attachInlineElementText } from "./ui/inlineElementText"
 import "./brandBootstrap"
+import { createFlowLogo } from "./kyza/shell/flowLogo"
 import { attachLegendPlacement } from "./ui/legendPlacement"
 import { initSandboxStudio, SANDBOX_DEFAULT_FILM_COLOUR, SANDBOX_DEFAULT_HEIGHT_MM, SANDBOX_DEFAULT_WIDTH_MM, type SandboxStudioApi } from "./ui/sandboxStudio"
 import { renderSandboxCutter } from "./renderers/sandboxCutterSvg"
@@ -35,6 +37,8 @@ import { attachWindowInteractions } from "./ui/windowInteractions"
 import { attachKSealPouchInteractions } from "./ui/kSealPouchInteractions"
 import { attachPaperStripInteractions } from "./ui/paperStripInteractions"
 import { attachPaperStripEditing } from "./ui/paperStripEditing"
+import { createPreSlitView } from "./ui/preSlitView"
+import { updatePaperStripContrast } from "./constraints/paperStripAppearance"
 import { commitPaperStripStepEdit } from "../../../packages/cutter-engine/actions/paperStripSteps"
 import { initialiseSachetSteps, commitSachetStepEdit } from "../../../packages/cutter-engine/actions/sachetSteps"
 import { studioNavigationHref, getStudioDestination } from "./kyza/account/studioNavigation"
@@ -668,7 +672,7 @@ const errorsPanel = document.createElement("div")
 errorsPanel.id = "studio-errors-panel"
 const errorsPanelHeader = document.createElement("div")
 errorsPanelHeader.className = "studio-errors-header"
-errorsPanelHeader.textContent = "Validation Centre"
+errorsPanelHeader.textContent = "Cutter checks"
 const errorsPanelClose = document.createElement("button")
 errorsPanelClose.type = "button"
 errorsPanelClose.className = "studio-errors-close"
@@ -1466,8 +1470,7 @@ importProjectInput.addEventListener("change", async () => {
 const chooseButton = document.createElement("button")
 chooseButton.type = "button"
 chooseButton.textContent = "Help Me Choose"
-// Help Me Choose uses the supplied Flow F mark (icon only, no wordmark).
-decorateStartAction(chooseButton, createKyzaMarkIcon(), "Describe your product and explore Flow suggestions")
+decorateStartAction(chooseButton, createFlowLogo(), "Describe your product and explore Flow suggestions")
 const choosePanel = document.createElement("div")
 choosePanel.id = "start-choose-panel"
 choosePanel.className = "start-choose-panel"
@@ -1695,6 +1698,7 @@ let viewBoxState: { zoom: number; panX: number; panY: number } = {
 let pendingArtboardId: string | null = null
 let previewMode = false
 let pouchPreviewActive = false
+const preSlitView = createPreSlitView(() => { if (currentSpec) render(currentSpec) })
 let pouchPreviewFace: "fop" | "bop" = "fop"
 let pouchPreviewShowTrim = true
 /** Bounds of the face shown in Pouch Preview; zoom and pan stay inside it. */
@@ -2072,7 +2076,7 @@ function commitActiveProjectSpec(
   if (!active) {
     return null
   }
-  const updatedSpec = updateArtboardProjectSpec(active, syncLiddingCutterSize(next), reason)
+  const updatedSpec = updateArtboardProjectSpec(active, syncLiddingCutterSize(updatePaperStripContrast(active.spec, next)), reason)
   if (!updatedSpec) {
     return null
   }
@@ -2285,7 +2289,9 @@ const exportSavedProjectCard = async (
     ? getPackModule(approval.project.cutter?.packType ?? card.packId)
     : undefined
   const exportSpec = approval.project.cutter?.legacySpec ?? card.spec
-  const svg = module?.render(cloneSpec(exportSpec) as FlowwrapSpec)
+  const openArtboard = artboards.find(item => item.project?.id === approval.project.id)
+  const svg = module?.render(cloneSpec(exportSpec) as FlowwrapSpec,
+    preSlitView.renderOptions(openArtboard?.id ?? "", module.id))
   if (svg) applyBaseLayerCustomisation(svg, exportSpec)
   const picker = "showSaveFilePicker" in window
     ? (window as unknown as { showSaveFilePicker: SaveFilePickerLike }).showSaveFilePicker.bind(window)
@@ -2771,6 +2777,13 @@ const renderIssuePanel = () => {
     errorsPanelList.appendChild(empty)
     return
   }
+  if (counts && counts.critical + counts.warning + counts.advisory === 0) {
+    const empty = document.createElement("div")
+    empty.className = "studio-errors-empty"
+    empty.textContent = "No foreseen issues detected"
+    errorsPanelList.appendChild(empty)
+    return
+  }
   if (validationCentreSummary) {
     if (hasCritical) {
       const state = document.createElement("div")
@@ -2867,7 +2880,7 @@ const renderIssuePanel = () => {
   })
   validationCentreSummary?.messages
     .filter(item =>
-      (item.severity === "advisory" || item.severity === "pass") &&
+      (item.severity === "advisory") &&
       !issueEntries.some(issue => issue.message === item.message)
     )
     .forEach(item => {
@@ -2881,22 +2894,7 @@ const renderIssuePanel = () => {
       row.appendChild(text)
       errorsPanelList.appendChild(row)
     })
-  if (validationCentreSummary) {
-    const rerun = document.createElement("button")
-    rerun.type = "button"
-    rerun.className = "studio-validation-rerun"
-    rerun.textContent = "Re-run validation"
-    rerun.addEventListener("click", () => {
-      const project = getActiveArtboard()?.project
-      if (!project) {
-        return
-      }
-      refreshActiveValidation(project, { force: true, trigger: "manual" })
-      renderIssuePanel()
-      customPanelApi.refreshExportReadiness()
-    })
-    errorsPanelList.appendChild(rerun)
-  }
+
 }
 
 renderIssuePanel()
@@ -3020,6 +3018,7 @@ const resolveSelectedLayerForCustomPanel = (selectedIds: string[]) => {
   return null
 }
 selectionStore.subscribe(state => {
+  customPanelApi.setSelectedElements(state.selectedElementIds)
   selectEnabled = state.selectionMode
   setSvgToolFlags(getCurrentSvg())
   controlsApi?.setSelectEnabled?.(state.selectionMode)
@@ -3989,6 +3988,7 @@ try {
   controlsApi = initFlowwrapControls({
     container: controlsBody,
     initialSpec,
+    getPackId: () => pack.id,
     baseModelPanelHost,
     attributesPanelHost,
     enablePackPanel: false,
@@ -4017,7 +4017,7 @@ try {
         return
       }
       const updated = commitActiveProjectSpec(active.spec?.lidding ? commitLiddingLaneElements(active.spec, next) : next, changeReason, {
-        syncControls: false,
+        syncControls: Boolean(next.paperStrip && active.spec?.substrate !== next.substrate),
         renderNext: active.started
       })
       if (!updated) {
@@ -4275,7 +4275,8 @@ function render(spec: FlowwrapSpec) {
 
   try {
     const setMeasurementActive = controlsApi?.setMeasurementActive ?? (() => {})
-    const svg = pack.render(spec)
+    preSlitView.sync(activeArtboardId, pack.id)
+    const svg = pack.render(spec, preSlitView.renderOptions(activeArtboardId, pack.id))
     applyBaseLayerCustomisation(svg, spec)
     applyLayerStateToSvg(svg)
     layerManager.setAvailableLayerIds(collectAvailableLayerIds(svg, spec))
@@ -4381,6 +4382,11 @@ function render(spec: FlowwrapSpec) {
         renderNext: true
       })
     }
+    const inlineText = attachInlineElementText(svg, () => currentSpec, commitCanvasInteraction)
+    svg.addEventListener("kyza:open-inline-text", event => {
+      const {id,key} = (event as CustomEvent<{id:string;key:string}>).detail
+      inlineText.open(id,key)
+    })
     paperStripEditingApi?.destroy()
     const activateStep=(next:FlowwrapSpec,id:string|null)=>{
       commitActiveProjectSpec(next,"canvas-interaction",{syncControls:true,renderNext:true})
@@ -4784,3 +4790,17 @@ document.addEventListener("keydown", event => {
   }
 })
 
+
+window.addEventListener("kyza:font-ready", () => {
+  if (currentSpec && !getCurrentSvg()?.querySelector('[data-inline-text-editor]')) render(currentSpec)
+})
+window.addEventListener("kyza:edit-text", event => {
+  getCurrentSvg()?.dispatchEvent(new CustomEvent("kyza:open-inline-text", {detail:(event as CustomEvent).detail}))
+})
+
+window.addEventListener("kyza:select-text", event => {
+  const {id,key}=(event as CustomEvent<{id:string;key:string}>).detail
+  selectionStore.setSelectionMode(true)
+  selectionStore.setSelectedElementIds([`attribute-box:${id}`])
+  customPanelApi.setSelectedElements([`attribute-box:${id}`],key)
+})

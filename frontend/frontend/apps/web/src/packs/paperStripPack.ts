@@ -1,7 +1,7 @@
 import {
   createStandardPouchAttributeBoxPreset
 } from "../defaults"
-import { createBaseSpecDefaults } from "../core/model/parameterSchema"
+import { createBaseSpecDefaults, createEyeMarkDefaults } from "../core/model/parameterSchema"
 import { composePaperStripPack } from "../core/packComposer"
 import { resolveFlowwrapGeometry } from "../geometry/flowwrapGeometry"
 import { renderResolvedPaperStrip } from "../renderers/paperStripSvg"
@@ -13,17 +13,18 @@ const DEFAULT_PAPER_STRIP_SPEC: FlowwrapSpec = (() => {
     ...createBaseSpecDefaults({
       width: 310,
       height: 260,
-      seal: 10,
+      seal: 15,
       bleed: 3,
       sealClearance: 5
     }),
     substrate: "paper",
     seals: {
-      top: 10,
-      bottom: 10,
-      left: 10,
-      right: 10
+      top: 15,
+      bottom: 15,
+      left: 15,
+      right: 15
     },
+    eyeMarks: createEyeMarkDefaults({ count: 1, position: "top-left", width: 10, height: 5, color: "black" }),
     safeZones: [],
     attributeBoxes: createStandardPouchAttributeBoxPreset(),
     paperStrip: {
@@ -48,6 +49,7 @@ export const paperStripPack: PackModule<
   getDefaults: () => ({
     ...DEFAULT_PAPER_STRIP_SPEC,
     seals: { ...DEFAULT_PAPER_STRIP_SPEC.seals },
+    eyeMarks: { ...DEFAULT_PAPER_STRIP_SPEC.eyeMarks! },
     safeZones: DEFAULT_PAPER_STRIP_SPEC.safeZones?.map(zone => ({ ...zone })),
     attributeBoxes: DEFAULT_PAPER_STRIP_SPEC.attributeBoxes?.map(box => ({ ...box })),
     paperStrip: {

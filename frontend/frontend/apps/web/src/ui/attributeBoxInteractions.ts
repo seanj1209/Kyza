@@ -1,3 +1,4 @@
+import { resolveText, textReference, textBaseline } from "../renderers/attributeText"
 import { updateTextDirectionArt } from "../renderers/textDirectionArt"
 import { snapResizeFromOrigin } from "./resizeSnap"
 import { snapMovedElement } from "./movementSnap"
@@ -293,8 +294,11 @@ export function attachAttributeBoxInteractions(
       const absX = getBoxAbsX(meta, laneIndex, box)
       const centerX = absX + box.width / 2
       setElementVisibility(label, isLaneVisibleForBox(meta, laneIndex, box))
-      label.setAttribute("x", centerX.toString())
-      label.setAttribute("y", centerY.toString())
+      const style = resolveText(box,label.getAttribute("data-text-key") ?? "label")
+      label.setAttribute("x", String(absX + box.width*style.x/100))
+      label.setAttribute("y", String(box.texts ? textBaseline(absY + boxHeight*style.y/100,style.size,style.family,style.weight) : absY + boxHeight*style.y/100))
+      label.setAttribute("data-text-centre-y",String(absY + boxHeight*style.y/100))
+      label.setAttribute("font-size", String(style.size))
       applyRotation(label, rotation, centerX, centerY)
     })
 
@@ -353,7 +357,7 @@ export function attachAttributeBoxInteractions(
         startX: event.clientX,
         startY: event.clientY,
         originLaneIndex,
-        origin: { ...box }
+        origin: { ...box, textReference: textReference(box) }
       }
     } else if (target.getAttribute("data-role") === "attribute-box-handle" && handle) {
       drag = {
@@ -363,7 +367,7 @@ export function attachAttributeBoxInteractions(
         startX: event.clientX,
         startY: event.clientY,
         originLaneIndex,
-        origin: { ...box }
+        origin: { ...box, textReference: textReference(box) }
       }
     } else if (target.getAttribute("data-role") === "attribute-box-rotate") {
       const meta = getLayerMeta()
@@ -376,7 +380,7 @@ export function attachAttributeBoxInteractions(
         startX: event.clientX,
         startY: event.clientY,
         originLaneIndex,
-        origin: { ...box },
+        origin: { ...box, textReference: textReference(box) },
         startAngle: getAngleDegrees(centerX, centerY, startPoint.x, startPoint.y),
         startRotation: box.rotation ?? 0
       }
@@ -537,6 +541,7 @@ export function attachAttributeBoxInteractions(
       }
       const resizedBase = {
         ...box,
+        textReference: drag!.origin.textReference,
         x: stepped ? x : snap(x),
         y: isClearStrip ? 0 : stepped ? y : snap(y),
         width: stepped || event.ctrlKey && !isClearStrip ? width : snap(width),
