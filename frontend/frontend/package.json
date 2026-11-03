@@ -46,7 +46,8 @@
     "test:e2e:report": "playwright show-report",
     "test:beta-e2e": "playwright test --grep @beta",
     "test:build-routes": "npm run build && node tests/build-route-outputs.test.js",
-    "verify": "node tests/run-verify.js"
+    "verify": "node tests/run-verify.js",
+    "test:customisation-v1": "playwright test e2e/element-customisation-v1.spec.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.1",

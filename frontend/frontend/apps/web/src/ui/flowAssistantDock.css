@@ -134,3 +134,10 @@
 
 /* Open inspector/export controls must remain usable above the floating Flow dock. */
 :root body #controls:has(#customisation-panel.is-open) { position:fixed; z-index:80 !important; }
+
+:root body .flow-assistant-status[data-severity="ready"] { color:#63cf91; border-color:#39875a; background:#27533855; }
+:root body .flow-assistant-status[data-severity="advisory"] { color:#eacb54; border-color:#9e8731; background:#66551b44; }
+:root body .flow-assistant-status[data-severity="warning"] { color:#ffa85b; border-color:#ba7437; background:#8a4d2044; }
+:root body .flow-assistant-status[data-severity="critical"] { color:#ff7878; border-color:#bb4242; background:#8a242444; }
+.flow-assistant-logo { mix-blend-mode:screen; filter:invert(1) hue-rotate(180deg); }
+:root[data-kyza-theme="light"] .flow-assistant-logo { mix-blend-mode:multiply; filter:none; }

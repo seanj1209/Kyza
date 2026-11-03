@@ -1,3 +1,4 @@
+import { createSelectedObjectCustomise } from "./selectedObjectCustomise"
 import { requestBetaReviewSnapshot } from "./betaReview"
 import { resolveBaseCustomisation } from "../renderers/baseLayerCustomisation"
 import type { FlowwrapSpec } from "../types/flowwrap"
@@ -784,7 +785,11 @@ export function initCustomisationPanel({
 
   // Keep the existing perf/measure actions; replace informational element lists with real appearance controls.
   ;[doyList, kSealList, barcodeList, dieCutList, openingsList, windowsList, otherList].forEach(item => { item.section.hidden = true })
-  const elementsEditor = createAppearanceEditor(categoryPanels.get("elements")!, "elements", () => currentSpec, next => {
+  const selectedEditor = createSelectedObjectCustomise(categoryPanels.get("elements")!, () => currentSpec, next => { currentSpec = next; onChange(next) }, getCurrentSvg)
+  const generalElementsHost = document.createElement("div")
+  generalElementsHost.className="customise-general-elements"
+  categoryPanels.get("elements")!.appendChild(generalElementsHost)
+  const elementsEditor = createAppearanceEditor(generalElementsHost, "elements", () => currentSpec, next => {
     currentSpec = next; onChange(next)
   })
   const measuresEditor = createAppearanceEditor(categoryPanels.get("measures")!, "measures", () => currentSpec, next => {
@@ -1453,6 +1458,7 @@ export function initCustomisationPanel({
 
   const setSpec = (spec: FlowwrapSpec) => {
     currentSpec = spec
+    selectedEditor.refresh()
     const custom = resolveBaseCustomisation(spec)
     cutterStyle.value = custom.cutter.style
     cutterThickness.value = custom.cutter.thickness.toFixed(2).replace(/\.00$/, "")
@@ -1501,6 +1507,11 @@ export function initCustomisationPanel({
     },
     refreshExportReadiness: runExportReadinessCheck,
     getExportPackageDraft: () => currentExportPackage,
+    setSelectedElements(ids: string[], key?: string) {
+      const selected = ids.filter(id => !id.startsWith("layer:"))
+      selectedEditor.setSelection(selected, key)
+      generalElementsHost.hidden = selected.length === 1
+    },
     setActiveLayer(layerId: string | null) {
       activeLayerId = layerId
       const menu = menuForLayerId(layerId)

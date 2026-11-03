@@ -1,5 +1,6 @@
 import { cutterUiRestriction, cutterUrlRestriction, createPresentationStorage, unavailableProjectPresentation, type UnavailableProjectPresentation } from "./kyza/betaUiGuards"
 import { BETA_FEATURES, BETA_RESTRICTION_MESSAGE, betaProjectRestriction } from "../../../packages/shared/releaseScope"
+import { attachInlineElementText } from "./ui/inlineElementText"
 import "./brandBootstrap"
 import { createFlowLogo } from "./kyza/shell/flowLogo"
 import { attachLegendPlacement } from "./ui/legendPlacement"
@@ -671,7 +672,7 @@ const errorsPanel = document.createElement("div")
 errorsPanel.id = "studio-errors-panel"
 const errorsPanelHeader = document.createElement("div")
 errorsPanelHeader.className = "studio-errors-header"
-errorsPanelHeader.textContent = "Validation Centre"
+errorsPanelHeader.textContent = "Cutter checks"
 const errorsPanelClose = document.createElement("button")
 errorsPanelClose.type = "button"
 errorsPanelClose.className = "studio-errors-close"
@@ -2776,6 +2777,13 @@ const renderIssuePanel = () => {
     errorsPanelList.appendChild(empty)
     return
   }
+  if (counts && counts.critical + counts.warning + counts.advisory === 0) {
+    const empty = document.createElement("div")
+    empty.className = "studio-errors-empty"
+    empty.textContent = "No foreseen issues detected"
+    errorsPanelList.appendChild(empty)
+    return
+  }
   if (validationCentreSummary) {
     if (hasCritical) {
       const state = document.createElement("div")
@@ -2872,7 +2880,7 @@ const renderIssuePanel = () => {
   })
   validationCentreSummary?.messages
     .filter(item =>
-      (item.severity === "advisory" || item.severity === "pass") &&
+      (item.severity === "advisory") &&
       !issueEntries.some(issue => issue.message === item.message)
     )
     .forEach(item => {
@@ -2886,22 +2894,7 @@ const renderIssuePanel = () => {
       row.appendChild(text)
       errorsPanelList.appendChild(row)
     })
-  if (validationCentreSummary) {
-    const rerun = document.createElement("button")
-    rerun.type = "button"
-    rerun.className = "studio-validation-rerun"
-    rerun.textContent = "Re-run validation"
-    rerun.addEventListener("click", () => {
-      const project = getActiveArtboard()?.project
-      if (!project) {
-        return
-      }
-      refreshActiveValidation(project, { force: true, trigger: "manual" })
-      renderIssuePanel()
-      customPanelApi.refreshExportReadiness()
-    })
-    errorsPanelList.appendChild(rerun)
-  }
+
 }
 
 renderIssuePanel()
@@ -3025,6 +3018,7 @@ const resolveSelectedLayerForCustomPanel = (selectedIds: string[]) => {
   return null
 }
 selectionStore.subscribe(state => {
+  customPanelApi.setSelectedElements(state.selectedElementIds)
   selectEnabled = state.selectionMode
   setSvgToolFlags(getCurrentSvg())
   controlsApi?.setSelectEnabled?.(state.selectionMode)
@@ -4388,6 +4382,11 @@ function render(spec: FlowwrapSpec) {
         renderNext: true
       })
     }
+    const inlineText = attachInlineElementText(svg, () => currentSpec, commitCanvasInteraction)
+    svg.addEventListener("kyza:open-inline-text", event => {
+      const {id,key} = (event as CustomEvent<{id:string;key:string}>).detail
+      inlineText.open(id,key)
+    })
     paperStripEditingApi?.destroy()
     const activateStep=(next:FlowwrapSpec,id:string|null)=>{
       commitActiveProjectSpec(next,"canvas-interaction",{syncControls:true,renderNext:true})
@@ -4791,3 +4790,17 @@ document.addEventListener("keydown", event => {
   }
 })
 
+
+window.addEventListener("kyza:font-ready", () => {
+  if (currentSpec && !getCurrentSvg()?.querySelector('[data-inline-text-editor]')) render(currentSpec)
+})
+window.addEventListener("kyza:edit-text", event => {
+  getCurrentSvg()?.dispatchEvent(new CustomEvent("kyza:open-inline-text", {detail:(event as CustomEvent).detail}))
+})
+
+window.addEventListener("kyza:select-text", event => {
+  const {id,key}=(event as CustomEvent<{id:string;key:string}>).detail
+  selectionStore.setSelectionMode(true)
+  selectionStore.setSelectedElementIds([`attribute-box:${id}`])
+  customPanelApi.setSelectedElements([`attribute-box:${id}`],key)
+})

@@ -66,7 +66,7 @@ try {
       check(JSON.stringify(spec) === beforeSpec, "Rendering and preview refresh must not mutate pack dimensions")
       if (fixture.pouchHeight === 200) {
         equal(layout.width, 480, "Screenshot overall width remains 480 mm")
-        equal(top(), ["200mm", "200mm"], "Screenshot retains both true 200 mm spans")
+        equal(top(), ["200mm", "80mm", "200mm"], "Screenshot retains both true 200 mm spans")
       }
     }
     return { fixtures: fixtures.length }

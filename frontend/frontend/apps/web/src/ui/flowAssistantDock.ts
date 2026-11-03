@@ -12,7 +12,7 @@ export type FlowAssistantDock = {
 /** Beta guidance only. This does not generate or execute cutter commands. */
 function answerHelp(question: string): string {
   const q = question.toLowerCase()
-  if (/valid|error|warning|advis|qc|issue/.test(q)) return "Open Advisories to review the current engine checks. Use View to locate an affected element or re-run validation after changes."
+  if (/valid|error|warning|advis|qc|issue/.test(q)) return "Open Advisories to review the current engine checks. Use View to locate an affected element checks update automatically after changes."
   if (/\b(rotat\w*|turn|spin)\b/.test(q)) return "Select an editable element, then press Shift+L to rotate left or Shift+R to rotate right. You can also drag its corner rotation control where available."
   if (/(eyemark|eye mark|registration mark)/.test(q) && /(number|count|many|add|remove|change|set|more|fewer)/.test(q)) return "Open Base and use Eyemark Settings to change the number of eyemarks."
   if (/(hide|show|visible|visibility|toggle|turn off|turn on)/.test(q) && /(element|layer|feature|object)/.test(q)) return "Open Layers and use the visibility icon beside the element or layer to show or hide it."
@@ -142,13 +142,11 @@ export function createFlowAssistantDock(issuesPanel: HTMLElement): FlowAssistant
         status.setAttribute("aria-label", "Start a cutter to view quality checks.")
         return
       }
-      const attention = counts.critical + counts.warning
-      const findings = attention + counts.advisory
-      status.dataset.severity = counts.critical ? "critical" : findings ? "warning" : "clear"
-      status.textContent = counts.critical ? `QC · ${counts.critical} critical`
-        : attention ? `QC · ${attention} to review`
-        : counts.advisory ? `QC · ${counts.advisory} advisory` : "QC · No issues"
-      status.setAttribute("aria-label", `${counts.critical} critical, ${counts.warning} warnings, ${counts.advisory} advisories. Open quality checks.`)
+      const level = counts.critical ? "critical" : counts.warning ? "warning" : counts.advisory ? "advisory" : "ready"
+      const labels = { critical: "Critical", warning: "Warning", advisory: "Advisory", ready: "Ready" }
+      status.dataset.severity = level
+      status.textContent = labels[level]
+      status.setAttribute("aria-label", `${labels[level]}. Open cutter checks.`)
     },
     openIssues: () => setState("issues"),
     collapse: () => setState("collapsed")

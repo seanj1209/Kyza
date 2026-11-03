@@ -66,12 +66,6 @@ export function renderPlainFilm(spec: FlowwrapSpec, options: RenderOptions = {})
     })
   }
   const bleed = group("bleed_guides", "bleed")
-  const inset = spec.bleed ?? geometry.bleedInset
-  if (inset > 0 && live.width > 2 * inset && live.height > 2 * inset) {
-    appendRect(bleed, { x: live.x + inset, y: live.y + inset, width: live.width - 2 * inset, height: live.height - 2 * inset }, {
-      fill: "none", stroke: "#6b6b6b", "stroke-width": .6, "stroke-dasharray": "3 3",
-    })
-  }
   const folds = group("fold_lines", "fold-lines")
   renderFoldLines(folds, buildFoldLines(spec.foldLines ?? [], live.x, 0, 0, cutter.width, cutter.height, live.x, live.x + live.width), live.x, live.x, live.x + live.width)
   const perfs = group("perf_layer", "perf-lines", { ...packMeta, ...liveMeta })

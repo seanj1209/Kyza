@@ -1,4 +1,6 @@
 import { isBetaPackEnabled } from "../../../../packages/shared/releaseScope"
+import { embedReadyFonts } from "../typography/fontLibrary"
+import { applyObjectAppearance } from "../renderers/objectAppearance"
 import { doyPouchPack } from "./doyPouchPack"
 import { flowwrapPack } from "./flowwrapPack"
 import { pillowPack } from "./pillowPack"
@@ -21,6 +23,8 @@ export const packModules = [
 ].filter(pack => isBetaPackEnabled(pack.id)).map(pack => ({...pack, render: (spec: Parameters<typeof pack.render>[0], options?: Parameters<typeof pack.render>[1]) => {
   const migrated=refreshFittedSafeZones(spec,spec)
   const svg=pack.render(migrated, options)
+  applyObjectAppearance(svg,migrated)
+  embedReadyFonts(svg)
   if (pack.id === "paper-strip" && options?.paperStripView === "pre-slit") return svg
   const placements=pouchEyemarkPlacements(migrated)
   placements?.placements.forEach(p=>svg.querySelectorAll(`[data-role="eye-mark"][data-eye-index="${p.index}"]`).forEach(el=>el.setAttribute("data-eye-outside-safe",String(!p.allowed))))

@@ -71,8 +71,8 @@ for (const [file, key, contour] of [['doyPouchPack','doyPouchPack','doy-'],['kSe
     prior=result.zone
   }
 }
-result = fit.getSafeZoneFit({...spec,foldLines:[{id:'h',orientation:'horizontal',offset:999}],safeZones:[{...spec.safeZones[0],x:10,y:5,width:10,height:10}]},'zone')
-assert(result.enabled);assert.equal(result.zone.height,34,'Horizontal fold follows rendered centre, not unused offset')
+result = fit.getSafeZoneFit({...spec,foldLines:[{id:'h',orientation:'horizontal',offset:30}],safeZones:[{...spec.safeZones[0],x:10,y:5,width:10,height:10}]},'zone')
+assert(result.enabled);assert.equal(result.zone.height,14,'Horizontal fold follows its persisted cutter-top offset')
 const [attachment,annotations,selection,controls] = await Promise.all(['ui/dynamicElementMeasures.ts','ui/measurementAnnotations.ts','ui/selectionInteractions.ts','ui/controls.ts'].map(name=>readFile(root+name,'utf8')))
 assert.match(attachment,/event\.clientX-drag\.x/)
 assert.match(attachment,/event\.key\.toLowerCase\(\)===\"m\"/)

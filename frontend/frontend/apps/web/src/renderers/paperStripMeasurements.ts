@@ -198,6 +198,7 @@ function renderMainPaperStripMeasurements(
   const mainTopY =
     overallRect.y -
     getPaperStripMainWidthOffset(measureScale)
+  if (layout.instances.length > 1) {
   dimensionLineWithCaps(
     layer,
     overallRect.x,
@@ -209,6 +210,7 @@ function renderMainPaperStripMeasurements(
     0,
     "paper-strip-measure-main-width"
   )
+  }
 
   layout.instances.forEach(instance => {
     const cutterLeft = instance.cutterRect.x

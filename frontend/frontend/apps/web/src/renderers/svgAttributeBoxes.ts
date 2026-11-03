@@ -1,3 +1,5 @@
+import { renderAttributeText } from "./attributeText"
+import { styleObject } from "./objectAppearance"
 import type { AttributeBoxSpec, RenderMode } from "../types/flowwrap"
 import { createTextDirectionArt } from "./textDirectionArt"
 import {
@@ -128,6 +130,7 @@ export function renderAttributeBoxes(
     rect.setAttribute("data-selected", isSelected ? "true" : "false")
     setElementVisibility(rect, visible)
     applyRotation(rect, rotation, centerX, centerY)
+    if (box.appearance) styleObject(rect, box.appearance)
     layer.appendChild(rect)
 
     const hitbox = document.createElementNS(SVG_NS, "rect")
@@ -235,32 +238,6 @@ export function renderAttributeBoxes(
       layer.appendChild(art)
       continue
     }
-    const labelText =
-      box.kind === "label"
-        ? (box.label ?? box.labelKey ?? "LABEL")
-        : box.kind === "barcode"
-          ? "BARCODE"
-          : box.kind === "qr"
-            ? "QR"
-            : "BBE"
-    const normalizedLabel = labelText.toUpperCase()
-    const baseFont = Math.max(3, Math.min(10, box.height * 0.6))
-    const maxFont = box.width / Math.max(1, normalizedLabel.length * 0.6)
-    const fontSize = Math.max(2, Math.min(baseFont, maxFont))
-    const label = document.createElementNS(SVG_NS, "text")
-    label.setAttribute("x", (absX + box.width / 2).toString())
-    label.setAttribute("y", (absY + boxHeight / 2).toString())
-    label.setAttribute("fill", isLabel ? LABEL_STYLE.text : ATTRIBUTE_STYLE.stroke)
-    label.setAttribute("font-size", fontSize.toString())
-    label.setAttribute("text-anchor", "middle")
-    label.setAttribute("dominant-baseline", "middle")
-    label.setAttribute("pointer-events", "none")
-    label.setAttribute("data-box-id", box.id)
-    label.setAttribute("data-lane-index", laneIndex.toString())
-    label.setAttribute("data-role", "attribute-box-label")
-    label.textContent = normalizedLabel
-    setElementVisibility(label, visible)
-    applyRotation(label, rotation, centerX, centerY)
-    layer.appendChild(label)
+    renderAttributeText(layer, box, absX, absY, boxHeight, laneIndex, visible, renderMode === "edit")
   }
 }

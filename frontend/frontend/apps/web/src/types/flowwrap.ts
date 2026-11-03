@@ -63,6 +63,31 @@ export interface DoyPouchSpec {
 
 export type AttributeBoxKind = "barcode" | "qr" | "bbe" | "label" | "clear-strip"
 
+export interface ObjectAppearance {
+  fillEnabled?: boolean
+  fillColor?: string
+  fillOpacity?: number
+  strokeEnabled?: boolean
+  strokeColor?: string
+  strokeOpacity?: number
+  strokeWidth?: number
+  strokeStyle?: "solid" | "dashed" | "dotted"
+}
+export interface ElementTextStyle {
+  content?: string
+  visible?: boolean
+  fontFamily?: string
+  fontWeight?: 400 | 700
+  fontSizePt?: number
+  sizeMode?: "auto" | "fixed"
+  color?: string
+  opacity?: number
+  align?: "left" | "centre" | "right"
+  /** Position relative to parent, in percent. */
+  x?: number
+  y?: number
+}
+
 export interface AttributeBoxSpec {
   id: string
   kind: AttributeBoxKind
@@ -77,6 +102,9 @@ export interface AttributeBoxSpec {
   rotation?: number
   enabled?: boolean
   selected?: boolean
+  appearance?: ObjectAppearance
+  texts?: Record<string, ElementTextStyle>
+  textReference?: { width: number; height: number; fontSize: number }
   /** Set by the label Place action (Amends v12): the seal or FOP/BOP panel this label holds. */
   placedSlot?: string
 }
@@ -329,6 +357,7 @@ export interface FlowwrapSpec {
     fill?: "none" | "solid" | "tint" | "hatch"
     fontSize?: number
   }>
+  objectAppearance?: Record<string, ObjectAppearance>
   plainWeb?: PlainWebSpec
   lidding?: LiddingSpec
   paperStrip?: PaperStripSpec

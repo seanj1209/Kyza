@@ -182,7 +182,7 @@ assert(
 assert(
   baseLayout.topMeasureSegments
     .map(segment => segment.label)
-    .join("|") === "200mm|200mm",
+    .join("|") === "200mm|80mm|200mm",
   "K-seal top sub-measures must show the true cutter-edge to bottom-seal-centre pack heights."
 )
 

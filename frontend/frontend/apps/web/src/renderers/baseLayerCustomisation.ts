@@ -1,3 +1,4 @@
+import { applyObjectAppearance } from "./objectAppearance"
 import type { BaseLayerCustomisationSpec, FlowwrapSpec } from "../types/flowwrap"
 import { applyElementAppearance, KSEAL_SIDE_SEAL_DEFAULTS } from "./elementAppearance"
 import { paperStripEyeColor } from "../constraints/paperStripAppearance"
@@ -126,4 +127,5 @@ export function applyBaseLayerCustomisation(svg: SVGSVGElement, spec: FlowwrapSp
     node.setAttribute("opacity", custom.eyemark.opacity.toString())
   })
   applyElementAppearance(svg, spec)
+  applyObjectAppearance(svg,spec)
 }

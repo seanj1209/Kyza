@@ -1,3 +1,4 @@
+import { textReference } from "../renderers/attributeText"
 import { setOpeningStyle } from "../../../../packages/cutter-engine/actions/openingStyle"
 import { getDefaultHangerSlotPosition } from "../../../../packages/cutter-engine/actions/hangerSlotPlacement"
 import { updateGussetControl } from "../../../../packages/cutter-engine/actions/gussetControls"
@@ -1040,7 +1041,7 @@ export function initFlowwrapControls({
       switch (id) {
         case "fold":
           addFoldLine()
-          openPanel("fold")
+
           return true
         case "safe":
           addSafeZone()
@@ -1123,8 +1124,22 @@ export function initFlowwrapControls({
     }
 
     if (foldSection.section) {
-      createFloatingPanel("fold", "Fold Lines", foldSection.section)
-      createMenuButton("basic", "fold", "Fold Lines", ICON_FOLD)
+      const foldOptions = document.createElement("div")
+    foldOptions.className = "labels-option-grid"; foldOptions.hidden = true
+    const foldButton = createMenuButton("basic", "fold", "Fold Lines", undefined, undefined, () => {
+      foldOptions.hidden = !foldOptions.hidden
+      foldButton?.setAttribute("aria-expanded", String(!foldOptions.hidden))
+    })
+    foldButton?.setAttribute("aria-expanded", "false")
+    for (const orientation of ["vertical", "horizontal"] as const) {
+      const option = document.createElement("button")
+      option.type = "button"; option.className = "labels-option"
+      option.textContent = orientation === "vertical" ? "Vertical" : "Horizontal"
+      option.setAttribute("aria-label", `Add ${orientation} fold line`)
+      option.addEventListener("click", () => { newFoldLineDirection.select.value = orientation; addFoldLine() })
+      foldOptions.appendChild(option)
+    }
+    groupBodies.get("basic")?.appendChild(foldOptions)
     }
     if (perfSection.section) {
       createMenuButton("perforation", "perf", "MicroPerf", ICON_PERF, undefined, () => {
@@ -1237,7 +1252,15 @@ export function initFlowwrapControls({
       }
       for (const [id,title] of [["custom-measure","Custom Measure"],["custom-label","Custom Label"]]) {
         const button=createMenuButton("other",id,title,undefined,id==="custom-measure"?"↔":"Aa")
-        if(button){button.disabled=true;button.classList.add("is-disabled");button.title=title+" · Coming soon"}
+        if(button && id === "custom-label") button.addEventListener("click", () => {
+          const id = `label-custom-${crypto.randomUUID()}`
+          const box = { id, kind:"label" as const, labelKey:"custom", label:"Type here...", x:20,y:20,width:40,height:10,enabled:true,
+            textReference:{width:40,height:10,fontSize:12*25.4/72},texts:{label:{fontFamily:"Inter",content:"Type here..."}} }
+          spec = {...spec,attributeBoxes:[...(spec.attributeBoxes??[]),box]}
+          emitChange();onElementAdded?.(`attribute-box:${id}`)
+          requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent("kyza:edit-text",{detail:{id,key:"label"}})))
+        })
+        if(button && id === "custom-measure"){button.disabled=true;button.classList.add("is-disabled");button.title=title+" · Coming soon"}
       }
     }
     createMenuButton("perforation", "hole-punch", "Hole Punch")
@@ -1380,6 +1403,7 @@ export function initFlowwrapControls({
       next.push({
         id,
         kind: "label",
+        textReference: {width:baseSize.width,height:baseSize.height,fontSize:Math.max(2,Math.min(10,baseSize.height*.6,baseSize.width/Math.max(1,label.length*.6)))},
         labelKey: key,
         label,
         x,
@@ -3534,7 +3558,7 @@ export function initFlowwrapControls({
           : { x: 20, y: 55, width: 25, height: 15 }
     const { boxes, box } = ensureAttributeBox(kind, defaults)
     const nextBoxes = boxes.map(item =>
-      item.id === box.id ? { ...item, enabled } : item
+      item.id === box.id ? { ...item, textReference:textReference(item), enabled } : item
     )
     spec = { ...spec, attributeBoxes: nextBoxes }
     emitChange()

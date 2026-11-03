@@ -1,3 +1,4 @@
+import { prepareTypographySource } from "../../../apps/web/src/typography/fontLibrary"
 import type {
   KyzaCutterProjectV1,
   KyzaProjectV1,
@@ -207,8 +208,9 @@ export const generatePreparedProjectExport = async (
   const { project, request, capability } = prepared
   const options = defaultOptions(request)
   try {
+    const exportSource = await prepareTypographySource(request.source, request.format === "ai-compatible-svg")
     if (capability.generator === "editable-svg") {
-      const result = exportKyzaProject(project, options, request.source, {
+      const result = exportKyzaProject(project, options, exportSource, {
         validationRun: prepared.validationRun,
         ...(prepared.acknowledgement ? { acknowledgement: prepared.acknowledgement } : {}),
         exportId: prepared.exportId,
@@ -239,7 +241,7 @@ export const generatePreparedProjectExport = async (
         prepared.exportedAt,
         prepared.authorizationAudit
       )
-      const built = buildExportSvgDocument(project, options, request.source!, metadata)
+      const built = buildExportSvgDocument(project, options, exportSource!, metadata)
       const generator = overrides.pdfGenerator ?? createRasterPreviewPdfFromSvg
       const blob = await generator(built.svgMarkup, built.frame.widthMm, built.frame.heightMm, metadata)
       return {
