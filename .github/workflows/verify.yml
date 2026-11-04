@@ -12,6 +12,26 @@ on:
       - ".github/workflows/verify.yml"
 
 jobs:
+  customisation-v2:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test e2e/customisation-v2.spec.ts e2e/element-customisation-v1.spec.ts e2e/fold-lines-qa.spec.ts e2e/plain-film-pdf-item1.spec.ts --workers=1 --reporter=list
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: customisation-v2-browser-results
+          path: frontend/frontend/test-results
   validation-export:
     runs-on: ubuntu-latest
     defaults:

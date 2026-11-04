@@ -11,12 +11,13 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
   })
   window.addEventListener("kyza:font-ready",()=>{const status=root.querySelector('[data-font-status]');if(status)status.textContent=""})
   let ids:string[]=[],part="parent",signature="",syncs:(()=>void)[]=[]
+  let section:"fill"|"text"="fill"
   const currentBox=()=>getSpec()?.attributeBoxes?.find(box=>`attribute-box:${box.id}`===ids[0])
   const appearance=():ObjectAppearance=>{
     const box=currentBox()
     const node=[...getSvg()?.querySelectorAll<SVGElement>('[data-selectable-id]')??[]].find(n=>n.getAttribute("data-selectable-id")===ids[0]&&!/hit|handle|move|rotate/.test(n.getAttribute("data-role")??"")&&n.getAttribute("fill")!=="transparent")
     const fill=node?.getAttribute("fill"),stroke=node?.getAttribute("stroke"),dash=node?.getAttribute("stroke-dasharray")
-    const defaults:ObjectAppearance={fillEnabled:!!fill&&fill!=="none",fillColor:fill?.startsWith("#")?fill:"#ffffff",fillOpacity:Number(node?.getAttribute("fill-opacity")??1),
+    const defaults:ObjectAppearance={fillEnabled:!!fill&&fill!=="none",fillColor:fill?.startsWith("#")?fill:"#ffffff",fillOpacity:fill==="none"?1:Number(node?.getAttribute("fill-opacity")??1),
       strokeEnabled:stroke?stroke!=="none":box?.kind!=="label",strokeColor:stroke?.startsWith("#")?stroke:"#1a2a49",strokeOpacity:Number(node?.getAttribute("stroke-opacity")??1),strokeWidth:Number(node?.getAttribute("stroke-width")??.3),strokeStyle:dash&&dash!=="none"?(dash.startsWith(".5")?"dotted":"dashed"):"solid"}
     return {...defaults,...box?.appearance,...getSpec()?.objectAppearance?.[ids[0]]}
   }
@@ -60,12 +61,20 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
   }
   const draw=()=>{
     root.replaceChildren();syncs=[]
-    if(ids.length!==1){root.hidden=true;return}root.hidden=false
+    if(ids.length!==1||!currentBox()||!["bbe","barcode","qr","label"].includes(currentBox()!.kind)){root.hidden=true;return}root.hidden=false
     const box=currentBox(),keys=box?textKeys(box):[]
     const title=card(box?({bbe:"BBE box",qr:"QR guide",barcode:"Barcode guide",label:"Label","clear-strip":"Clear strip"})[box.kind]:"Selected object")
     const note=document.createElement("p");note.className="customisation-category-note";note.textContent="Changes apply to this object only.";title.append(note)
-    if(keys.length)select(title,"Customise part",[{value:"parent",label:"Parent appearance"},...keys.map(key=>({value:key,label:({heading:"BBE heading",date:"Date / placeholder",caption:"Caption",label:"Text"} as Record<string,string>)[key]}))],()=>part,v=>{part=v;signature="";refresh()})
-    if(part==="parent"||!keys.length){
+    if(box?.kind==="label")section="text"
+    const tabs=document.createElement("div");tabs.className="customise-segment customise-object-tabs";tabs.setAttribute("role","tablist");tabs.setAttribute("aria-label","Element controls")
+    for(const value of (box?.kind==="label"?["text"]:["fill","text"]) as ("fill"|"text")[]){
+      const b=document.createElement("button");b.type="button";b.textContent=value==="fill"?"Fill":"Text";b.setAttribute("role","tab");b.setAttribute("aria-selected",String(section===value));b.tabIndex=section===value?0:-1
+      b.addEventListener("click",()=>{section=value;if(section==="text"&&!keys.includes(part))part=keys[0];signature="";refresh()})
+      b.addEventListener("keydown",e=>{if(e.key==="ArrowLeft"||e.key==="ArrowRight"){e.preventDefault();(b.nextElementSibling??tabs.firstElementChild as HTMLElement)?.dispatchEvent(new MouseEvent("click"));(tabs.querySelector('[aria-selected="true"]') as HTMLElement)?.focus()}})
+      tabs.append(b)
+    }
+    title.append(tabs)
+    if(section==="fill"){
       const fill=card("Fill"),stroke=card("Stroke")
       // Lines and eyemarks have no meaningful editable background fill.
       const lineOnly=/^(fold-line|perf-lane):/.test(ids[0])
@@ -79,6 +88,8 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
       numeric(stroke,"Stroke thickness (mm)",()=>appearance().strokeWidth??.3,v=>commitAppearance({strokeWidth:v}),.01,20,.05)
       select(stroke,"Stroke style",["solid","dashed","dotted"].map(v=>({value:v,label:v[0].toUpperCase()+v.slice(1)})),()=>appearance().strokeStyle??"solid",v=>commitAppearance({strokeStyle:v as ObjectAppearance["strokeStyle"]}))
     }else{
+      if(!keys.includes(part))part=keys[0]
+      if(keys.length>1)select(title,"Customise part",keys.map(key=>({value:key,label:({heading:"BBE heading",date:"Date / placeholder",caption:"Caption",label:"Text"} as Record<string,string>)[key]})),()=>part,v=>{part=v;signature="";refresh()})
       const c=card("Text")
       check(c,"Show text",()=>text()!.visible,v=>commitText({visible:v}))
       const r=row(c,"Content"),content=document.createElement("input");content.type="text";content.maxLength=2000;content.className="customisation-number";content.setAttribute("aria-label","Text content");r.append(content)
@@ -99,8 +110,21 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
     syncs.forEach(f=>f())
   }
   const refresh=()=>{
-      const box=currentBox();const next=ids.join("|")+":"+part+":"+(box?.kind??"")
+      const box=currentBox();const next=ids.join("|")+":"+part+":"+section+":"+(box?.kind??"")
     if(signature!==next){signature=next;draw()}else syncs.forEach(f=>f())
   }
-  return {element:root,refresh,setSelection(next:string[],key?:string){if(ids.join()!==next.join())part="parent";ids=next;if(key)part=key;refresh()}}
+  return {element:root,refresh,setSelection(next:string[],key?:string){if(ids.join()!==next.join()){part="parent";section="fill"}ids=next;if(key){part=key;section="text"}refresh()},
+    showKind(kind:string,container:HTMLElement){
+      const boxes=getSpec()?.attributeBoxes?.filter(b=>b.kind===kind&&b.enabled!==false)??[]
+      if(!boxes.some(b=>`attribute-box:${b.id}`===ids[0])){ids=boxes[0]?[`attribute-box:${boxes[0].id}`]:[];part="parent";section=kind==="label"?"text":"fill";signature=""}
+      container.append(root);refresh()
+      root.querySelector('[data-object-instance]')?.remove()
+      if(boxes.length>1){const r=row(root,"Object"),select=document.createElement("select");select.setAttribute("aria-label","Customise element instance");select.className="customisation-select";r.append(select);root.prepend(r)
+        r.setAttribute("data-object-instance","true")
+        boxes.forEach((b,i)=>{const o=document.createElement("option");o.value=b.id;o.textContent=`${b.label??kind} ${i+1}`;select.append(o)});select.value=ids[0]?.slice(14)??""
+        select.addEventListener("change",()=>{ids=[`attribute-box:${select.value}`];signature="";this.showKind(kind,container)})
+      }
+      return ()=>{this.showKind(kind,container)}
+    }
+  }
 }

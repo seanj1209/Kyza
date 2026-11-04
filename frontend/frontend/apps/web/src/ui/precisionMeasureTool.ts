@@ -4,7 +4,7 @@ import "./measureTool.css"
 
 const NS = "http://www.w3.org/2000/svg"
 const HIGHLIGHT = "#1684df"
-export function attachMeasureTool(svg: SVGSVGElement, onMeasure: (value: number | null) => void) {
+export function attachMeasureTool(svg: SVGSVGElement, onMeasure: (value: number | null) => void, options:{onComplete?:(start:Point,end:Point)=>void}={}) {
   let enabled=false,active=false,pointerId:number|null=null
   let start:Point={x:0,y:0},current=start,startHit:EdgeHit|null=null
   let hoverFrame=0,hoverEvent:PointerEvent|null=null
@@ -104,16 +104,19 @@ export function attachMeasureTool(svg: SVGSVGElement, onMeasure: (value: number 
     // Resolve release too: the last coordinate may arrive without a move event.
     update(event);active=false;release();readout.hidden=true
     if(label){label.textContent=`${formatMeasurement(length(),zoom())} mm`;label.style.display="block"}
+    if(length()>=.001)options.onComplete?.({x:start.x,y:start.y},{x:current.x,y:current.y})
   }
   const cancel=()=>{if(active)clear()}
+  const key=(e:KeyboardEvent)=>{if(enabled&&e.key==="Escape")clear()}
   const leave=()=>{if(!active){cancelAnimationFrame(hoverFrame);hoverFrame=0;hoverEvent=null;hover.replaceChildren()}}
   const refresh=()=>{refreshGrid();resizeDrawing();markEdge(pinned,startHit,true);hover.replaceChildren()}
   const queueRefresh=()=>{if(!refreshFrame)refreshFrame=requestAnimationFrame(()=>{refreshFrame=0;refresh()})}
   const observer=new MutationObserver(queueRefresh)
   observer.observe(svg,{attributes:true,attributeFilter:["viewBox","data-reference-grid","data-canvas-zoom"]})
   svg.addEventListener("pointerdown",down,true);svg.addEventListener("pointermove",move);svg.addEventListener("pointerup",up);svg.addEventListener("pointercancel",cancel);svg.addEventListener("lostpointercapture",cancel);svg.addEventListener("pointerleave",leave);window.addEventListener("resize",refresh);refreshGrid()
+  document.addEventListener("keydown",key,true)
   return{
     setEnabled(next:boolean){enabled=next;svg.setAttribute("data-measure-enabled",String(next));if(!next)clear()},
-    destroy(){enabled=false;clear();observer.disconnect();cancelAnimationFrame(hoverFrame);cancelAnimationFrame(refreshFrame);svg.removeEventListener("pointerdown",down,true);svg.removeEventListener("pointermove",move);svg.removeEventListener("pointerup",up);svg.removeEventListener("pointercancel",cancel);svg.removeEventListener("lostpointercapture",cancel);svg.removeEventListener("pointerleave",leave);window.removeEventListener("resize",refresh);overlay.remove();readout.remove();gridNote.remove();canvasGrid.remove()}
+    destroy(){enabled=false;clear();observer.disconnect();cancelAnimationFrame(hoverFrame);cancelAnimationFrame(refreshFrame);document.removeEventListener("keydown",key,true);svg.removeEventListener("pointerdown",down,true);svg.removeEventListener("pointermove",move);svg.removeEventListener("pointerup",up);svg.removeEventListener("pointercancel",cancel);svg.removeEventListener("lostpointercapture",cancel);svg.removeEventListener("pointerleave",leave);window.removeEventListener("resize",refresh);overlay.remove();readout.remove();gridNote.remove();canvasGrid.remove()}
   }
 }

@@ -83,7 +83,8 @@ export function decorateCustomiseTarget(section: HTMLElement, icon: string) {
   return sync
 }
 
-export function createAppearanceEditor(host: HTMLElement, group: "elements" | "measures", getSpec: () => FlowwrapSpec | null, onChange: (spec: FlowwrapSpec) => void) {
+export function createAppearanceEditor(host: HTMLElement, group: "elements" | "measures", getSpec: () => FlowwrapSpec | null, onChange: (spec: FlowwrapSpec) => void,
+  renderSpecial?: (target:AppearanceTarget,host:HTMLElement)=>(()=>void)|null) {
   const chips = element("div", "customise-targets"); chips.setAttribute("role", "radiogroup"); chips.setAttribute("aria-label", `Choose ${group} appearance`)
   const content = element("div", "customise-target-content")
   host.append(chips, content)
@@ -121,6 +122,8 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
     const t = currentTarget(); content.replaceChildren(); controls = []
     chips.querySelectorAll<HTMLElement>("[role=radio]").forEach(b => { const on = b.dataset.target === selected; b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1 })
     if (!t) { content.appendChild(element("p", "customisation-category-note", "Add elements in the Elements menu to customise their appearance.")); return }
+    const special=renderSpecial?.(t,content)
+    if(special){controls.push(special);return}
     if (t.feature) {
       const feature = t.feature
       const parts = featureTargets(feature.id)
@@ -187,7 +190,7 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
   const refresh = () => {
     const spec = getSpec(); const targets = spec ? availableAppearanceTargets(spec).filter(t => t.group === group) : []
     const chipsFor = targets.filter((t, index) => targets.findIndex(other => chipKey(other) === chipKey(t)) === index)
-    const next = chipsFor.map(chipKey).join(",")
+    const next = chipsFor.map(t=>`${chipKey(t)}:${t.name}`).join(",")
     if (next !== signature || !content.childElementCount) {
       signature = next; if (!chipsFor.some(t => chipKey(t) === selected)) selected = chipsFor[0] ? chipKey(chipsFor[0]) : ""
       chips.replaceChildren()
@@ -203,5 +206,5 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
     const next = e.key === "ArrowRight" || e.key === "ArrowDown" ? (index + 1) % buttons.length : e.key === "ArrowLeft" || e.key === "ArrowUp" ? (index - 1 + buttons.length) % buttons.length : -1
     if (next >= 0) { e.preventDefault(); buttons[next].click(); buttons[next].focus() }
   })
-  return { refresh }
+  return { refresh,selectTarget(id:string){refresh();if(availableAppearanceTargets(getSpec()!).some(t=>t.id===id)){selected=id;draw()}} }
 }

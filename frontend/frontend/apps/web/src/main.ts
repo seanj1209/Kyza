@@ -24,6 +24,8 @@ import { attachOpeningInteractions } from "./ui/openingInteractions"
 import { attachDoyGeometryInteractions } from "./ui/doyGeometryInteractions"
 import { attachTearNotchInteractions } from "./ui/tearNotchInteractions"
 import { attachMeasureTool } from "./ui/measureInteractions"
+import { attachCustomMeasureInteractions } from "./ui/customMeasureInteractions"
+import { validCustomMeasures } from "./geometry/customMeasures"
 import { clampCanvasZoom, zoomViewBox, wheelZoomFactor } from "./ui/canvasViewport"
 import { attachCanvasWheel } from "./ui/canvasWheel"
 import { attachPerfInteractions } from "./ui/perfInteractions"
@@ -443,6 +445,7 @@ let saveCurrentProjectAs: () => Promise<void> = async () => {}
 const customPanelApi = initCustomisationPanel({
   host: controls,
   onChange: next => {
+    pushUndo()
     commitActiveProjectSpec(next, "customisation-edit", {
       syncControls: true,
       renderNext: true
@@ -1680,6 +1683,8 @@ let canvasPanApi: ReturnType<typeof attachCanvasPan> | null = null
 let selectionContextApi: ReturnType<typeof attachSelectionContextActions> | null = null
 let canvasWheelApi: ReturnType<typeof attachCanvasWheel> | null = null
 let measureEnabled = false
+let customMeasureMode = false
+let customMeasureApi: ReturnType<typeof attachCustomMeasureInteractions> | null = null
 let referenceGridEnabled = false
 let panEnabled = true
 let selectEnabled = false
@@ -2121,6 +2126,7 @@ const clearActiveTool = () => {
     return false
   }
   measureEnabled = false
+  customMeasureMode = false
   panEnabled = true
   selectEnabled = false
   measureApi?.setEnabled(false)
@@ -3006,6 +3012,7 @@ const resolveSelectedLayerForCustomPanel = (selectedIds: string[]) => {
   if (selectedIds.some(id => id.startsWith("attribute-box:"))) {
     return "notes"
   }
+  if (selectedIds.some(id=>id.startsWith("custom-measure:")))return "custom-measures"
   if (selectedIds.some(id => id.startsWith("eye-mark:"))) {
     return "eyemarks"
   }
@@ -3377,6 +3384,7 @@ const syncSelectionElements = (svg: SVGSVGElement) => {
       })
     }
   })
+  for(const m of currentSpec?validCustomMeasures(currentSpec):[])addElement(`custom-measure:${m.id}`,"customMeasure","custom-measures",{movable:false,resizable:false,rotatable:false,removable:true})
   selectionStore.registerElements([...elementMap.values()])
 }
 
@@ -3696,6 +3704,10 @@ const deleteSelectedFromCurrentSpec = () => {
   pushUndo()
   let next = currentSpec
   selectedIds.forEach(id => {
+    if(id.startsWith("custom-measure:")){
+      next={...next,customMeasures:next.customMeasures?.filter(m=>`custom-measure:${m.id}`!==id)}
+      const appearance={...next.elementAppearance};delete appearance[id];next={...next,elementAppearance:appearance};return
+    }
     if (id.startsWith("safe-zone:")) {
       const zoneId = id.slice("safe-zone:".length)
       next = { ...next, safeZones: (next.safeZones ?? []).filter(zone => zone.id !== zoneId) }
@@ -4027,7 +4039,15 @@ try {
         return
       }
     },
+    onCustomMeasure: () => {
+      if((currentSpec?.customMeasures?.length??0)>=100)return
+      customMeasureMode=true;measureEnabled=true;panEnabled=false;selectEnabled=false
+      selectionStore.clearSelection();selectionStore.setSelectionMode(false)
+      controlsApi?.setMeasureToolEnabled?.(true);controlsApi?.setPanEnabled?.(false);controlsApi?.setSelectEnabled?.(false)
+      setSvgToolFlags(getCurrentSvg());measureApi?.setEnabled(true)
+    },
     onMeasureToggle: enabled => {
+      customMeasureMode=false
       measureEnabled = enabled
       const currentSvg = previewCanvas.querySelector("svg")
       if (currentSvg) {
@@ -4368,6 +4388,7 @@ function render(spec: FlowwrapSpec) {
       clearActiveTool()
     })
 
+    customMeasureApi?.destroy();customMeasureApi=null
     measureApi?.destroy()
     measureApi = null
     previewCanvas.innerHTML = ""
@@ -4383,6 +4404,10 @@ function render(spec: FlowwrapSpec) {
       })
     }
     const inlineText = attachInlineElementText(svg, () => currentSpec, commitCanvasInteraction)
+    customMeasureApi=attachCustomMeasureInteractions(svg,()=>currentSpec,selectionStore,next=>{pushUndo();commitCanvasInteraction(next)},()=>{
+      customMeasureMode=false;measureEnabled=false;panEnabled=false;selectEnabled=true
+      selectionStore.setSelectionMode(true);controlsApi?.setMeasureToolEnabled?.(false);controlsApi?.setPanEnabled?.(false);controlsApi?.setSelectEnabled?.(true);setSvgToolFlags(svg)
+    })
     svg.addEventListener("kyza:open-inline-text", event => {
       const {id,key} = (event as CustomEvent<{id:string;key:string}>).detail
       inlineText.open(id,key)
@@ -4475,7 +4500,14 @@ function render(spec: FlowwrapSpec) {
     selectionContextApi = attachSelectionContextActions(editorSvg, selectionStore, () => currentSpec, commitCanvasInteraction, () => pack.id)
     measureApi = attachMeasureTool(svg, value => {
       controlsApi?.setMeasurement(value)
-    })
+    },{onComplete:(start,end)=>{
+      if(!customMeasureMode||!currentSpec)return
+      const id=crypto.randomUUID(),next={...currentSpec,customMeasures:[...(currentSpec.customMeasures??[]),{id,start,end}]}
+      pushUndo();clearActiveTool();commitCanvasInteraction(next)
+      panEnabled=false;selectEnabled=true;selectionStore.setSelectionMode(true)
+      controlsApi?.setPanEnabled?.(false);controlsApi?.setSelectEnabled?.(true);setSvgToolFlags(getCurrentSvg())
+      selectionStore.setSelectedElementIds([`custom-measure:${id}`]);customPanelApi.setSelectedElements([`custom-measure:${id}`]);customPanelApi.setActiveLayer("custom-measures")
+    }})
     if (measureApi) {
       measureApi.setEnabled(measureEnabled)
     }

@@ -1,4 +1,5 @@
 import type { FlowwrapSpec } from "../types/flowwrap"
+import { validCustomMeasures, measureName, type CustomMeasure } from "../geometry/customMeasures"
 
 export type Appearance = NonNullable<FlowwrapSpec["elementAppearance"]>[string]
 export type AppearanceTarget = {
@@ -7,6 +8,11 @@ export type AppearanceTarget = {
   /** Targets that share a feature appear as one Customise chip with a part switch (K Seal Gusset: Fill / Outline). */
   feature?: { id: string; name: string; part: "Fill" | "Outline" }
 }
+export function customMeasureTarget(m:CustomMeasure,spec:FlowwrapSpec):AppearanceTarget {
+  return {id:`custom-measure:${m.id}`,name:measureName(m),group:"measures",selector:"",icon:"scribe",
+    caps:["color","thickness","opacity","fontSize"],defaults:{color:/^#[0-9a-f]{6}$/i.test(spec.elementAppearance?.main?.color??"")?spec.elementAppearance!.main.color!:"#d23429",thickness:.4,opacity:1,fontSize:4,lineStyle:"solid",fill:"none"}}
+}
+
 const defaults = (color = "#1a2a49", thickness = .3, opacity = 1, fill: Appearance["fill"] = "none"): Required<Appearance> =>
   ({ color, thickness, opacity, lineStyle: "solid", fill: fill!, fontSize: 4 })
 const lineCaps: (keyof Appearance)[] = ["color", "thickness", "lineStyle", "opacity"]
@@ -58,7 +64,7 @@ export function appearanceTargetsFor(spec: FlowwrapSpec | null | undefined): App
   return APPEARANCE_TARGETS.map(t => KSEAL_GUSSET_TARGETS.find(k => k.id === t.id) ?? t)
 }
 export function availableAppearanceTargets(spec: FlowwrapSpec) {
-  return appearanceTargetsFor(spec).filter(t => {
+  return [...appearanceTargetsFor(spec).filter(t => {
     if(t.id==="text-direction")return spec.attributeBoxes?.some(b=>b.labelKey==="text-direction" && b.enabled!==false)
     if (t.group === "measures") return true
     if (["bbe", "barcode", "qr", "label", "clear-strip"].includes(t.id)) return spec.attributeBoxes?.some(b => b.kind === t.id && b.enabled !== false)
@@ -66,7 +72,7 @@ export function availableAppearanceTargets(spec: FlowwrapSpec) {
       safe: spec.safeZones?.some(z => z.enabled !== false), fold: !!spec.foldLines?.length, zip: spec.doyPouch?.showZipper,
       grip: spec.doyPouch?.showGripSeal, tear: spec.doyPouch?.showTearNotch || spec.sachet?.tearNotch?.enabled,
       gusset: !!spec.doyPouch || !!spec.kSealPouch, "gusset-seals": !!spec.doyPouch || !!spec.kSealPouch } as Record<string, unknown>)[t.id]
-  })
+  }),...validCustomMeasures(spec).map(m=>customMeasureTarget(m,spec))]
 }
 export function resolveAppearance(target: AppearanceTarget, value: Appearance = {}): Required<Appearance> {
   const fallback = target.defaults
