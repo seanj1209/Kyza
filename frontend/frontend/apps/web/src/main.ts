@@ -48,6 +48,7 @@ import { attachGussetDock } from "./ui/gussetDock"
 import { attachStepNavigation } from "./ui/stepNavigation"
 import { attachLiddingDock, openLiddingSetup } from "./ui/liddingStudio"
 import { refreshFittedSafeZones } from "../../../packages/cutter-engine/actions/safeZoneFit"
+import { synchronisePillowFoldLines } from "./core/geometry/resolvers/resolvePillowLayout"
 import { constrainPouchSafeZone } from "../../../packages/cutter-engine/actions/safeZoneContours"
 import { constrainDoyGeometry } from "./core/geometry/resolvers/doyBounds"
 import { attachSelectionInteractions } from "./ui/selectionInteractions"
@@ -2016,7 +2017,9 @@ function updateArtboardProjectSpec(
   next: FlowwrapSpec,
   reason: ProjectUpdateReason
 ) {
-  next = refreshFittedSafeZones(artboard.spec, constrainDoyGeometry(next))
+  next = refreshFittedSafeZones(artboard.spec, constrainDoyGeometry(
+    artboard.packId === "pillow-pack" ? synchronisePillowFoldLines(next) : next
+  ))
   next = {...next, safeZones: next.safeZones?.map(zone => {
     const before = artboard.spec.safeZones?.find(item => item.id === zone.id)
     return before && JSON.stringify(before) !== JSON.stringify(zone) ? constrainPouchSafeZone(next, before, zone) : zone
@@ -2310,6 +2313,7 @@ const exportSavedProjectCard = async (
     request: {
       format: action.format,
       tierId: action.tierId,
+      paperStripView: preSlitView.renderOptions(openArtboard?.id ?? "", approval.project.cutter?.packType ?? card.packId).paperStripView,
       ...(svg ? { source: svg } : {}),
       options: {
         includeLayers: true,

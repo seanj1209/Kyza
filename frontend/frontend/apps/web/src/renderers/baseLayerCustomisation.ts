@@ -24,6 +24,7 @@ export function resolveBaseCustomisation(
   const eyeMarkDefault = EYE_MARK_DEFAULTS[strip && spec.eyeMarks?.color !== "dark-blue" ? paperStripEyeColor(spec) : spec.eyeMarks?.color ?? "black"] ?? "#000000"
   const doySeal = Boolean(spec.doyPouch && !spec.kSealPouch)
   const sidePouchSeal = Boolean(spec.sideSealPouch)
+  const narrowSachetCutter = sidePouchSeal || Boolean(spec.sachet && !spec.sachet.stepPair && !spec.paperStrip)
   // AMENDS 6.1: on K Seal the Seals customise owns the side seals (#2eb774, 32%, solid).
   const kSeal = Boolean(spec.kSealPouch)
   const sealColourDefault = sidePouchSeal ? "#2e8b57" : doySeal ? "#2E8B57" : kSeal ? KSEAL_SIDE_SEAL_DEFAULTS.color : "#2eb774"
@@ -31,7 +32,7 @@ export function resolveBaseCustomisation(
   return {
     cutter: {
       style: ["dashed", "dotted"].includes(spec.baseCustomisation?.cutter?.style ?? "") ? spec.baseCustomisation!.cutter.style : "default",
-      thickness: clamp(spec.baseCustomisation?.cutter?.thickness ?? 0.75, 0.1, 10),
+      thickness: clamp(spec.baseCustomisation?.cutter?.thickness ?? (narrowSachetCutter ? 0.4 : 0.75), 0.1, 10),
       color: sanitizeHex(spec.baseCustomisation?.cutter?.color ?? "#2eb774", "#2eb774"),
       opacity: clamp(spec.baseCustomisation?.cutter?.opacity ?? 1, 0, 1)
     },

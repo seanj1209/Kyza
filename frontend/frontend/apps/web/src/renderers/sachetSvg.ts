@@ -870,6 +870,12 @@ export function renderResolvedSachet(
   svg.setAttribute("data-sachet-content-width", contentWidth.toString())
   svg.setAttribute("data-sachet-height", spec.height.toString())
 
+  if (spec.sideSealPouch || (spec.sachet && !spec.sachet.stepPair)) {
+    const cutterThickness = spec.baseCustomisation?.cutter?.thickness ?? 0.4
+    cutLayer.querySelectorAll<SVGElement>("path,line,rect,polyline,polygon,circle,ellipse").forEach(node => {
+      if (node.getAttribute("stroke") !== "none") node.setAttribute("stroke-width", String(cutterThickness))
+    })
+  }
   applySubstrateAppearance(svg,spec)
   return svg
 }

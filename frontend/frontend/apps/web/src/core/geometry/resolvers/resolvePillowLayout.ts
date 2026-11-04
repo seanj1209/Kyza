@@ -21,6 +21,19 @@ export function resolveSymmetricPillowFoldLines(spec: FlowwrapSpec) {
   ]
 }
 
+/** Keep the two construction folds at 1:2:1 when the web or seals change. */
+export function synchronisePillowFoldLines(spec: FlowwrapSpec): FlowwrapSpec {
+  const symmetric = resolveSymmetricPillowFoldLines(spec)
+  const existing = spec.foldLines ?? []
+  return {
+    ...spec,
+    foldLines: [
+      ...existing.filter(line => line.id !== "pillow-fold-left" && line.id !== "pillow-fold-right"),
+      ...symmetric
+    ]
+  }
+}
+
 export function resolvePillowLayout(spec: FlowwrapSpec): ResolvedPillowLayout {
   return resolveFlowwrapLayout({
     ...spec,

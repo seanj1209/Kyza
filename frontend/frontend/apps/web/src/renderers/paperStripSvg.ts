@@ -1,6 +1,6 @@
 import type { ResolvedPaperStripLayout } from "../core/geometry/resolvers/resolvePaperStripLayout"
 import type { FlowwrapSpec } from "../types/flowwrap"
-import { getPaperStripMainWidthOffset, renderPaperStripMeasurements } from "./paperStripMeasurements"
+import { getPaperStripHorizontalSegments, getPaperStripMainWidthOffset, renderPaperStripMeasurements } from "./paperStripMeasurements"
 import type { RenderOptions } from "../types/flowwrap"
 import { getPaperStripStepSpec, paperStripActiveStep, paperStripSynced } from "../../../../packages/cutter-engine/actions/paperStripSteps"
 import { renderPaperStripStepElements } from "./paperStripStepElements"
@@ -199,8 +199,34 @@ export function renderResolvedPaperStrip(
     })
 
     if (preSlit) {
-      // Slit boundaries share the cutter layer; the stock and all technical
-      // elements remain in the project but never enter this view's SVG.
+      // Show each remaining paper lane and each red off-cut without changing
+      // the saved construction or including the hidden technical elements.
+      getPaperStripHorizontalSegments(instance).forEach(segment => {
+        const clear = segment.kind === "clear"
+        appendRect(substrateLayer, {
+          x: segment.start, y: instance.cutterRect.y,
+          width: segment.end - segment.start, height: instance.cutterRect.height
+        }, {
+          fill: clear ? "#e02b2b" : substrateFill,
+          opacity: clear ? "0.5" : "0.8",
+          "data-role": clear ? "pre-slit-offcut" : "pre-slit-working-area"
+        })
+        if (clear) {
+          const label = document.createElementNS(SVG_NS, "text")
+          const centerX = (segment.start + segment.end) / 2
+          const centerY = instance.cutterRect.y + instance.cutterRect.height / 2
+          label.setAttribute("x", String(centerX))
+          label.setAttribute("y", String(centerY))
+          label.setAttribute("transform", `rotate(-90 ${centerX} ${centerY})`)
+          label.setAttribute("text-anchor", "middle")
+          label.setAttribute("dominant-baseline", "middle")
+          label.setAttribute("font-size", "5")
+          label.setAttribute("fill", "#731515")
+          label.setAttribute("data-role", "pre-slit-offcut-label")
+          label.textContent = 'PIFA 3 "OFF-CUT"'
+          substrateLayer.appendChild(label)
+        }
+      })
       const edges = new Set(instance.clearStripRects.flatMap(rect => [rect.x, rect.x + rect.width]))
       edges.forEach(x => {
         if (x <= instance.cutterRect.x || x >= instance.cutterRect.x + instance.cutterRect.width) return
@@ -251,11 +277,12 @@ export function renderResolvedPaperStrip(
   svg.appendChild(artboardBackground)
   if (preSlit) {
     // Export the entire selected view even if the editor is zoomed or panned.
-    // These frame bounds include the main/sub dimensions and every repeat.
+    // These frame bounds include the remaining dimensions and every repeat.
     svg.setAttribute("data-origin-x", "0")
     svg.setAttribute("data-origin-y", "0")
     svg.setAttribute("data-cutter-width", String(frameWidth))
     svg.setAttribute("data-cutter-height", String(frameHeight))
+    contentRoot.appendChild(substrateLayer)
     contentRoot.appendChild(cutterLayer)
     contentRoot.appendChild(measurementLayer)
     svg.appendChild(contentRoot)

@@ -198,7 +198,7 @@ function renderMainPaperStripMeasurements(
   const mainTopY =
     overallRect.y -
     getPaperStripMainWidthOffset(measureScale)
-  if (layout.instances.length > 1) {
+  if (layout.instances.length > 1 && !preSlit) {
   dimensionLineWithCaps(
     layer,
     overallRect.x,
@@ -252,6 +252,7 @@ function renderMainPaperStripMeasurements(
     })
   })
 
+  if (preSlit) return
   const mainLeftX = overallRect.x - MAIN_DIMENSION_OFFSET
   dimensionLineWithCaps(
     layer,
