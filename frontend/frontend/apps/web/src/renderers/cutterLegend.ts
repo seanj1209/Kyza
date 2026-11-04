@@ -84,6 +84,27 @@ export function renderCutterLegend(svg: SVGSVGElement, spec: FlowwrapSpec, packN
   const wrapper=document.createElementNS('http://www.w3.org/2000/svg','g')
   wrapper.innerHTML=cutterLegendMarkup(spec,packName,x,y,entries)
   svg.append(...Array.from(wrapper.childNodes))
+  const legend = svg.querySelector<SVGGElement>("#cutter_legend")
+  if (legend) {
+    const headings: Record<string, string> = {
+      "PRODUCT INFORMATION": "product",
+      "TECHNICAL SPECIFICATION": "technical",
+      "PRODUCT KEY / ELEMENTS": "key",
+      "TECHNICAL NOTES": "notes"
+    }
+    let section = "header"
+    let sectionGroup: SVGGElement | null = null
+    for (const child of [...legend.children]) {
+      const heading = headings[child.textContent?.trim() ?? ""]
+      if (heading) { section = heading; sectionGroup = null }
+      if (!sectionGroup) {
+        sectionGroup = document.createElementNS("http://www.w3.org/2000/svg", "g")
+        sectionGroup.setAttribute("data-legend-section", section)
+        legend.append(sectionGroup)
+      }
+      sectionGroup.append(child)
+    }
+  }
   svg.setAttribute('data-legend-left',String(x))
   svg.setAttribute('data-legend-top',String(y))
   svg.setAttribute('data-legend-right',String(x+width*scale))

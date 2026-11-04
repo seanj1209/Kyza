@@ -198,7 +198,7 @@ function renderMainPaperStripMeasurements(
   const mainTopY =
     overallRect.y -
     getPaperStripMainWidthOffset(measureScale)
-  if (layout.instances.length > 1 && !preSlit) {
+  if (layout.instances.length > 1 || preSlit) {
   dimensionLineWithCaps(
     layer,
     overallRect.x,
@@ -211,6 +211,8 @@ function renderMainPaperStripMeasurements(
     "paper-strip-measure-main-width"
   )
   }
+
+  if (preSlit) return
 
   layout.instances.forEach(instance => {
     const cutterLeft = instance.cutterRect.x
@@ -228,7 +230,6 @@ function renderMainPaperStripMeasurements(
       `paper-strip-measure-main-step-width:${instance.index}`
     )
 
-    if (preSlit) return
     const contentTopY = stepTopY + MAIN_DIMENSION_OFFSET * measureScale
     const liveRight = instance.liveRect.x + instance.liveRect.width
     const segments = [
@@ -252,7 +253,6 @@ function renderMainPaperStripMeasurements(
     })
   })
 
-  if (preSlit) return
   const mainLeftX = overallRect.x - MAIN_DIMENSION_OFFSET
   dimensionLineWithCaps(
     layer,

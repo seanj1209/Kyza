@@ -32,11 +32,13 @@ import type {
 } from "../sandbox"
 import { getPackModule, packModules } from "../packs"
 import type { FlowwrapSpec } from "../types/flowwrap"
+import { parseCutterExport, type ImportedCutterExport } from "./importCutterExport"
 
 type CustomProjectBuilderOptions = {
   host: HTMLElement
   getDefaultPackId: () => SandboxPackId
   onBuild: (result: SandboxBuildResult) => void
+  onImportExportedCutter: (cutter: ImportedCutterExport) => void
 }
 
 type CustomProjectBuilderApi = {
@@ -857,12 +859,19 @@ export function initCustomProjectBuilder(
 
     try {
       const text = await file.text()
-      const saved = importCustomProjectRecord(text)
-      renderSavedProjects()
-      applySavedProject(saved)
-      previewStatus.textContent = `Imported custom project: ${saved.name}`
-      errorBox.textContent = ""
+      const exported = parseCutterExport(text)
+      if (exported) {
+        close()
+        options.onImportExportedCutter(exported)
+      } else {
+        const saved = importCustomProjectRecord(text)
+        applySavedProject(saved)
+        const result = buildCustomPack({ definition: saved.definition, baseSpec: cloneSpec(saved.baseSpec) })
+        close()
+        options.onBuild(result)
+      }
     } catch (error) {
+      open()
       errorBox.textContent =
         error instanceof Error
           ? error.message
@@ -929,6 +938,6 @@ export function initCustomProjectBuilder(
     element: overlay,
     open,
     close,
-    importCutter: () => { open(); importButton.click() }
+    importCutter: () => { importInput.value = ""; importInput.click() }
   }
 }

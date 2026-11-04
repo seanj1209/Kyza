@@ -49,13 +49,14 @@ import { attachStepNavigation } from "./ui/stepNavigation"
 import { attachLiddingDock, openLiddingSetup } from "./ui/liddingStudio"
 import { refreshFittedSafeZones } from "../../../packages/cutter-engine/actions/safeZoneFit"
 import { synchronisePillowFoldLines } from "./core/geometry/resolvers/resolvePillowLayout"
+import { synchroniseDefaultSachetFoldLines } from "./core/geometry/resolvers/resolveSachetLayout"
 import { constrainPouchSafeZone } from "../../../packages/cutter-engine/actions/safeZoneContours"
 import { constrainDoyGeometry } from "./core/geometry/resolvers/doyBounds"
 import { attachSelectionInteractions } from "./ui/selectionInteractions"
 import { syncLiddingCutterSize } from "./constraints/lidding"
 import { commitLiddingLaneElements } from "./constraints/liddingSteps"
 import { createDefaultLayerManager } from "./layers/layerManager"
-import { initLayersPanel } from "./ui/layersPanel"
+import { initLayersPanelV2 } from "./ui/layersPanelV2"
 import { selectionStore, type CutterElement, type CutterElementType } from "./state/selectionStore"
 import { applyBaseLayerCustomisation } from "./renderers/baseLayerCustomisation"
 import { updateSubMeasuresLayer } from "./renderers/flowwrapSvg"
@@ -1717,7 +1718,7 @@ let preservedSavedProjectRecords: unknown[] = []
 let unavailableProjectCards: UnavailableProjectPresentation[] = []
 let undoStack: Artboard[] = []
 let undoLocked = false
-let copyBuffer: { kind: "safe-zone" | "window" | "attribute-box" | "hanger-slot"; payload: unknown } | null = null
+let copyBuffer: { kind: "safe-zone" | "window" | "attribute-box" | "hanger-slot" | "fold-line" | "perf-lane"; payload: unknown } | null = null
 let openStartCardMenu: HTMLElement | null = null
 
 loadSavedProjectCards()
@@ -2018,7 +2019,8 @@ function updateArtboardProjectSpec(
   reason: ProjectUpdateReason
 ) {
   next = refreshFittedSafeZones(artboard.spec, constrainDoyGeometry(
-    artboard.packId === "pillow-pack" ? synchronisePillowFoldLines(next) : next
+    artboard.packId === "pillow-pack" ? synchronisePillowFoldLines(next)
+      : artboard.packId === "sachet-3-side-seal" ? synchroniseDefaultSachetFoldLines(next) : next
   ))
   next = {...next, safeZones: next.safeZones?.map(zone => {
     const before = artboard.spec.safeZones?.find(item => item.id === zone.id)
@@ -2143,6 +2145,11 @@ const clearActiveTool = () => {
 
 // Selectable objects handle their own double-click before this blank-canvas
 // fallback restores Pan outside the working area.
+previewFrame.addEventListener("dblclick", () => {
+  closeInspectorPanels()
+  flowDock.collapse()
+  toggleMainMenu(false)
+}, true)
 previewFrame.addEventListener("dblclick", event => {
   if (event.defaultPrevented || event.target instanceof Element && event.target.closest("[data-context-action]")) return
   if (clearActiveTool()) {
@@ -3002,6 +3009,9 @@ let dockPositionListenerAttached = false
 let repositionOverlays: () => void = () => {}
 let controlsApi: ReturnType<typeof initFlowwrapControls> | null = null
 const layerManager = createDefaultLayerManager()
+const layerChildStates = new Map<string, { visible: boolean; locked: boolean }>()
+const childStateKey = (layerId: string, index: number) => `${activeArtboardId}:${layerId}:${index}`
+const childState = (layerId: string, index: number) => layerChildStates.get(childStateKey(layerId, index)) ?? { visible: true, locked: false }
 const resolveSelectedLayerForCustomPanel = (selectedIds: string[]) => {
   const explicitLayer = selectedIds.find(id => id.startsWith("layer:"))
   if (explicitLayer) {
@@ -3064,24 +3074,24 @@ selectionStore.subscribe(state => {
   render(nextSpec)
 })
 
-const buildLayerChildrenMap = (spec: FlowwrapSpec) => {
+const buildLayerChildrenMap = (spec: FlowwrapSpec, svg?: SVGSVGElement) => {
   const children: Record<string, string[]> = {}
 
-  if ((spec.eyeMarks?.count ?? 0) > 1) {
+  if ((spec.eyeMarks?.count ?? 0) > 0) {
     children.eyemarks = Array.from({ length: spec.eyeMarks?.count ?? 0 }, (_, index) => {
       return `Eyemark ${index + 1}`
     })
   }
 
   const foldCount = spec.foldLines?.length ?? 0
-  if (foldCount > 1) {
+  if (foldCount > 0) {
     children["fold-lines"] = Array.from({ length: foldCount }, (_, index) => {
       return `Fold Line ${index + 1}`
     })
   }
 
   const safeZoneCount = spec.safeZones?.filter(zone => zone.enabled !== false).length ?? 0
-  if (safeZoneCount > 1) {
+  if (safeZoneCount > 0) {
     children["safe-zones"] = Array.from({ length: safeZoneCount }, (_, index) => {
       return `Safe Zone ${index + 1}`
     })
@@ -3090,32 +3100,76 @@ const buildLayerChildrenMap = (spec: FlowwrapSpec) => {
   const perfLaneCount = spec.perfs
     ? (spec.perfs.lanes?.length && spec.perfs.lanes.length > 0 ? spec.perfs.lanes.length : 1)
     : 0
-  if (perfLaneCount > 1) {
+  if (perfLaneCount > 0) {
     children["perf-lines"] = Array.from({ length: perfLaneCount }, (_, index) => {
-      return `MP ${index + 1}`
+      return `Perf ${index + 1}`
     })
   }
 
   const windowCount = spec.windows?.length ?? 0
-  if (windowCount > 1) {
+  if (windowCount > 0) {
     children.windows = Array.from({ length: windowCount }, (_, index) => {
       return `Window ${index + 1}`
     })
   }
 
-  const barcodeKinds = ["barcode", "qr", "bbe"] as const
-  const attrBoxes = spec.attributeBoxes?.filter(
-    box => box.enabled !== false && barcodeKinds.includes(box.kind as (typeof barcodeKinds)[number])
-  ) ?? []
-  if (attrBoxes.length > 1) {
+  const attrBoxes = spec.attributeBoxes?.filter(box => box.enabled !== false) ?? []
+  if (attrBoxes.length > 0) {
     children.notes = attrBoxes.map((box, index) => {
       const prefix =
-        box.kind === "barcode" ? "Barcode" : box.kind === "qr" ? "QR" : "BBE"
+        box.kind === "barcode" ? "Barcode" : box.kind === "qr" ? "QR" : box.kind === "bbe" ? "BBE" : box.kind === "label" ? "Label" : "Element"
       return `${prefix} ${index + 1}`
     })
   }
 
+  if (spec.customMeasures?.length) {
+    children["custom-measures"] = spec.customMeasures.map((_, index) => `Custom Measure ${index + 1}`)
+  }
+  if (svg) {
+    for (const layerId of ["measurement-guides", "measures"]) {
+      const layer = svg.querySelector<SVGGElement>(`[data-layer-id="${layerId}"]`)
+      if (!layer) continue
+      children[layerId] = [...layer.children].map((node, index) => {
+        const role = node.getAttribute("data-role") ?? node.id
+        return role ? role.replace(/[-_:]/g, " ").replace(/\b\w/g, char => char.toUpperCase()) : `Measure ${index + 1}`
+      })
+    }
+    const subGroups = [...svg.querySelectorAll<SVGGElement>('[id^="sub_measure"]')]
+    if (subGroups.length) children["sub-measures"] = subGroups.map(node => node.id.replace(/_/g, " ").replace(/\b\w/g, char => char.toUpperCase()))
+    const perfGroups = [...svg.querySelectorAll<SVGGElement>('[data-role="perf-measures"]')]
+    if (perfGroups.length) children["perf-measures"] = perfGroups.map((_, index) => `Perf Measures ${index + 1}`)
+    if (svg.querySelector("#cutter_legend")) {
+      children["cutter-legend"] = ["Header", "Product information", "Technical specification", "Product key", "Technical notes"]
+    }
+  }
+
   return children
+}
+
+const layerChildNodes = (svg: SVGSVGElement, spec: FlowwrapSpec, layerId: string, index: number): Element[] => {
+  if (layerId === "sub-measures") return [...svg.querySelectorAll('[id^="sub_measure"]')].slice(index, index + 1)
+  if (layerId === "perf-measures") return [...svg.querySelectorAll('[data-role="perf-measures"]')].slice(index, index + 1)
+  const layer = svg.querySelector<SVGGElement>(`[data-layer-id="${layerId}"]`)
+  if (!layer) return []
+  if (layerId === "measurement-guides" || layerId === "measures") return layer.children[index] ? [layer.children[index]] : []
+  if (layerId === "cutter-legend") {
+    const names = ["header", "product", "technical", "key", "notes"]
+    return [...layer.querySelectorAll("[data-legend-section]")].filter(node => node.getAttribute("data-legend-section") === names[index])
+  }
+  const attribute = layerId === "eyemarks" ? "data-eye-index"
+    : layerId === "fold-lines" ? "data-line-id"
+    : layerId === "safe-zones" ? "data-zone-id"
+    : layerId === "perf-lines" ? "data-lane-index"
+    : layerId === "windows" ? "data-window-id"
+    : layerId === "notes" ? "data-box-id"
+    : layerId === "custom-measures" ? "data-custom-measure-id" : null
+  if (!attribute) return []
+  const value = layerId === "fold-lines" ? spec.foldLines?.[index]?.id
+    : layerId === "safe-zones" ? spec.safeZones?.filter(zone => zone.enabled !== false)[index]?.id
+    : layerId === "windows" ? spec.windows?.[index]?.id
+    : layerId === "notes" ? spec.attributeBoxes?.filter(box => box.enabled !== false)[index]?.id
+    : layerId === "custom-measures" ? spec.customMeasures?.[index]?.id : String(index)
+  return [...layer.querySelectorAll(`[${attribute}]`)].filter(node => node.getAttribute(attribute) === value)
 }
 
 const applyLayerStateToSvg = (svg: SVGSVGElement | null) => {
@@ -3138,21 +3192,39 @@ const applyLayerStateToSvg = (svg: SVGSVGElement | null) => {
     node.style.pointerEvents = layer.locked ? "none" : "auto"
     node.setAttribute("data-layer-locked", layer.locked ? "true" : "false")
   })
+  for (const [layerId, selector] of [["sub-measures", '[id^="sub_measure"]'], ["perf-measures", '[data-role="perf-measures"]']] as const) {
+    const layer = layerMap.get(layerId)
+    if (!layer) continue
+    svg.querySelectorAll<SVGGElement>(selector).forEach(node => {
+      node.style.display = layer.visible ? "" : "none"
+      node.style.pointerEvents = layer.locked ? "none" : ""
+    })
+  }
+  if (currentSpec) {
+    for (const [layerId, labels] of Object.entries(buildLayerChildrenMap(currentSpec, svg))) {
+      labels.forEach((_, index) => {
+        const state = childState(layerId, index)
+        const parent = layerMap.get(layerId)
+        layerChildNodes(svg, currentSpec!, layerId, index).forEach(node => {
+          const item = node as SVGElement
+          item.style.display = parent?.visible === false || !state.visible ? "none" : ""
+          item.style.pointerEvents = parent?.locked || state.locked ? "none" : ""
+          item.setAttribute("data-layer-locked", String(Boolean(parent?.locked || state.locked)))
+        })
+      })
+    }
+  }
 }
 
 const collectAvailableLayerIds = (svg: SVGSVGElement, spec: FlowwrapSpec) => {
   const ids = new Set<string>()
-  const barcodeKinds = new Set(["barcode", "qr", "bbe"])
-  const hasBarcodeBoxes =
-    (spec.attributeBoxes ?? []).some(
-      box => box.enabled !== false && barcodeKinds.has(box.kind)
-    )
+  const hasAttributeBoxes = (spec.attributeBoxes ?? []).some(box => box.enabled !== false)
   svg.querySelectorAll<SVGGElement>("[data-layer-id]").forEach(node => {
     const layerId = node.getAttribute("data-layer-id")
     if (!layerId) {
       return
     }
-    if (layerId === "notes" && !hasBarcodeBoxes) {
+    if (layerId === "notes" && !hasAttributeBoxes) {
       return
     }
     if (node.childElementCount === 0) {
@@ -3160,6 +3232,8 @@ const collectAvailableLayerIds = (svg: SVGSVGElement, spec: FlowwrapSpec) => {
     }
     ids.add(layerId)
   })
+  if (svg.querySelector('[id^="sub_measure"]')) ids.add("sub-measures")
+  if (svg.querySelector('[data-role="perf-measures"]')) ids.add("perf-measures")
   return [...ids]
 }
 
@@ -3268,6 +3342,14 @@ const syncSelectionElements = (svg: SVGSVGElement) => {
     details: Partial<Pick<CutterElement, "bounds" | "rotation" | "constraints" | "metadata">> = {}
   ) => {
     const layer = layerById.get(layerId)
+    const index = layerId === "safe-zones" ? currentSpec?.safeZones?.filter(zone => zone.enabled !== false).findIndex(zone => `safe-zone:${zone.id}` === id)
+      : layerId === "windows" ? currentSpec?.windows?.findIndex(win => `window:${win.id}` === id)
+      : layerId === "fold-lines" ? currentSpec?.foldLines?.findIndex(line => `fold-line:${line.id}` === id)
+      : layerId === "notes" ? currentSpec?.attributeBoxes?.filter(box => box.enabled !== false).findIndex(box => `attribute-box:${box.id}` === id)
+      : layerId === "custom-measures" ? currentSpec?.customMeasures?.findIndex(measure => `custom-measure:${measure.id}` === id)
+      : layerId === "perf-lines" && id.startsWith("perf-lane:") ? Number(id.slice("perf-lane:".length))
+      : layerId === "eyemarks" && id.startsWith("eye-mark:") ? Number(id.slice("eye-mark:".length)) : -1
+    const state = index !== undefined && index >= 0 ? childState(layerId, index) : { visible: true, locked: false }
     elementMap.set(id, {
       id,
       type,
@@ -3275,8 +3357,8 @@ const syncSelectionElements = (svg: SVGSVGElement) => {
       layer: layerId,
       ...capabilities,
       ...details,
-      selectable: true,
-      locked: layer?.locked ?? false
+      selectable: state.visible,
+      locked: (layer?.locked ?? false) || state.locked
     })
   }
 
@@ -3520,7 +3602,7 @@ const isLayerDeletable = (layerId: string) =>
   ]).has(layerId)
 
 const isSubLayerDeletable = (layerId: string, _index: number) =>
-  new Set(["eyemarks", "fold-lines", "safe-zones", "perf-lines", "windows", "notes"]).has(
+  new Set(["eyemarks", "fold-lines", "safe-zones", "perf-lines", "windows", "notes", "custom-measures"]).has(
     layerId
   )
 
@@ -3668,11 +3750,10 @@ const deleteSubLayerFromSpec = (spec: FlowwrapSpec, layerId: string, index: numb
       return { ...spec, windows: windows.filter((_, i) => i !== index) }
     }
     case "notes": {
-      const barcodeKinds = new Set(["barcode", "qr", "bbe"])
       const boxes = spec.attributeBoxes ?? []
       const enabledIndexes = boxes
         .map((box, i) => ({ box, i }))
-        .filter(item => item.box.enabled !== false && barcodeKinds.has(item.box.kind))
+        .filter(item => item.box.enabled !== false)
       const target = enabledIndexes[index]
       if (!target) {
         return spec
@@ -3681,6 +3762,10 @@ const deleteSubLayerFromSpec = (spec: FlowwrapSpec, layerId: string, index: numb
         ...spec,
         attributeBoxes: boxes.filter((_, i) => i !== target.i)
       }
+    }
+    case "custom-measures": {
+      const item = spec.customMeasures?.[index]
+      return item ? { ...spec, customMeasures: spec.customMeasures?.filter(measure => measure.id !== item.id) } : spec
     }
     default:
       return spec
@@ -3841,6 +3926,19 @@ const copySelectedToBuffer = () => {
     copyBuffer = slot ? { kind: "hanger-slot", payload: slot } : null
     return
   }
+  if (id.startsWith("fold-line:")) {
+    const line = currentSpec.foldLines?.find(item => item.id === id.slice("fold-line:".length))
+    copyBuffer = line ? { kind: "fold-line", payload: line } : null
+    return
+  }
+  if (id.startsWith("perf-lane:") && currentSpec.perfs) {
+    const index = Number(id.slice("perf-lane:".length))
+    const lane = currentSpec.perfs.lanes?.[index] ?? (index === 0 ? {
+      originX: currentSpec.perfs.originX, originY: currentSpec.perfs.originY
+    } : null)
+    copyBuffer = lane ? { kind: "perf-lane", payload: { spec: currentSpec.perfs, lane } } : null
+    return
+  }
   copyBuffer = null
 }
 
@@ -3852,22 +3950,40 @@ const pasteFromBuffer = () => {
   const offset = 5
   const token = `${Date.now()}-${Math.round(Math.random() * 1000)}`
   let next = currentSpec
+  let appearanceFrom: string | null = null
+  let appearanceTo: string | null = null
   if (copyBuffer.kind === "safe-zone") {
     const source = copyBuffer.payload as FlowwrapSpec["safeZones"][number]
     const clone = { ...source, id: `safe-zone-${token}`, x: source.x + offset, y: source.y + offset }
     next = { ...next, safeZones: [...(next.safeZones ?? []), clone] }
+    appearanceFrom = `safe-zone:${source.id}`; appearanceTo = `safe-zone:${clone.id}`
   } else if (copyBuffer.kind === "window") {
     const source = copyBuffer.payload as FlowwrapSpec["windows"][number]
     const clone = { ...source, id: `window-${token}`, x: source.x + offset, y: source.y + offset }
     next = { ...next, windows: [...(next.windows ?? []), clone] }
+    appearanceFrom = `window:${source.id}`; appearanceTo = `window:${clone.id}`
   } else if (copyBuffer.kind === "attribute-box") {
     const source = copyBuffer.payload as FlowwrapSpec["attributeBoxes"][number]
     const clone = { ...source, id: `attribute-box-${token}`, x: source.x + offset, y: source.y + offset }
     next = { ...next, attributeBoxes: [...(next.attributeBoxes ?? []), clone] }
+    appearanceFrom = `attribute-box:${source.id}`; appearanceTo = `attribute-box:${clone.id}`
   } else if (copyBuffer.kind === "hanger-slot") {
     const source = copyBuffer.payload as FlowwrapSpec["hangerSlots"][number]
     const clone = { ...source, id: `hanger-slot-${token}`, centerX: source.centerX + offset }
     next = { ...next, hangerSlots: [...(next.hangerSlots ?? []), clone] }
+    appearanceFrom = `hanger-slot:${source.id}`; appearanceTo = `hanger-slot:${clone.id}`
+  } else if (copyBuffer.kind === "fold-line") {
+    const source = copyBuffer.payload as NonNullable<FlowwrapSpec["foldLines"]>[number]
+    next = { ...next, foldLines: [...(next.foldLines ?? []), { ...source, id: `fold-line-${token}`, offset: source.offset + offset }] }
+  } else if (copyBuffer.kind === "perf-lane") {
+    const source = copyBuffer.payload as { spec: NonNullable<FlowwrapSpec["perfs"]>; lane: NonNullable<NonNullable<FlowwrapSpec["perfs"]>["lanes"]>[number] }
+    const perfs = next.perfs ?? source.spec
+    const existing = perfs.lanes?.length ? perfs.lanes : [{ originX: perfs.originX, originY: perfs.originY }]
+    const lane = { ...source.lane, id: `perf-${token}`, originX: source.lane.originX + offset }
+    next = { ...next, perfs: { ...perfs, lanes: [...existing, lane] } }
+  }
+  if (appearanceFrom && appearanceTo && currentSpec.objectAppearance?.[appearanceFrom]) {
+    next = { ...next, objectAppearance: { ...next.objectAppearance, [appearanceTo]: structuredClone(currentSpec.objectAppearance[appearanceFrom]) } }
   }
   commitSpecUpdate(next)
 }
@@ -3881,7 +3997,7 @@ layerManager.subscribe(() => {
   }
 })
 try {
-  initLayersPanel(layersPanelHost, layerManager, {
+  initLayersPanelV2(layersPanelHost, layerManager, {
     onSelectLayer: (layerId, multi) => {
       customPanelApi.setActiveLayer(layerId)
       if (!selectionStore.getState().selectionMode) {
@@ -3895,20 +4011,31 @@ try {
         selectionStore.toggleSelection(selectionId, true)
       }
     },
+    onSelectSubLayer: (layerId, index) => {
+      const spec = currentSpec
+      if (!spec) return
+      const id = layerId === "eyemarks" ? `eye-mark:${index}`
+        : layerId === "fold-lines" ? `fold-line:${spec.foldLines?.[index]?.id}`
+        : layerId === "safe-zones" ? `safe-zone:${spec.safeZones?.filter(zone => zone.enabled !== false)[index]?.id}`
+        : layerId === "perf-lines" ? `perf-lane:${index}`
+        : layerId === "windows" ? `window:${spec.windows?.[index]?.id}`
+        : layerId === "notes" ? `attribute-box:${spec.attributeBoxes?.filter(box => box.enabled !== false)[index]?.id}`
+        : layerId === "custom-measures" ? `custom-measure:${spec.customMeasures?.[index]?.id}`
+        : `layer:${layerId}`
+      if (!id.includes("undefined")) selectionStore.setSelectedElementIds([id])
+    },
     canDeleteLayer: isLayerDeletable,
     canDeleteSubLayer: isSubLayerDeletable,
-    getSubLayerState: (layerId, _index) => {
-      const layer = layerManager.getLayerById(layerId)
-      return {
-        visible: layer?.visible ?? true,
-        locked: layer?.locked ?? false
-      }
+    getSubLayerState: (layerId, index) => childState(layerId, index),
+    onToggleSubLayerVisibility: (layerId, index) => {
+      const before = childState(layerId, index)
+      layerChildStates.set(childStateKey(layerId, index), { ...before, visible: !before.visible })
+      layerManager.setLayerChildrenMap(buildLayerChildrenMap(currentSpec!, getCurrentSvg() ?? undefined))
     },
-    onToggleSubLayerVisibility: (layerId, _index) => {
-      layerManager.toggleLayerVisibility(layerId)
-    },
-    onToggleSubLayerLock: (layerId, _index) => {
-      layerManager.toggleLayerLock(layerId)
+    onToggleSubLayerLock: (layerId, index) => {
+      const before = childState(layerId, index)
+      layerChildStates.set(childStateKey(layerId, index), { ...before, locked: !before.locked })
+      layerManager.setLayerChildrenMap(buildLayerChildrenMap(currentSpec!, getCurrentSvg() ?? undefined))
     },
     onDeleteSubLayer: (layerId, index) => {
       if (!currentSpec) {
@@ -3965,13 +4092,13 @@ function refreshPouchPreview() {
     // Reserve room around the selected face for preview dimensions without
     // widening its crop into the neighbouring face or hidden trim.
     const fitted = fitPouchPreviewElement(viewport, { width: Math.max(1, bounds.width - 176), height: Math.max(1, bounds.height - 176) })
-    source.style.width = `${fitted.width}px`
-    source.style.height = `${fitted.height}px`
+    source.style.width = `${fitted.width * .45}px`
+    source.style.height = `${fitted.height * .45}px`
     source.style.flex = "none"
     // Centre the unturned box on the canvas (it may be taller than the canvas
     // before its ±90° turn), so the turned face sits in the middle.
     source.style.alignSelf = "flex-start"
-    source.style.margin = `${(bounds.height - fitted.height) / 2}px ${(bounds.width - fitted.width) / 2}px`
+    source.style.margin = `${(bounds.height - fitted.height * .45) / 2}px ${(bounds.width - fitted.width * .45) / 2}px`
   } else {
     viewBoxBase = normalViewBoxBase
     for (const property of ["width", "height", "flex", "align-self", "margin"]) source.style.removeProperty(property)
@@ -4304,6 +4431,7 @@ function render(spec: FlowwrapSpec) {
     applyBaseLayerCustomisation(svg, spec)
     applyLayerStateToSvg(svg)
     layerManager.setAvailableLayerIds(collectAvailableLayerIds(svg, spec))
+    layerManager.setLayerChildrenMap(buildLayerChildrenMap(spec, svg))
     const initialViewBox = svg.viewBox.baseVal
     viewBoxBase = {
       x: initialViewBox.x,

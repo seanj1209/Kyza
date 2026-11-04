@@ -35,8 +35,5 @@ export function synchronisePillowFoldLines(spec: FlowwrapSpec): FlowwrapSpec {
 }
 
 export function resolvePillowLayout(spec: FlowwrapSpec): ResolvedPillowLayout {
-  return resolveFlowwrapLayout({
-    ...spec,
-    foldLines: resolveSymmetricPillowFoldLines(spec)
-  },"pillow-pack")
+  return resolveFlowwrapLayout(synchronisePillowFoldLines(spec), "pillow-pack")
 }

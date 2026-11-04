@@ -190,16 +190,16 @@ export function showPouchPreviewMeasures(source: SVGSVGElement, viewport: PouchP
     group.setAttribute("aria-label", label)
     const horizontal = Math.abs(y1 - y2) < .001
     const midX = (x1 + x2) / 2, midY = (y1 + y2) / 2
-    let font = sub ? 6 : 8
+    let font = sub ? 4.5 : 6
     const stroke = sub ? .4 : .6, cap = sub ? 2 : 4
     const span = horizontal ? Math.abs(x2 - x1) : Math.abs(y2 - y1)
     const fits = (text: string) => text.length * font * .55 <= span - .5
     let display = label
     if (!fits(display)) display = display.replace(/\s+/g, "")
-    while (!fits(display) && font > 3) font -= .5
+    while (!fits(display) && font > 2.5) font -= .5
     if (!fits(display)) {
       display = display.replace(/mm$/i, "")
-      while (font < (sub ? 6 : 8) && display.length * (font + .5) * .55 <= span - .5) font += .5
+      while (font < (sub ? 4.5 : 6) && display.length * (font + .5) * .55 <= span - .5) font += .5
     }
     const short = !fits(display)
     const gap = short ? 0 : Math.min(span, display.length * font * .3 + 3) / 2

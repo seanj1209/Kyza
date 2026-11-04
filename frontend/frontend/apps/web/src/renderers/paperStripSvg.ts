@@ -220,10 +220,11 @@ export function renderResolvedPaperStrip(
           label.setAttribute("transform", `rotate(-90 ${centerX} ${centerY})`)
           label.setAttribute("text-anchor", "middle")
           label.setAttribute("dominant-baseline", "middle")
-          label.setAttribute("font-size", "5")
           label.setAttribute("fill", "#731515")
           label.setAttribute("data-role", "pre-slit-offcut-label")
-          label.textContent = 'PIFA 3 "OFF-CUT"'
+          label.setAttribute("font-weight", "700")
+          label.setAttribute("font-size", "5")
+          label.textContent = "OFF-CUT"
           substrateLayer.appendChild(label)
         }
       })

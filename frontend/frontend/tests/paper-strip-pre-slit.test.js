@@ -99,8 +99,8 @@ try {
     equal(pre.querySelectorAll('[data-role="pre-slit-working-area"]').length, 6, "Remaining paper lanes retain the chosen substrate")
     check([...pre.querySelectorAll('[data-role="pre-slit-offcut"]')].every(node => node.getAttribute("fill") === "#e02b2b" && node.getAttribute("opacity") === "0.5"), "Off-cuts are red at 50%")
     check([...pre.querySelectorAll('[data-role="pre-slit-working-area"]')].every(node => node.getAttribute("opacity") === "0.8"), "Working stock is at 80%")
-    check([...pre.querySelectorAll('[data-role="pre-slit-offcut-label"]')].every(node => node.textContent === 'PIFA 3 "OFF-CUT"' && node.getAttribute("transform")?.startsWith("rotate(-90")), "Off-cut text reads vertically in PIFA 3")
-    check(!pre.querySelector('[data-role="paper-strip-measure-main-width"], [data-role="paper-strip-measure-main-height"]'), "Pre-slit omits repeat and height measures")
+    check([...pre.querySelectorAll('[data-role="pre-slit-offcut-label"]')].every(node => node.textContent === 'OFF-CUT' && node.getAttribute("font-weight") === "700" && node.getAttribute("transform")?.startsWith("rotate(-90")), "Off-cut text is bold and vertical")
+    check(pre.querySelectorAll('[data-role="paper-strip-measure-main-width"]').length === 1 && !pre.querySelector('[data-role="paper-strip-measure-main-height"], [data-role^="paper-strip-measure-main-step-width"]'), "Pre-slit has one full-width top measure and no height or per-step top measures")
     const sub = [...pre.querySelectorAll('[data-role^="paper-strip-measure-solid"], [data-role^="paper-strip-measure-clear-strip"]')]
     equal(sub.map(node => node.querySelector("text").textContent), Array(2).fill(["175mm", "100mm", "280mm", "100mm", "120mm"]).flat(), "Offcuts and strips retain exact widths without hidden fold subdivisions")
     const bounds = pre.viewBox.baseVal

@@ -205,7 +205,9 @@ export function createDefaultLayerManager() {
     { id: "die-cut-outs", name: "Die-Cut Outs", expanded: false, order: 5 },
     { id: "openings", name: "Openings", expanded: false, order: 6 },
     { id: "windows", name: "Windows", expanded: false, order: 7 },
-    { id: "barcodes-bbes", name: "Barcodes / BBEs", expanded: false, order: 8 }
+    { id: "barcodes-bbes", name: "Barcodes / BBEs", expanded: false, order: 8 },
+    { id: "measures", name: "Measures", expanded: false, order: 9 },
+    { id: "legend", name: "Legend", expanded: false, order: 10 }
   ]
   const layers: Layer[] = [
     { id: "cutter-outline", name: "Cutter", groupId: "pack-base", visible: true, locked: false, order: 0, exportRole: "cut" },
@@ -226,7 +228,13 @@ export function createDefaultLayerManager() {
     { id: "grip-seals", name: "Grip Seal (Default)", groupId: "openings", visible: true, locked: false, order: 1, exportRole: "annotation" },
     { id: "windows", name: "Windows", groupId: "windows", visible: true, locked: false, order: 0, exportRole: "annotation" },
     { id: "clear-strip-window", name: "Clear Strip / Window", groupId: "windows", visible: true, locked: false, order: 1, exportRole: "guide" },
-    { id: "notes", name: "Barcodes / BBEs", groupId: "barcodes-bbes", visible: true, locked: false, order: 0, exportRole: "annotation" }
+    { id: "notes", name: "Labels / Codes / BBEs", groupId: "barcodes-bbes", visible: true, locked: false, order: 0, exportRole: "annotation" },
+    { id: "measurement-guides", name: "Dimensions", groupId: "measures", visible: true, locked: false, order: 0, exportRole: "annotation" },
+    { id: "measures", name: "Dimensions", groupId: "measures", visible: true, locked: false, order: 1, exportRole: "annotation" },
+    { id: "sub-measures", name: "Sub Measures", groupId: "measures", visible: true, locked: false, order: 2, exportRole: "annotation" },
+    { id: "perf-measures", name: "Perf Measures", groupId: "measures", visible: true, locked: false, order: 3, exportRole: "annotation" },
+    { id: "custom-measures", name: "Custom Measures", groupId: "measures", visible: true, locked: false, order: 4, exportRole: "annotation" },
+    { id: "cutter-legend", name: "Cutter Legend", groupId: "legend", visible: true, locked: false, order: 0, exportRole: "annotation" }
   ]
   return new LayerManager(groups, layers)
 }

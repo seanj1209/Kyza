@@ -212,6 +212,17 @@
   text-transform: none;
 }
 :root body .layers-group-list { gap: 12px; }
+:root body .layers-panel-v2 { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 10px; min-height: 230px; }
+:root body .layers-category-tabs { display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--kyza-border); padding-right: 6px; }
+:root body .layers-category-tab { min-height: 34px; width: 100%; border: 0; border-radius: 8px; background: transparent; color: var(--kyza-text-muted); font-size: 11px; text-align: left; padding: 6px 7px; cursor: pointer; }
+:root body .layers-category-tab[aria-selected="true"] { background: var(--kyza-panel-raised); color: var(--kyza-accent-text); font-weight: 700; box-shadow: inset 2px 0 var(--kyza-accent-text); }
+:root body .layers-category-content { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+:root body .layers-panel-v2 .layer-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 3px; }
+:root body .layers-panel-v2 .layer-row-main { flex: 1 1 100px; min-width: 0; }
+:root body .layers-panel-v2 .layer-child-list { flex-basis: 100%; margin-left: 8px; }
+:root body .layers-panel-v2 .layer-child-row { display: flex; align-items: center; justify-content: space-between; gap: 3px; padding: 3px 0; }
+:root body .layers-panel-v2 .layer-child-name { border: 0; background: transparent; color: var(--kyza-text); font-size: 11px; text-align: left; cursor: pointer; min-width: 0; }
+:root body .layers-panel-v2 .layer-row-actions { display: flex; }
 :root body .layers-group { gap: 5px; }
 :root body .layers-group-header {
   min-height: 34px;

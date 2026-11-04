@@ -8,7 +8,7 @@ const NS="http://www.w3.org/2000/svg"
 /** Drag either endpoint to resize/angle/re-anchor; drag the dimension to move it. */
 export function attachCustomMeasureInteractions(svg:SVGSVGElement,getSpec:()=>FlowwrapSpec|null,selection:SelectionStore,commit:(spec:FlowwrapSpec)=>void,onSelect:()=>void) {
   const handles=document.createElementNS(NS,"g");handles.setAttribute("data-export-ui","true");handles.setAttribute("data-role","custom-measure-handles");svg.append(handles)
-  let drag:{original:CustomMeasure;next:CustomMeasure;end:"start"|"end"|"move";origin:MeasurePoint;pointer:number;group:SVGGElement}|null=null
+  let drag:{original:CustomMeasure;next:CustomMeasure;end:"start"|"end"|"move";origin:MeasurePoint;pointer:number;group:SVGGElement;angleUnlocked:boolean}|null=null
   const local=(screen:MeasurePoint)=>{const m=svg.getScreenCTM();if(!m)return null;const p=svg.createSVGPoint();p.x=screen.x;p.y=screen.y;return p.matrixTransform(m.inverse())}
   const refresh=()=>{
     handles.replaceChildren();const spec=getSpec();if(!spec)return
@@ -34,7 +34,7 @@ export function attachCustomMeasureInteractions(svg:SVGSVGElement,getSpec:()=>Fl
     if(!origin||!group)return
     e.preventDefault();e.stopImmediatePropagation();onSelect();selection.setSelectedElementIds([`custom-measure:${id}`])
     if(!svg.isConnected)return
-    drag={original:m,next:m,end:(target?.getAttribute("data-measure-end") as "start"|"end")??"move",origin,pointer:e.pointerId,group};svg.setPointerCapture(e.pointerId);refresh()
+    drag={original:m,next:m,end:(target?.getAttribute("data-measure-end") as "start"|"end")??"move",origin,pointer:e.pointerId,group,angleUnlocked:Math.abs(m.end.x-m.start.x)>1&&Math.abs(m.end.y-m.start.y)>1};svg.setPointerCapture(e.pointerId);refresh()
   }
   const move=(e:PointerEvent)=>{
     if(!drag||e.pointerId!==drag.pointer)return
@@ -42,7 +42,15 @@ export function attachCustomMeasureInteractions(svg:SVGSVGElement,getSpec:()=>Fl
     const hit=e.altKey||drag.end==="move"?null:findMeasureEdge(collectMeasureEdges(svg),{x:e.clientX,y:e.clientY})
     const p=local(hit?.screen??{x:e.clientX,y:e.clientY});if(!p)return
     if(drag.end==="move"){const dx=p.x-drag.origin.x,dy=p.y-drag.origin.y;drag.next={...drag.original,start:{x:drag.original.start.x+dx,y:drag.original.start.y+dy},end:{x:drag.original.end.x+dx,y:drag.original.end.y+dy}}}
-    else drag.next={...drag.original,[drag.end]:{x:p.x,y:p.y}}
+    else {
+      const fixed = drag.original[drag.end === "start" ? "end" : "start"]
+      const vertical = Math.abs(drag.original.end.y - drag.original.start.y) >= Math.abs(drag.original.end.x - drag.original.start.x)
+      const matrix = svg.getScreenCTM()
+      const pixelsPerUnit = matrix ? Math.hypot(matrix.a, matrix.b) : 1
+      const lateralPx = Math.abs((vertical ? p.x - fixed.x : p.y - fixed.y) * pixelsPerUnit)
+      if (lateralPx >= 24) drag.angleUnlocked = true
+      drag.next = {...drag.original,[drag.end]:drag.angleUnlocked ? {x:p.x,y:p.y} : vertical ? {x:fixed.x,y:p.y} : {x:p.x,y:fixed.y}}
+    }
     drawCustomMeasure(drag.group,drag.next,spec);refresh();e.stopImmediatePropagation()
   }
   const finish=(e:PointerEvent)=>{
