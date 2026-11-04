@@ -40,6 +40,7 @@ import { attachKSealPouchInteractions } from "./ui/kSealPouchInteractions"
 import { attachPaperStripInteractions } from "./ui/paperStripInteractions"
 import { attachPaperStripEditing } from "./ui/paperStripEditing"
 import { createPreSlitView } from "./ui/preSlitView"
+import { parseCutterExport } from "./ui/importCutterExport"
 import { updatePaperStripContrast } from "./constraints/paperStripAppearance"
 import { commitPaperStripStepEdit } from "../../../packages/cutter-engine/actions/paperStripSteps"
 import { initialiseSachetSteps, commitSachetStepEdit } from "../../../packages/cutter-engine/actions/sachetSteps"
@@ -1429,6 +1430,52 @@ decorateStartAction(customProjectButton, cutterIcons.box, "For Trials and Bespok
 const importProjectButton = document.createElement("button")
 importProjectButton.type = "button"
 importProjectButton.textContent = "Import Project"
+const importCutterButton = document.createElement("button")
+importCutterButton.type = "button"
+importCutterButton.textContent = "Import Cutter"
+decorateStartAction(importCutterButton, '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>', "Open a supported Kyza cutter JSON export")
+const importCutterInput = document.createElement("input")
+importCutterInput.type = "file"
+importCutterInput.accept = "application/json,.json"
+importCutterInput.hidden = true
+importCutterButton.addEventListener("click", () => importCutterInput.click())
+importCutterInput.addEventListener("change", async () => {
+  const file = importCutterInput.files?.[0]
+  importCutterInput.value = ""
+  if (!file) return
+  if (file.size > 10 * 1024 * 1024) { showImportProjectError("Choose a cutter JSON file smaller than 10 MB."); return }
+  try {
+    const text = await file.text()
+    const candidate = JSON.parse(text) as { cutterSpecification?: { packTypeId?: unknown } }
+    const packRestriction = betaProjectRestriction({ packId: candidate?.cutterSpecification?.packTypeId })
+    if (packRestriction) { showImportProjectError(packRestriction); return }
+    const imported = parseCutterExport(text)
+    if (!imported) { showImportProjectError("This is not a Kyza cutter export."); return }
+    const restriction = betaProjectRestriction({ packId: imported.packId, spec: imported.spec })
+    if (restriction) { showImportProjectError(restriction); return }
+    const nextPack = getPackModule(imported.packId)
+    if (!nextPack) { showImportProjectError(BETA_RESTRICTION_MESSAGE); return }
+    const active = createArtboard()
+    activeArtboardId = active.id
+    active.packId = imported.packId
+    pack = nextPack
+    applyMeasureDefaultsForPack(nextPack.id)
+    active.name = imported.name
+    const spec = initialiseArtboardProject(active, cloneSpec(imported.spec) as FlowwrapSpec, "save-load")
+    if (!spec) return
+    active.started = true
+    active.savedProjectId = undefined
+    active.viewBoxState = { zoom: 1, panX: 0, panY: 0 }
+    viewBoxState = { ...active.viewBoxState }
+    currentSpec = spec
+    preSlitView.set(active.id, imported.viewMode ?? "normal")
+    updateArtboardTabs()
+    controlsApi?.syncSpecFromProject(spec)
+    customPanelApi.setSpec(spec)
+    hideStartOverlay()
+    render(spec)
+  } catch { showImportProjectError("The cutter file could not be imported. Your saved work has not been changed.") }
+})
 decorateStartAction(importProjectButton, '<path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/>', "Open a supported Kyza project JSON file")
 const importProjectInput = document.createElement("input")
 importProjectInput.type = "file"
@@ -1490,7 +1537,7 @@ chooseButton.addEventListener("click", () => {
     choosePanel.querySelector<HTMLTextAreaElement>("textarea")?.focus()
   }
 })
-startFeatureRow.append(resumeWorkButton, importProjectButton, importProjectInput, importProjectStatus, chooseButton, choosePanel)
+startFeatureRow.append(resumeWorkButton, importProjectButton, importProjectInput, importCutterButton, importCutterInput, importProjectStatus, chooseButton, choosePanel)
 const startPackCanvas = document.createElement("div")
 startPackCanvas.className = "start-pack-canvas"
 startPackCanvas.append(startPackSection, startFeatureRow)

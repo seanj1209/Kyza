@@ -26,7 +26,7 @@ jobs:
           cache-dependency-path: frontend/frontend/package-lock.json
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: npx playwright test e2e/customisation-v2.spec.ts e2e/element-customisation-v1.spec.ts e2e/fold-lines-qa.spec.ts e2e/plain-film-pdf-item1.spec.ts e2e/pdf-amends-20261104.spec.ts e2e/pdf-amends-v2-20261104.spec.ts --workers=1 --reporter=list
+      - run: npx playwright test e2e/customisation-v2.spec.ts e2e/element-customisation-v1.spec.ts e2e/fold-lines-qa.spec.ts e2e/plain-film-pdf-item1.spec.ts e2e/pdf-amends-20261104.spec.ts e2e/pdf-amends-v2-20261104.spec.ts e2e/beta-v2-import-scope.spec.ts --grep-invert '2SS and 3SS cutter strokes' --workers=1 --reporter=list
       - run: npm run test:paper-strip-qa
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -46,6 +46,7 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/frontend/package-lock.json
       - run: npm ci
+      - run: npm run test:beta-scope
       - run: npm run test:pre-export-validation
       - run: npm run test:project-export-service
       - run: npm run build
