@@ -91,10 +91,16 @@ try {
     button.click()
     check(toggles === 1 && button.getAttribute("aria-checked") === "true", "Toggle state and callback")
     const pre = render(spec, view.renderOptions("strip-a", "paper-strip"))
-    equal([...pre.querySelectorAll('[data-layer-id]')].map(node => node.getAttribute("data-layer-id")), ["cutter-outline", "measurement-guides"], "Pre-slit contains only cutter and measures, including with legend enabled")
+    equal([...pre.querySelectorAll('[data-layer-id]')].map(node => node.getAttribute("data-layer-id")), ["substrate", "cutter-outline", "measurement-guides"], "Pre-slit contains stock fills, cutter and measures, including with legend enabled")
     check(pre.querySelectorAll('[data-role="cutter-outline"]').length === 2, "Both repeats are visible")
     check(pre.querySelectorAll('[data-role="pre-slit-cut"]').length === 8, "Every repeat contains both slits")
-    check(!pre.querySelector('[data-role*="seal"], [data-role="eye-mark"], [data-role*="working-area"]'), "Seals, eyes and technical dimension rows are omitted")
+    check(!pre.querySelector('[data-role*="seal"], [data-role="eye-mark"]'), "Seals and eyes are omitted")
+    equal(pre.querySelectorAll('[data-role="pre-slit-offcut"]').length, 4, "Each clear lane has a red off-cut")
+    equal(pre.querySelectorAll('[data-role="pre-slit-working-area"]').length, 6, "Remaining paper lanes retain the chosen substrate")
+    check([...pre.querySelectorAll('[data-role="pre-slit-offcut"]')].every(node => node.getAttribute("fill") === "#e02b2b" && node.getAttribute("opacity") === "0.5"), "Off-cuts are red at 50%")
+    check([...pre.querySelectorAll('[data-role="pre-slit-working-area"]')].every(node => node.getAttribute("opacity") === "0.8"), "Working stock is at 80%")
+    check([...pre.querySelectorAll('[data-role="pre-slit-offcut-label"]')].every(node => node.textContent === 'OFF-CUT' && node.getAttribute("font-weight") === "700" && node.getAttribute("transform")?.startsWith("rotate(-90")), "Off-cut text is bold and vertical")
+    check(pre.querySelectorAll('[data-role="paper-strip-measure-main-width"]').length === 1 && !pre.querySelector('[data-role="paper-strip-measure-main-height"], [data-role^="paper-strip-measure-main-step-width"]'), "Pre-slit has one full-width top measure and no height or per-step top measures")
     const sub = [...pre.querySelectorAll('[data-role^="paper-strip-measure-solid"], [data-role^="paper-strip-measure-clear-strip"]')]
     equal(sub.map(node => node.querySelector("text").textContent), Array(2).fill(["175mm", "100mm", "280mm", "100mm", "120mm"]).flat(), "Offcuts and strips retain exact widths without hidden fold subdivisions")
     const bounds = pre.viewBox.baseVal
@@ -112,6 +118,7 @@ try {
       const parsed = new DOMParser().parseFromString(built.svgMarkup, "image/svg+xml")
       check(!parsed.querySelector("parsererror"), `${format} output is valid XML`)
       check(parsed.querySelectorAll('[data-role^="paper-strip-measure-solid"], [data-role^="paper-strip-measure-clear-strip"]').length === 10, `${format} retains offcuts`)
+      check(parsed.querySelectorAll('[data-role="pre-slit-offcut"]').length === 4 && parsed.querySelectorAll('[data-role="pre-slit-working-area"]').length === 6, `${format} retains stock fills`)
       check(!parsed.querySelector('[data-layer-id="seal-areas"], [data-layer-id="eyemarks"], [data-layer-id="notes"], #cutter_legend'), `${format} omits hidden elements`)
       if (format === "ai-compatible-svg") check(built.svgMarkup.includes('inkscape:groupmode="layer"'), "Illustrator-compatible SVG layers are retained")
     }

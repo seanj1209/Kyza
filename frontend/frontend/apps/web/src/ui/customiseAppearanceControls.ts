@@ -206,5 +206,5 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
     const next = e.key === "ArrowRight" || e.key === "ArrowDown" ? (index + 1) % buttons.length : e.key === "ArrowLeft" || e.key === "ArrowUp" ? (index - 1 + buttons.length) % buttons.length : -1
     if (next >= 0) { e.preventDefault(); buttons[next].click(); buttons[next].focus() }
   })
-  return { refresh,selectTarget(id:string){refresh();if(availableAppearanceTargets(getSpec()!).some(t=>t.id===id)){selected=id;draw()}} }
+  return { refresh,selectTarget(id:string){refresh();if(selected!==id&&availableAppearanceTargets(getSpec()!).some(t=>t.id===id)){selected=id;draw()}} }
 }

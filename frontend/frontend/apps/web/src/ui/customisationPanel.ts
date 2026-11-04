@@ -386,6 +386,7 @@ export function initCustomisationPanel({
       request: {
         format: action.format,
         tierId: action.tierId,
+        paperStripView: getCurrentSvg?.()?.getAttribute("data-paper-strip-view") === "pre-slit" ? "pre-slit" : "normal",
         ...(source ? { source } : {}),
         options: {
           includeLayers: true,
@@ -559,14 +560,31 @@ export function initCustomisationPanel({
       button.addEventListener("mouseenter",()=>{icon.src=ICON_COLOUR_HOVER})
       button.addEventListener("mouseleave",()=>{icon.src=ICON_COLOUR_STATIC})
     }
+    const popup = document.createElement("div")
+    popup.className = "customisation-colour-popover"
+    popup.hidden = true
+    button.setAttribute("aria-expanded", "false")
     button.addEventListener("click", () => {
-      picker.click()
+      popup.hidden = !popup.hidden
+      button.setAttribute("aria-expanded", String(!popup.hidden))
+    })
+    document.addEventListener("pointerdown", event => {
+      if (!row.contains(event.target as Node) && !popup.hidden) {
+        popup.hidden = true
+        button.setAttribute("aria-expanded", "false")
+      }
     })
     wrap.appendChild(text)
     wrap.appendChild(button)
-    wrap.appendChild(picker)
     row.appendChild(wrap)
-    const refreshPalette = colourPalette(row, () => text.value, hex => {
+    const nativeButton = document.createElement("button")
+    nativeButton.type = "button"
+    nativeButton.textContent = "More colours"
+    nativeButton.setAttribute("aria-label", "More colours")
+    nativeButton.addEventListener("click", () => picker.click())
+    popup.append(nativeButton, picker)
+    row.appendChild(popup)
+    const refreshPalette = colourPalette(popup, () => text.value, hex => {
       text.value = hex; picker.value = hex; text.dispatchEvent(new Event("change", { bubbles: true }))
     })
     text.addEventListener("change", () => { rememberColour(text.value); refreshPalette() })

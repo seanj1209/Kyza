@@ -105,6 +105,23 @@ export type ResolvedSachetLayout = {
 
 export type SachetMeasureSegment = { role: "overall" | "lane" | "trim"; x1: number; x2: number; value: number; side?: "left" | "right" }
 
+/** Keep the two default sachet construction folds at the same 1:2:1 live-web spacing as Pillow. */
+export function synchroniseDefaultSachetFoldLines(spec: FlowwrapSpec): FlowwrapSpec {
+  const lines = spec.foldLines ?? []
+  if (!lines.some(line => line.id === "sachet-fold-left" || line.id === "sachet-fold-right")) return spec
+  const left = spec.seals?.left ?? spec.seal
+  const right = spec.seals?.right ?? spec.seal
+  const quarter = Math.max(0, spec.width - left - right) / 4
+  return {
+    ...spec,
+    foldLines: lines.map(line => line.id === "sachet-fold-left"
+      ? { ...line, orientation: "vertical", offset: quarter }
+      : line.id === "sachet-fold-right"
+        ? { ...line, orientation: "vertical", offset: quarter * 3 }
+        : line)
+  }
+}
+
 /** Amends v12: horizontal sachet dimensions as pure data. Overall always spans every
  * step plus each selected trim side; trim runs from the outer cutter edge to the trim's
  * inner boundary; lanes start after the left trim. Works for one step or many. */
@@ -133,6 +150,7 @@ function getLaneSide(stepCount: number, laneIndex: number): "A" | "B" {
 }
 
 export function resolveSachetLayout(spec: FlowwrapSpec): ResolvedSachetLayout {
+  spec = synchroniseDefaultSachetFoldLines(spec)
   const geometry = resolveFlowwrapGeometry(spec)
   const seals = resolveSealSizes(spec)
   const margin = DEFAULT_CANVAS_MARGIN

@@ -57,6 +57,17 @@ export function renderResolvedPlainWeb(
       line.setAttribute("stroke", "#d23429")
       line.setAttribute("stroke-width", ".35")
       group.appendChild(line)
+      const horizontal = y1 === y2
+      for (const [x, y] of [[x1, y1], [x2, y2]]) {
+        const cap = document.createElementNS(SVG_NS, "line")
+        cap.setAttribute("x1", String(horizontal ? x : x - 2))
+        cap.setAttribute("y1", String(horizontal ? y - 2 : y))
+        cap.setAttribute("x2", String(horizontal ? x : x + 2))
+        cap.setAttribute("y2", String(horizontal ? y + 2 : y))
+        cap.setAttribute("stroke", "#d23429")
+        cap.setAttribute("stroke-width", ".35")
+        group.appendChild(cap)
+      }
       const text = document.createElementNS(SVG_NS, "text")
       text.setAttribute("x", String(tx)); text.setAttribute("y", String(ty))
       text.setAttribute("text-anchor", "middle")

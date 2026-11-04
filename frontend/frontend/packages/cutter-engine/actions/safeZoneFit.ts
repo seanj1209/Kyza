@@ -1,4 +1,5 @@
 import { resolveFlowwrapGeometry } from "../../../apps/web/src/geometry/flowwrapGeometry"
+import { resolveSymmetricPillowFoldLines } from "../../../apps/web/src/core/geometry/resolvers/resolvePillowLayout"
 import { buildFoldLines } from "../../../apps/web/src/geometry/foldLines"
 import { DEFAULT_SEAL_CLEARANCE_MM } from "../../../apps/web/src/constraints/flowwrap"
 import { resolveDoyLayout } from "../../../apps/web/src/core/geometry/resolvers/resolveDoyLayout"
@@ -61,7 +62,11 @@ export function getSafeZoneFit(spec: FlowwrapSpec, zoneId: string): SafeZoneFitR
   const xs: Boundary[] = [{position:0,kind:seals.left>0?"seal":"open"},{position:live.width,kind:seals.right>0?"seal":"open"}]
   const ys: Boundary[] = [{position:0,kind:seals.top>0?"seal":"open"},{position:live.height,kind:seals.bottom>0?"seal":"open"}]
   // Use the same fold segments as the engine renderer, including its horizontal-fold placement.
-  const folds = buildFoldLines(spec.foldLines??[],live.x,0,0,spec.width,spec.height,live.x,live.x+live.width)
+  const pillow = spec.foldLines?.some(line => line.id === "pillow-fold-left" || line.id === "pillow-fold-right")
+  const foldSpecs = pillow
+    ? [...(spec.foldLines ?? []).filter(line => !line.id.startsWith("pillow-fold-")), ...resolveSymmetricPillowFoldLines(spec)]
+    : spec.foldLines ?? []
+  const folds = buildFoldLines(foldSpecs,live.x,0,0,spec.width,spec.height,live.x,live.x+live.width)
   for (const fold of folds) {
     const vertical = Math.abs(fold.x2-fold.x1)<0.001
     const position = vertical ? fold.x1-live.x : fold.y1-live.y
@@ -91,9 +96,20 @@ export function fitSafeZone(spec: FlowwrapSpec, zoneId: string): FlowwrapSpec | 
 }
 
 export function refreshFittedSafeZones(before: FlowwrapSpec | null | undefined, next: FlowwrapSpec): FlowwrapSpec {
-  const geometryKey=(s:FlowwrapSpec)=>JSON.stringify([s.width,s.height,s.seals,s.seal,s.sealClearance,s.doyPouch,s.kSealPouch])
+  const geometryKey=(s:FlowwrapSpec)=>JSON.stringify([s.width,s.height,s.seals,s.seal,s.sealClearance,s.doyPouch,s.kSealPouch,s.foldLines])
   const changed=!before || geometryKey(before)!==geometryKey(next)
   return {...next,safeZones:next.safeZones?.map(zone=>{
+    if (changed && before && next.foldLines?.some(line => line.id === "pillow-fold-left")) {
+      const previous = before.safeZones?.find(item => item.id === zone.id)
+      const oldFit = previous && getSafeZoneFit(before, zone.id)
+      const matches = previous && oldFit?.enabled && ["x", "y", "width", "height"].every(key =>
+        Math.abs(previous[key as "x" | "y" | "width" | "height"] - oldFit.zone[key as "x" | "y" | "width" | "height"]) < 0.05 &&
+        Math.abs(zone[key as "x" | "y" | "width" | "height"] - previous[key as "x" | "y" | "width" | "height"]) < 0.05)
+      if (matches) {
+        const fit = getSafeZoneFit(next, zone.id)
+        if (fit.enabled) return fit.zone
+      }
+    }
     if(!zone.fitContour || (!changed && zone.fitOutline))return zone
     const fit=getSafeZoneFit(next,zone.id)
     return fit.enabled?fit.zone:zone

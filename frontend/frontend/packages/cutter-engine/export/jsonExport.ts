@@ -34,6 +34,7 @@ export type KyzaJsonExport = {
   }
   cutterSpecification: {
     packTypeId: string
+    viewMode?: "normal" | "pre-slit"
     units: string
     coordinateSpace: string
     dimensions: {
@@ -74,6 +75,7 @@ export const buildKyzaJsonExport = (input: {
   project: KyzaProjectV1
   validation: ValidationResult
   exportedAt?: string
+  paperStripView?: "normal" | "pre-slit"
 }): KyzaJsonExport => {
   const { project, validation, exportPackage } = input
   const draft = project.projectDraft
@@ -112,6 +114,9 @@ export const buildKyzaJsonExport = (input: {
     },
     cutterSpecification: {
       packTypeId: project.cutter.packType,
+      ...(project.cutter.packType === "paper-strip" && input.paperStripView
+        ? { viewMode: input.paperStripView }
+        : {}),
       units: project.cutter.units,
       coordinateSpace: project.cutter.coordinateSpace,
       dimensions: {

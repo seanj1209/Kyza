@@ -1,6 +1,7 @@
 import type { FlowwrapSpec, ElementTextStyle, ObjectAppearance } from "../types/flowwrap"
 import { resolveText, textKeys, textReference, MM_PER_PT } from "../renderers/attributeText"
 import { FONT_GROUPS } from "../typography/fontLibrary"
+import { colourPalette, rememberColour } from "./customiseAppearanceControls"
 
 /** A selected-object section inside the existing Customise > Elements menu. */
 export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>FlowwrapSpec|null,onChange:(spec:FlowwrapSpec)=>void,getSvg?:()=>SVGSVGElement|null) {
@@ -12,6 +13,11 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
   window.addEventListener("kyza:font-ready",()=>{const status=root.querySelector('[data-font-status]');if(status)status.textContent=""})
   let ids:string[]=[],part="parent",signature="",syncs:(()=>void)[]=[]
   let section:"fill"|"text"="fill"
+  document.addEventListener("pointerdown",event=>{
+    root.querySelectorAll<HTMLElement>(".customisation-colour-popover").forEach(popup=>{
+      if(!popup.parentElement?.contains(event.target as Node))popup.hidden=true
+    })
+  })
   const currentBox=()=>getSpec()?.attributeBoxes?.find(box=>`attribute-box:${box.id}`===ids[0])
   const appearance=():ObjectAppearance=>{
     const box=currentBox()
@@ -48,10 +54,16 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
   const colour=(c:HTMLElement,label:string,get:()=>string,change:(value:string)=>void)=>{
     const r=row(c,label),wrap=document.createElement("div");wrap.className="customisation-color-wrap";r.append(wrap)
     const hex=document.createElement("input"),picker=document.createElement("input");hex.className="customisation-color-text";hex.maxLength=7;hex.setAttribute("aria-label",`${label} HEX`)
-    picker.type="color";picker.className="customise-colour-picker";picker.setAttribute("aria-label",`${label} picker`);wrap.append(hex,picker)
+    picker.type="color";picker.className="customisation-color-native";picker.setAttribute("aria-label",`${label} picker`)
+    const button=document.createElement("button");button.type="button";button.className="customisation-color-button";button.textContent="Colours";button.setAttribute("aria-label",`${label} colours`)
+    const popup=document.createElement("div");popup.className="customisation-colour-popover";popup.hidden=true
+    button.addEventListener("click",()=>{popup.hidden=!popup.hidden;button.setAttribute("aria-expanded",String(!popup.hidden))})
+    const more=document.createElement("button");more.type="button";more.textContent="More colours";more.addEventListener("click",()=>picker.click())
+    popup.append(more,picker);wrap.append(hex,button);r.append(popup)
+    const refreshPalette=colourPalette(popup,get,colour=>{rememberColour(colour);change(colour)})
     hex.addEventListener("change",()=>{if(/^#[\da-f]{6}$/i.test(hex.value))change(hex.value);else hex.value=get()})
-    picker.addEventListener("input",()=>change(picker.value))
-    syncs.push(()=>{if(document.activeElement!==hex)hex.value=get();if(document.activeElement!==picker)picker.value=get()})
+    picker.addEventListener("input",()=>{rememberColour(picker.value);change(picker.value);refreshPalette()})
+    syncs.push(()=>{if(document.activeElement!==hex)hex.value=get();if(document.activeElement!==picker)picker.value=get();refreshPalette()})
   }
   const select=(c:HTMLElement,label:string,options:{value:string;label:string;group?:string}[],get:()=>string,change:(v:string)=>void)=>{
     const r=row(c,label),s=document.createElement("select");s.className="customisation-select";s.setAttribute("aria-label",label);r.append(s)
@@ -93,7 +105,9 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
       const c=card("Text")
       check(c,"Show text",()=>text()!.visible,v=>commitText({visible:v}))
       const r=row(c,"Content"),content=document.createElement("input");content.type="text";content.maxLength=2000;content.className="customisation-number";content.setAttribute("aria-label","Text content");r.append(content)
-      content.addEventListener("input",()=>commitText({content:content.value.slice(0,2000)}));syncs.push(()=>{if(document.activeElement!==content)content.value=text()!.content})
+      content.addEventListener("change",()=>commitText({content:content.value.slice(0,2000)}))
+      content.addEventListener("keydown",event=>{if(event.key==="Enter")content.blur()})
+      syncs.push(()=>{if(document.activeElement!==content)content.value=text()!.content})
       select(c,"Font family",[{value:"Arial",label:"Original (Arial)"},...Object.entries(FONT_GROUPS).flatMap(([group,fonts])=>fonts.map(f=>({value:f,label:f,group})))],()=>text()!.family,v=>commitText({fontFamily:v}))
       const fontStatus=document.createElement("p");fontStatus.className="customisation-category-note";fontStatus.setAttribute("data-font-status","true");fontStatus.setAttribute("role","status");c.append(fontStatus)
       select(c,"Font weight",[{value:"400",label:"Regular"},{value:"700",label:"Bold"}],()=>String(text()!.weight),v=>commitText({fontWeight:Number(v) as 400|700}))

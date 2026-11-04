@@ -610,6 +610,33 @@ const main = async () => {
     "JSON output must remain technically inspectable and retain element and validation identity."
   )
   assert(json.record.projectId === project.id && json.record.projectRevision === project.revision, "JSON history must retain the exact exported Project revision.")
+  let jsonPickerAccept: Record<string, string[]> | undefined
+  const jsonDelivery = await deliverProjectExportLocally(json.artifact, {
+    showSaveFilePicker: async options => {
+      jsonPickerAccept = options.types?.[0]?.accept
+      return {
+        createWritable: async () => ({ write: async () => {}, close: async () => {} })
+      } as unknown as FileSystemFileHandle
+    }
+  })
+  assert(jsonDelivery.status === "saved" && jsonPickerAccept?.["application/json"]?.[0] === ".json", "JSON picker must use the parameter-free MIME type accepted by browsers.")
+  assert(!("application/json;charset=utf-8" in jsonPickerAccept), "JSON picker must not include charset in the accept key.")
+
+  const paperDefaults = getPackModule("paper-strip")?.getDefaults()
+  if (!paperDefaults) throw new Error("Paper Strip fixture unavailable.")
+  const paperProject = projectFromLegacySpec("paper-strip", "Pre-slit export", paperDefaults)
+  const paperValidation = validateProjectCutter(paperProject, { trigger: "pre_export", now: () => timestamp, rules: [] })
+  const paperJson = await executeProjectExport({
+    getLatestProject: () => paperProject,
+    persistProject: next => ({ ok: true, value: next }),
+    validationRun: paperValidation,
+    request: { format: "json", tierId: "illustrator-ready", paperStripView: "pre-slit" },
+    exportId: "export-pre-slit-json",
+    deliver: () => ({ status: "saved", method: "file_system_access" })
+  })
+  assert(paperJson.ok, "Pre-slit JSON must export successfully.")
+  const paperPayload = JSON.parse(await paperJson.artifact.blob.text()) as { cutterSpecification: { viewMode?: string; starterSpecification: FlowwrapSpec } }
+  assert(paperPayload.cutterSpecification.viewMode === "pre-slit" && paperPayload.cutterSpecification.starterSpecification.paperStrip !== undefined, "JSON must identify the selected pre-slit view and retain its construction data.")
 
   const storage = new MemoryStorage()
   assert(saveKyzaProject(holder.project, storage).ok, "Complete export records must save through canonical Project storage.")

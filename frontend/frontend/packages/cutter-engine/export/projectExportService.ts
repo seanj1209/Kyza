@@ -47,6 +47,7 @@ export type ProjectExportRequest = {
   format: CutterExportFormat
   tierId?: ExportTierId
   source?: CutterExportSvgSource
+  paperStripView?: "normal" | "pre-slit"
   options?: Partial<Omit<CutterExportOptions, "format" | "tierId">>
 }
 
@@ -266,7 +267,7 @@ export const generatePreparedProjectExport = async (
         createdAt: prepared.exportedAt,
         exportAudit: prepared.authorizationAudit
       })
-      const payload = buildKyzaJsonExport({ project, validation, exportPackage, exportedAt: prepared.exportedAt })
+      const payload = buildKyzaJsonExport({ project, validation, exportPackage, exportedAt: prepared.exportedAt, paperStripView: request.paperStripView })
       const blob = new Blob([serializeKyzaJsonExport(payload)], { type: capability.mimeType })
       const layers = payload.layerManifest.layers.filter(layer => layer.exportable)
       return {
@@ -447,7 +448,9 @@ export const deliverProjectExportLocally = async (
         suggestedName: artifact.filename,
         types: [{
           description: artifact.prepared.capability.label,
-          accept: { [artifact.mimeType]: artifact.prepared.capability.extensions }
+          // File System Access accepts a MIME essence, not parameters such as
+          // the charset carried by the JSON Blob's Content-Type.
+          accept: { [artifact.mimeType.split(";", 1)[0].trim()]: artifact.prepared.capability.extensions }
         }]
       })
     } catch (error) {

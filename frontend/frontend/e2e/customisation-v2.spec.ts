@@ -73,6 +73,19 @@ async function draw(page:any,start:[number,number],end:[number,number]){
   await page.evaluate(()=>(window as any).tool.setEnabled(true));const a=await point(page,...start),b=await point(page,...end)
   await page.mouse.move(a.x,a.y);await page.mouse.down();await page.mouse.move(b.x,b.y,{steps:5});await page.mouse.up()
 }
+test('custom measure stays square during endpoint resizing until a deliberate sideways drag',async({page})=>{
+  await measuresFixture(page)
+  await draw(page,[110,30],[110,80])
+  await page.evaluate(()=>(window as any).store.setSelectedElementIds(['custom-measure:m0']))
+  let end=await point(page,110,80)
+  await page.mouse.move(end.x,end.y);await page.mouse.down();await page.mouse.move(end.x+10,end.y+30,{steps:5});await page.mouse.up()
+  let measure=await page.evaluate(()=>(window as any).spec.customMeasures[0])
+  expect(measure.end.x).toBeCloseTo(measure.start.x,3)
+  end=await point(page,110,measure.end.y)
+  await page.mouse.move(end.x,end.y);await page.mouse.down();await page.mouse.move(end.x+40,end.y+15,{steps:5});await page.mouse.up()
+  measure=await page.evaluate(()=>(window as any).spec.customMeasures[0])
+  expect(Math.abs(measure.end.x-measure.start.x)).toBeGreaterThan(1)
+})
 test('custom measures snap to edges, adapt labels, re-anchor endpoints and survive project/export paths',async({page})=>{
   await measuresFixture(page)
   // BBE left edge at 30; release at its right edge 70, while deliberately a pixel off.

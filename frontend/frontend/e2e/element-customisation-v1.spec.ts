@@ -57,6 +57,7 @@ test('appearance is per object; BBE heading/date typography and save/reopen are 
   await expect(page.locator('text[data-box-id="bbe"][data-text-key="date"]')).toHaveText('DD/MM/YYYY')
   await page.getByLabel('Customise part',{exact:true}).selectOption('date')
   await page.getByLabel('Text content',{exact:true}).fill('03/11/2026')
+  await page.getByLabel('Text content',{exact:true}).press('Tab')
   const saved=await page.evaluate(async()=>{
     const {projectFromLegacySpec,exportKyzaProjectJson,importKyzaProjectJson}=await import('/packages/cutter-engine/project/index.ts')
     const q=window as any,project=projectFromLegacySpec('plain-film','Typography QA',q.spec)

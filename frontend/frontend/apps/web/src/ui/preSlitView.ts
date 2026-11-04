@@ -27,6 +27,10 @@ export function createPreSlitView(onChange: () => void) {
     onChange()
   })
   return {
+    set(artboardId: string, viewMode: "normal" | "pre-slit") {
+      views.set(artboardId, viewMode === "pre-slit")
+      refresh()
+    },
     sync(artboardId: string, packId: string) {
       activeId = artboardId
       supported = packId === "paper-strip"

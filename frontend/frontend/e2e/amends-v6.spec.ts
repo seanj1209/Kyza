@@ -126,8 +126,6 @@ test('v6 valid custom JSON imports and builds through the existing engine', asyn
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: /Import Cutter/ }).click()
   await (await chooser).setFiles({ name: 'custom-cutter.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(record)) })
-  await expect(page.locator('.custom-project-builder-note').filter({ hasText: 'Imported custom project: V6 imported cutter' })).toBeVisible()
-  await page.getByRole('button', { name: 'Start Custom Project', exact: true }).click()
   await expect(page.locator('#preview-canvas > svg')).toBeVisible()
   await expect(page.locator('.custom-project-builder')).toBeHidden()
   await expect(page.getByRole('button', { name: 'V6 imported cutter', exact: true })).toBeVisible()

@@ -17,10 +17,13 @@ test('Sandbox loaded definition keeps its ID when edited and saved again', async
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: /Import Cutter/ }).click()
   await (await chooser).setFiles({ name: 'trial-cutter.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(source)) })
-  await expect(page.locator('.custom-project-builder')).toBeVisible()
-  await page.getByLabel('Project Name').fill('Trial cutter revised')
-  page.once('dialog', dialog => dialog.accept('Trial cutter revised'))
-  await page.getByRole('button', { name: 'Save Custom Project', exact: true }).click()
+  await expect(page.locator('#preview-canvas > svg')).toBeVisible()
+  await expect(page.locator('.custom-project-builder')).toBeHidden()
+  await page.evaluate(async () => {
+    const { saveCustomProject } = await import('/apps/web/src/sandbox/index.ts')
+    const record = JSON.parse(localStorage.getItem('kyza.customProjects.v1') || '[]')[0]
+    saveCustomProject({ id: record.id, name: 'Trial cutter revised', definition: { ...record.definition, label: 'Trial cutter revised' }, baseSpec: record.baseSpec })
+  })
 
   const revised = await page.evaluate(() => JSON.parse(localStorage.getItem('kyza.customProjects.v1') || '[]'))
   expect(revised).toHaveLength(1)

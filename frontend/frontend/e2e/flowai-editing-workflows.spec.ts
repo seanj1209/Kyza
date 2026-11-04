@@ -44,7 +44,7 @@ for (const increment of [0.25, 0.5, 1]) {
     await page.keyboard.press("ArrowRight")
     await expect.poll(async () => Number(await mark.getAttribute("x"))).toBeCloseTo(start + increment, 5)
     const row = page.locator(".layer-row").filter({ has: select })
-    await row.getByRole("button", { name: "Toggle lock", exact: true }).click()
+    await row.getByRole("button", { name: "Toggle Eyemark lock", exact: true }).click()
     await page.keyboard.press("ArrowRight")
     await expect.poll(async () => Number(await mark.getAttribute("x"))).toBeCloseTo(start + increment, 5)
     await openExportMenu(page)

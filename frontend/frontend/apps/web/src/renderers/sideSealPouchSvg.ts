@@ -73,7 +73,7 @@ export function renderSideSealPouch(spec: FlowwrapSpec, options: RenderOptions =
   for (const [key, value] of Object.entries({ x: margin, y: top, width: contentWidth, height: webHeight })) outer.setAttribute(key, String(value))
   outer.setAttribute("fill", "none")
   outer.setAttribute("stroke", "#2eb774")
-  outer.setAttribute("stroke-width", ".75")
+  outer.setAttribute("stroke-width", String(spec.baseCustomisation?.cutter?.thickness ?? 0.4))
   outer.setAttribute("data-role", "pouch-web-outline")
   guides.appendChild(outer)
   const centreLine = el("line")

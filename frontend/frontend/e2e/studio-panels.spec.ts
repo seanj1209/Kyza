@@ -30,8 +30,8 @@ test("Cutter panels retain attribute groups, layer actions and linked sizing", a
     await expect(page.getByRole("button", { name: "Select " + name, exact: true })).toBeVisible()
   }
   const row = page.locator(".layer-row").filter({ has: page.getByRole("button", { name: "Select Eyemark", exact: true }) })
-  await expect(row.getByRole("button", { name: "Delete layer", exact: true })).toBeEnabled()
-  for (const name of ["Toggle lock", "Toggle visibility"]) {
+  await expect(row.getByRole("button", { name: "Delete Eyemark", exact: true })).toBeEnabled()
+  for (const name of ["Toggle Eyemark lock", "Toggle Eyemark visibility"]) {
     const action = row.getByRole("button", { name, exact: true })
     const before = await action.locator("svg").innerHTML()
     await action.click()
@@ -39,7 +39,7 @@ test("Cutter panels retain attribute groups, layer actions and linked sizing", a
     await action.click()
     await expect(action.locator("svg")).toHaveJSProperty("innerHTML", before)
   }
-  await page.getByRole("button", { name: "Toggle Eyemark instances" }).click()
+  await page.getByRole("button", { name: "Toggle Eyemark items" }).click()
   await expect(page.locator(".layer-child-list")).toBeVisible()
 })
 
@@ -48,8 +48,10 @@ test("Validation remains clickable and Customise/export use a single padded scro
   await page.locator("#flow-assistant-dock .flow-assistant-status").click()
   const validation = page.locator("#studio-errors-panel")
   await expect(validation).toBeVisible()
-  // A real click catches clipping by a scroll ancestor; visibility alone does not.
-  await validation.getByRole("button", { name: "Re-run validation" }).click()
+  // A real click catches clipping by a scroll ancestor; a clean cutter has no re-run action.
+  const rerun = validation.getByRole("button", { name: "Re-run validation" })
+  if (await rerun.count()) await rerun.click()
+  else await expect(validation).toContainText("No foreseen issues detected")
   await page.getByRole("button", { name: "Collapse Flow", exact: true }).click()
   await expect(validation).toBeHidden()
   await page.getByRole("button", { name: "Customise", exact: true }).click()
