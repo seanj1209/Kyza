@@ -75,6 +75,7 @@ type FlowwrapUIConfig = {
   getPackId?: () => string
   onChange: (spec: FlowwrapSpec, reason: ControlsSpecChangeReason) => void
   onMeasureToggle?: (enabled: boolean) => void
+  onCustomMeasure?: () => void
   onPanToggle?: (enabled: boolean) => void
   onSelectToggle?: (enabled: boolean) => void
   onElementAdded?: (id: string) => void
@@ -549,6 +550,7 @@ export function initFlowwrapControls({
   getPackId = () => "",
   onChange,
   onMeasureToggle,
+  onCustomMeasure,
   onPanToggle,
   onSelectToggle,
   onElementAdded,
@@ -1260,7 +1262,7 @@ export function initFlowwrapControls({
           emitChange();onElementAdded?.(`attribute-box:${id}`)
           requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent("kyza:edit-text",{detail:{id,key:"label"}})))
         })
-        if(button && id === "custom-measure"){button.disabled=true;button.classList.add("is-disabled");button.title=title+" · Coming soon"}
+        if(button && id === "custom-measure"){button.title="Drag between edges to place a custom measurement; Escape cancels";button.addEventListener("click",()=>onCustomMeasure?.())}
       }
     }
     createMenuButton("perforation", "hole-punch", "Hole Punch")

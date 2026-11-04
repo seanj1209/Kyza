@@ -35,13 +35,10 @@ import { requestPreExportReview } from "./preExportReview"
 import { createVerticalTabs } from "./verticalTabs"
 import { colourPalette, createAppearanceEditor, decorateCustomiseTarget, rememberColour } from "./customiseAppearanceControls"
 import { createExportSelection, renderCompactPackage, renderCompactReadiness } from "./exportSelection"
+import { createStudioIcon } from "./studioIcons"
 
 const ICON_COLOUR_STATIC = "/Icons/UI Icons/Colour Circle_STATIC.png"
 const ICON_COLOUR_HOVER = "/Icons/UI Icons/Colour Circle_HOVER.png"
-const ICON_UI_PLUS_STATIC = "/Icons/UI Icons/Add_STATIC.png"
-const ICON_UI_PLUS_CLICKED = "/Icons/UI Icons/Add_Clicked.png"
-const ICON_UI_BIN_STATIC = "/Icons/UI Icons/Bin_STATIC.png"
-const ICON_UI_BIN_HOVER = "/Icons/UI Icons/Bin_Hover.png"
 const TAB_ICONS = {
   customise: {
     static: "/Icons/Customise_STATIC.png",
@@ -100,54 +97,6 @@ const DEFAULT_PERF_DIAMETER = 1.5
 const DEFAULT_PERF_FILL_OPACITY = 1
 const DEFAULT_PERF_STROKE_COLOR = DEFAULT_PERF_COLOR
 const DEFAULT_PERF_STROKE_WIDTH = 0.25
-
-const applyIconButtonStates = (
-  button: HTMLButtonElement,
-  icon: HTMLImageElement,
-  icons: { static: string; hover?: string; active?: string; activeDurationMs?: number }
-) => {
-  let activeUntil = 0
-  let activeTimer: number | null = null
-
-  const sync = () => {
-    const now = performance.now()
-    const isActive = now < activeUntil
-    const isHover = button.matches(":hover") || button.matches(":focus-visible")
-    icon.src = isActive
-      ? (icons.active ?? icons.hover ?? icons.static)
-      : isHover
-        ? (icons.hover ?? icons.static)
-        : icons.static
-  }
-
-  const clearTimer = () => {
-    if (activeTimer !== null) {
-      window.clearTimeout(activeTimer)
-      activeTimer = null
-    }
-  }
-
-  const activate = () => {
-    clearTimer()
-    const duration = icons.activeDurationMs ?? 0
-    activeUntil = performance.now() + duration
-    if (duration > 0) {
-      activeTimer = window.setTimeout(() => {
-        activeUntil = 0
-        activeTimer = null
-        sync()
-      }, duration)
-    }
-    sync()
-  }
-
-  icon.src = icons.static
-  button.addEventListener("mouseenter", sync)
-  button.addEventListener("mouseleave", sync)
-  button.addEventListener("focus", sync)
-  button.addEventListener("blur", sync)
-  return { activate, sync }
-}
 
 export function initCustomisationPanel({
   host,
@@ -604,16 +553,12 @@ export function initCustomisationPanel({
     button.type = "button"
     button.className = "customisation-color-button"
     button.setAttribute("aria-label", "Pick colour")
-    const icon = document.createElement("img")
-    icon.src = ICON_COLOUR_STATIC
-    icon.alt = ""
-    button.appendChild(icon)
-    button.addEventListener("mouseenter", () => {
-      icon.src = ICON_COLOUR_HOVER
-    })
-    button.addEventListener("mouseleave", () => {
-      icon.src = ICON_COLOUR_STATIC
-    })
+    if(row.closest(".customisation-perf-lane")){button.classList.add("customisation-perf-icon");button.appendChild(createStudioIcon("palette")!)}
+    else {
+      const icon=document.createElement("img");icon.src=ICON_COLOUR_STATIC;icon.alt="";button.appendChild(icon)
+      button.addEventListener("mouseenter",()=>{icon.src=ICON_COLOUR_HOVER})
+      button.addEventListener("mouseleave",()=>{icon.src=ICON_COLOUR_STATIC})
+    }
     button.addEventListener("click", () => {
       picker.click()
     })
@@ -721,16 +666,9 @@ export function initCustomisationPanel({
 
   const perfLaneAddButton = document.createElement("button")
   perfLaneAddButton.type = "button"
-  perfLaneAddButton.className = "customisation-perf-add"
+  perfLaneAddButton.className = "customisation-perf-add customisation-perf-icon"
   perfLaneAddButton.setAttribute("aria-label", "Add perf lane")
-  const perfLaneAddIcon = document.createElement("img")
-  perfLaneAddIcon.alt = ""
-  applyIconButtonStates(perfLaneAddButton, perfLaneAddIcon, {
-    static: ICON_UI_PLUS_STATIC,
-    active: ICON_UI_PLUS_CLICKED,
-    activeDurationMs: 700
-  })
-  perfLaneAddButton.appendChild(perfLaneAddIcon)
+  perfLaneAddButton.append(createStudioIcon("plus")!,document.createTextNode("Add lane"))
   perfDetails.appendChild(perfLaneAddButton)
 
   const makeListSection = (
@@ -785,13 +723,13 @@ export function initCustomisationPanel({
 
   // Keep the existing perf/measure actions; replace informational element lists with real appearance controls.
   ;[doyList, kSealList, barcodeList, dieCutList, openingsList, windowsList, otherList].forEach(item => { item.section.hidden = true })
-  const selectedEditor = createSelectedObjectCustomise(categoryPanels.get("elements")!, () => currentSpec, next => { currentSpec = next; onChange(next) }, getCurrentSvg)
+  const selectedEditor = createSelectedObjectCustomise(document.createElement("div"), () => currentSpec, next => { currentSpec = next; onChange(next) }, getCurrentSvg)
   const generalElementsHost = document.createElement("div")
   generalElementsHost.className="customise-general-elements"
   categoryPanels.get("elements")!.appendChild(generalElementsHost)
   const elementsEditor = createAppearanceEditor(generalElementsHost, "elements", () => currentSpec, next => {
     currentSpec = next; onChange(next)
-  })
+  },(target,host)=>["bbe","barcode","qr","label"].includes(target.id)?selectedEditor.showKind(target.id,host):null)
   const measuresEditor = createAppearanceEditor(categoryPanels.get("measures")!, "measures", () => currentSpec, next => {
     currentSpec = next; onChange(next)
   })
@@ -918,6 +856,7 @@ export function initCustomisationPanel({
       return null
     }
     if (layerId === "perf-lines") return "perforation"
+    if (layerId === "custom-measures") return "measures"
     if (["notes", "tear-notches", "hanger-slots", "zips", "grip-seals", "windows", "safe-zones", "fold-lines"].includes(layerId)) return "elements"
     if (
       layerId === "kseal-bottom-seals" ||
@@ -1054,15 +993,9 @@ export function initCustomisationPanel({
       laneTitle.textContent = `Perf Lane ${index + 1}`
       const laneDelete = document.createElement("button")
       laneDelete.type = "button"
-      laneDelete.className = "customisation-perf-lane-delete"
+      laneDelete.className = "customisation-perf-lane-delete customisation-perf-icon"
       laneDelete.setAttribute("aria-label", "Delete perf lane")
-      const laneDeleteIcon = document.createElement("img")
-      laneDeleteIcon.alt = ""
-      applyIconButtonStates(laneDelete, laneDeleteIcon, {
-        static: ICON_UI_BIN_STATIC,
-        hover: ICON_UI_BIN_HOVER
-      })
-      laneDelete.appendChild(laneDeleteIcon)
+      laneDelete.appendChild(createStudioIcon("trash")!)
       laneDelete.disabled = perfs.lanes.length <= 1
       laneDelete.addEventListener("click", () => {
         applySpecPatch(spec => {
@@ -1510,7 +1443,10 @@ export function initCustomisationPanel({
     setSelectedElements(ids: string[], key?: string) {
       const selected = ids.filter(id => !id.startsWith("layer:"))
       selectedEditor.setSelection(selected, key)
-      generalElementsHost.hidden = selected.length === 1
+      const box=currentSpec?.attributeBoxes?.find(b=>`attribute-box:${b.id}`===selected[0])
+      if(box&&["bbe","barcode","qr","label"].includes(box.kind))elementsEditor.selectTarget(box.kind)
+      const measure=selected[0]?.startsWith("custom-measure:")?selected[0]:null
+      if(measure)measuresEditor.selectTarget(measure)
     },
     setActiveLayer(layerId: string | null) {
       activeLayerId = layerId

@@ -91,3 +91,14 @@ assert(
 )
 
 console.log("Shared selection transform tests passed.")
+
+// Custom dimensions are annotations: transforms must not change pack construction.
+const dimensionSpec:FlowwrapSpec={width:200,height:140,seal:10,customMeasures:[{id:"m",start:{x:30,y:40},end:{x:70,y:40}}]}
+const movedDimension=transformSelectedElements(dimensionSpec,{kind:"nudge",selectedIds:["custom-measure:m"],deltaX:2,deltaY:3}).spec
+assert(movedDimension.customMeasures![0].start.x===32&&movedDimension.customMeasures![0].end.y===43,"Nudge both dimension endpoints in physical mm")
+const rotatedDimension=transformSelectedElements(dimensionSpec,{kind:"rotate",selectedIds:["custom-measure:m"],degrees:90}).spec
+assert(Math.abs(rotatedDimension.customMeasures![0].end.x-30)<1e-8&&rotatedDimension.customMeasures![0].end.y===80,"Rotate dimension about its first endpoint")
+const resizedDimension=transformSelectedElements(dimensionSpec,{kind:"resize",selectedIds:["custom-measure:m"],deltaWidth:5,deltaHeight:2}).spec
+assert(resizedDimension.customMeasures![0].end.x===75&&resizedDimension.customMeasures![0].end.y===42,"Resize only the selected dimension")
+assert([movedDimension,rotatedDimension,resizedDimension].every(s=>s.width===200&&s.height===140&&s.seal===10),"Dimension transforms preserve construction")
+assert(dimensionSpec.customMeasures![0].start.x===30,"Dimension transforms are immutable")

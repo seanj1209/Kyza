@@ -272,5 +272,16 @@ export function transformSelectedElements(
     }
   }
 
+  if(source.customMeasures?.length){
+    const customMeasures=source.customMeasures.map(m=>{
+      if(!selectedIds.has(`custom-measure:${m.id}`))return m
+      changed=true
+      if(command.kind==="nudge")return {...m,start:{x:m.start.x+command.deltaX,y:m.start.y+command.deltaY},end:{x:m.end.x+command.deltaX,y:m.end.y+command.deltaY}}
+      if(command.kind==="resize")return {...m,end:{x:m.end.x+command.deltaWidth,y:m.end.y+command.deltaHeight}}
+      const angle=command.degrees*Math.PI/180,dx=m.end.x-m.start.x,dy=m.end.y-m.start.y
+      return {...m,end:{x:m.start.x+dx*Math.cos(angle)-dy*Math.sin(angle),y:m.start.y+dx*Math.sin(angle)+dy*Math.cos(angle)}}
+    })
+    spec={...spec,customMeasures}
+  }
   return { spec: changed ? spec : source, changed }
 }

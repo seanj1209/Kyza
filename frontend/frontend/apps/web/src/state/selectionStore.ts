@@ -11,6 +11,7 @@ export type CutterElementType =
   | "foldLine"
   | "hangerSlot"
   | "halfMoon"
+  | "customMeasure"
 
 export type CutterElementBounds = {
   x: number

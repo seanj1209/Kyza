@@ -1,6 +1,8 @@
 /** Small, theme-aware symbols; decorative because their controls provide labels. */
 export function createStudioIcon(name: string): SVGSVGElement | null {
   const shapes: Record<string, string> = {
+    plus: '<path d="M12 4v16M4 12h16"/>',
+    palette: '<path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1-4 2 2 0 0 1 1-4h3a3 3 0 0 0 3-3 9 9 0 0 0-9-7Z"/><circle cx="7" cy="10" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="16" cy="8" r="1"/>',
     'label-fop': '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 8h8m-8 4h8m-8 4h5"/><circle cx="17" cy="18" r="1"/>',
     'label-bop': '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M7 7h10M7 10h10M7 13h10M7 16h4m2 0h4M7 19h10"/>',
     'label-seal-area': '<rect x="3" y="3" width="18" height="18"/><rect x="7" y="7" width="10" height="10" stroke-dasharray="2 2"/><path d="m3 9 6-6m6 0 6 6m0 6-6 6m-6 0-6-6"/>',

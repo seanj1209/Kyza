@@ -45,6 +45,7 @@ test('appearance is per object; BBE heading/date typography and save/reopen are 
   await expect(rect).toHaveAttribute('stroke-width','1.2');await expect(rect).toHaveAttribute('stroke-dasharray','.5 1.5')
   await page.getByRole('checkbox',{name:'Enable stroke',exact:true}).uncheck();await expect(rect).toHaveAttribute('stroke','none')
   await page.getByRole('checkbox',{name:'Enable fill',exact:true}).uncheck();await expect(rect).toHaveAttribute('fill','none')
+  await page.getByRole('tab',{name:'Text',exact:true}).click()
   await page.getByLabel('Customise part',{exact:true}).selectOption('heading')
   await page.getByLabel('Text content',{exact:true}).fill('Use before')
   await page.getByLabel('Font family',{exact:true}).selectOption('Montserrat')
@@ -138,9 +139,25 @@ test('self-hosted fonts embed in SVG; Illustrator output outlines text and PDF p
     const a=await raster(editable),b=await raster(outlined),pixels=a.pixels,outlinePixels=b.pixels
     let different=0,ink=0
     for(let i=3;i<pixels.length;i+=4){if(pixels[i]>100||outlinePixels[i]>100)ink++;if((pixels[i]>100)!==(outlinePixels[i]>100))different++}
+    // Native hinted text and unhinted paths rasterise differently on Linux.
+    // Allow one output pixel at the boundary; substantial shape/position changes still fail.
+    const at=(data:Uint8ClampedArray,x:number,y:number)=>x>=0&&y>=0&&x<1440&&y<1440&&data[(y*1440+x)*4+3]>100
+    const near=(data:Uint8ClampedArray,x:number,y:number)=>{
+      for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(at(data,x+dx,y+dy))return true
+      return false
+    }
+    const edgeDifference=(shift=0)=>{
+      let unmatched=0,union=0
+      for(let y=0;y<1440;y++)for(let x=0;x<1440;x++){
+        const a=at(pixels,x,y),b=at(outlinePixels,x-shift,y);if(a||b)union++
+        if(a&&!b&&!near(outlinePixels,x-shift,y))unmatched++
+        if(b&&!a&&!near(pixels,x,y))unmatched++
+      }
+      return unmatched/union
+    }
     const markup=new XMLSerializer().serializeToString(editable)
     const pdf=await createRasterPreviewPdfFromSvg(markup,90,90)
-    return {editablePNG:a.png,outlinedPNG:b.png,inkMismatch:different/ink,families:families.length,embedded:editable.querySelector('style')!.textContent!.includes('data:font/woff2;base64,'),
+    return {editablePNG:a.png,outlinedPNG:b.png,inkMismatch:different/ink,edgeMismatch:edgeDifference(),shiftedEdgeMismatch:edgeDifference(3),families:families.length,embedded:editable.querySelector('style')!.textContent!.includes('data:font/woff2;base64,'),
       editableText:editable.querySelectorAll('text').length,outlinedText:outlined.querySelectorAll('text').length,paths:outlined.querySelectorAll('path').length,
       external:markup.includes('https://'),pdfHeader:await pdf.slice(0,8).text(),pdfBytes:pdf.size,labels:[...outlined.querySelectorAll('[data-text-outlined]')].map(n=>n.getAttribute('aria-label'))}
   })
@@ -149,7 +166,9 @@ test('self-hosted fonts embed in SVG; Illustrator output outlines text and PDF p
   expect(result).toMatchObject({families:10,embedded:true,editableText:21,outlinedText:0,external:false,pdfHeader:'%PDF-1.4'})
   expect(outlineRequests).toHaveLength(20)
   expect(new Set(outlineRequests).size).toBe(20)
-  expect(result.inkMismatch).toBeLessThan(.22);expect(result.paths).toBeGreaterThan(100);expect(result.pdfBytes).toBeGreaterThan(1000);expect(result.labels.every(label=>label==='Kyza 123 £')).toBe(true)
+  expect(result.edgeMismatch).toBeLessThan(.08)
+  expect(result.shiftedEdgeMismatch).toBeGreaterThan(.15) // A deliberate 3px displacement must be detected.
+  expect(result.paths).toBeGreaterThan(100);expect(result.pdfBytes).toBeGreaterThan(1000);expect(result.labels.every(label=>label==='Kyza 123 £')).toBe(true)
 })
 
 test('PDF v1 measurements, no default film dash and four Flow statuses',async({page})=>{
@@ -189,8 +208,8 @@ test('actual studio Custom Label inserts text only and starts inline editing',as
   await expect(page.locator(`#preview-canvas rect[data-box-id="${id}"]`).first()).toHaveAttribute('stroke','none')
   await expect(page.locator(`#preview-canvas rect[data-box-id="${id}"]`).first()).toHaveAttribute('fill','none')
   await page.getByRole('button',{name:'Customise',exact:true}).click()
-  await expect(page.getByLabel('Customise part',{exact:true})).toBeVisible()
-  await page.getByLabel('Customise part',{exact:true}).selectOption('label')
+  await expect(page.getByRole('tab',{name:'Text',exact:true})).toBeVisible()
+  await expect(page.getByRole('tab',{name:'Fill',exact:true})).toHaveCount(0)
   await expect(page.getByLabel('Text content',{exact:true})).toHaveValue('Kyza flexible packaging')
   await page.getByLabel('Font family',{exact:true}).selectOption('Inter')
   await expect(page.getByText('Auto scaling — follows parent size.',{exact:true})).toBeVisible()

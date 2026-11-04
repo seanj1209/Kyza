@@ -341,6 +341,7 @@ export interface FlowwrapSpec {
   sealClearance?: number
   perfs?: PerfSpec
   foldLines?: FoldLineSpec[]
+  customMeasures?: import("../geometry/customMeasures").CustomMeasure[]
   eyeMarks?: EyeMarkSpec
   safeZones?: SafeZoneSpec[]
   attributeBoxes?: AttributeBoxSpec[]

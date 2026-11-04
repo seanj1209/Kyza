@@ -49,3 +49,8 @@
 :root body #customisation-panel .customise-selected-object { flex:1; width:100%; }
 :root body #customisation-panel .customise-general-elements { display:flex; flex-direction:column; min-height:0; width:100%; }
 :root body #customisation-panel :is(.customise-selected-object,.customise-general-elements)[hidden] { display:none; }
+:root body #customisation-panel .customise-object-tabs button[aria-selected="true"] { background:var(--kyza-brand);color:#fff; }
+:root body #customisation-panel .customisation-perf-icon { display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--kyza-panel-raised);color:var(--kyza-text-muted);border:1px solid var(--kyza-border-strong);border-radius:10px;padding:7px;min-width:34px;min-height:34px;cursor:pointer; }
+:root body #customisation-panel .customisation-perf-icon:hover { color:var(--kyza-accent-text);border-color:currentColor; }
+:root body #customisation-panel .customisation-perf-icon svg { width:20px;height:20px; }
+:root body #customisation-panel .customisation-perf-lane-delete:disabled { opacity:.4;cursor:default; }

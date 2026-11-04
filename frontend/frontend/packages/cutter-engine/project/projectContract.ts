@@ -120,6 +120,20 @@ const validateLegacySpec = (value: unknown, errors: string[]) => {
       errors.push(`cutter.legacySpec.${field} must be a finite number.`)
     }
   }
+  if(value.customMeasures!==undefined){
+    if(!Array.isArray(value.customMeasures)||value.customMeasures.length>100)errors.push("cutter.legacySpec.customMeasures must contain at most 100 dimensions.")
+    else {
+      const ids=new Set<string>()
+      for(const item of value.customMeasures){
+        if(!isRecord(item)||typeof item.id!=="string"||!/^[a-zA-Z0-9_-]{1,100}$/.test(item.id)||ids.has(item.id)||!isRecord(item.start)||!isRecord(item.end)){
+          errors.push("Custom dimensions require unique IDs and two endpoints.");continue
+        }
+        ids.add(item.id)
+        const points=[item.start.x,item.start.y,item.end.x,item.end.y]
+        if(!points.every(n=>typeof n==="number"&&Number.isFinite(n)&&Math.abs(n)<=100000)||Math.hypot(Number(item.end.x)-Number(item.start.x),Number(item.end.y)-Number(item.start.y))<.001)errors.push("Custom dimension endpoints must be finite millimetre coordinates with a non-zero length.")
+      }
+    }
+  }
   return true
 }
 
