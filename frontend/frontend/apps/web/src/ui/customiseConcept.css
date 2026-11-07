@@ -28,9 +28,12 @@
 :root body #customisation-panel .customisation-opacity-wrap :is(.customisation-number,.customisation-opacity-value) { width: 62px; min-width: 0; flex: 0 0 62px; }
 :root body #customisation-panel .customisation-opacity-range { flex: 1; min-width: 0; width: 100%; appearance: none; height: 6px; border: 0; border-radius: 6px; background: linear-gradient(90deg, var(--kyza-accent-text) var(--fill,100%), var(--kyza-border-strong) var(--fill,100%)); }
 :root body #customisation-panel .customisation-opacity-range::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border: 3px solid var(--kyza-panel-raised); border-radius: 50%; background: var(--kyza-accent-text); box-shadow: 0 2px 8px #00000035; cursor: pointer; }
-:root body #customisation-panel .customisation-color-wrap { display: grid; grid-template-columns: minmax(0,1fr) 36px; align-items: center; gap: 8px; }
-:root body #customisation-panel :is(.customisation-color-button,.customise-colour-picker) { width: 36px; height: 36px; border-radius: 50%; padding: 2px; border: 1px solid var(--kyza-border-strong); cursor: pointer; }
+:root body #customisation-panel .customisation-color-wrap { display: grid; grid-template-columns: minmax(0,1fr) 36px; align-items: center; gap: 8px; position: relative; }
+:root body #customisation-panel :is(.customisation-color-button,.customise-colour-picker) { width: 36px; height: 36px; border-radius: 50%; padding: 2px; border: 3px solid var(--picker-colour, var(--kyza-border-strong)); background-color: var(--kyza-panel-raised); cursor: pointer; }
 :root body #customisation-panel .customisation-color-button img { width: 26px; height: 26px; }
+:root body #customisation-panel .customise-colour-picker { appearance: none; background-image: url('/Icons/UI Icons/Colour Circle_STATIC.png'); background-position: center; background-size: 26px 26px; background-repeat: no-repeat; }
+:root body #customisation-panel .customise-colour-picker::-webkit-color-swatch-wrapper { opacity: 0; padding: 0; }
+:root body #customisation-panel .customise-colour-picker::-webkit-color-swatch { opacity: 0; border: 0; }
 :root body #customisation-panel .customise-unit { color: var(--kyza-text-subtle); font-size: 12px; width: auto; }
 :root body #customisation-panel .customise-palettes { display: grid; gap: 10px; }
 :root body #customisation-panel .customisation-colour-popover { grid-column: 1 / -1; display: grid; gap: 10px; padding: 10px; border: 1px solid var(--kyza-border-strong); border-radius: 12px; background: var(--kyza-panel-raised); box-shadow: 0 8px 24px #00000025; }
@@ -57,3 +60,10 @@
 :root body #customisation-panel .customisation-perf-icon:hover { color:var(--kyza-accent-text);border-color:currentColor; }
 :root body #customisation-panel .customisation-perf-icon svg { width:20px;height:20px; }
 :root body #customisation-panel .customisation-perf-lane-delete:disabled { opacity:.4;cursor:default; }
+.customise-shape-button { width:100%;min-height:36px;border:1px solid #b44b50;border-radius:9px;background:#4a272b;color:#fff;cursor:pointer;font-weight:700; }
+.customise-shape-overlay { position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:#111a; }
+.customise-shape-dialog { box-sizing:border-box;width:min(720px,100%);max-height:calc(100vh - 40px);display:grid;gap:16px;padding:22px;border:1px solid #6d6263;border-radius:18px;background:#292729;color:#f8f4ef;box-shadow:0 20px 60px #0008; }
+.customise-shape-dialog h2 { margin:0;font-size:18px; }
+.customise-shape-preview { height:min(48vh,420px);display:grid;place-items:center;overflow:hidden;border:1px solid #665e5b;border-radius:12px;background:#fff; }
+.customise-shape-preview svg { width:100%;height:100%;max-width:100%;max-height:100%; }
+.customise-shape-close { justify-self:end;min-width:90px;min-height:34px;border:1px solid #8a7778;border-radius:8px;background:#3a3739;color:#fff;cursor:pointer; }

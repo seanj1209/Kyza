@@ -37,12 +37,13 @@ test('element chips keep Fill/Text controls; Labels are text only; other menus s
   await expect(page.getByLabel('Windows hex colour',{exact:true})).toBeVisible()
   await expect(page.getByRole('tab',{name:'Text',exact:true})).toHaveCount(0)
   await page.evaluate(()=>(window as any).panel.setActiveLayer('perf-lines'))
-  await expect(page.locator('.customisation-perf-lane-delete svg')).toHaveCount(2)
-  await expect(page.locator('.customisation-perf-lane .customisation-color-button svg')).toHaveCount(4)
+  await expect(page.locator('.customisation-perf-tab')).toHaveCount(2)
+  await expect(page.locator('.customisation-perf-lane-delete svg')).toHaveCount(1)
+  await expect(page.locator('.customisation-perf-lane .customisation-color-button img')).toHaveCount(2)
   await page.getByRole('button',{name:'Add perf lane',exact:true}).click()
-  await expect(page.locator('.customisation-perf-lane')).toHaveCount(3)
-  await page.getByRole('button',{name:'Delete perf lane',exact:true}).last().click()
-  await expect(page.locator('.customisation-perf-lane')).toHaveCount(2)
+  await expect(page.locator('.customisation-perf-tab')).toHaveCount(3)
+  await page.getByRole('button',{name:'Delete perf lane',exact:true}).click()
+  await expect(page.locator('.customisation-perf-tab')).toHaveCount(2)
 })
 
 async function measuresFixture(page:any){

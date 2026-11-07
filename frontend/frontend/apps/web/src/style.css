@@ -1382,6 +1382,7 @@ body.start-mode #side-panel {
   padding: 0;
   border: none;
   background: transparent;
+  border: 1px solid rgba(0, 0, 0, .25);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1449,6 +1450,35 @@ body.start-mode #side-panel {
   flex-direction: column;
   gap: 8px;
 }
+
+.customisation-perf-tabs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.customisation-perf-tab,
+.customisation-perf-link {
+  border: 1px solid var(--kyza-border-strong, #bbb);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  padding: 5px 8px;
+  cursor: pointer;
+}
+
+.customisation-perf-tab[aria-pressed="true"],
+.customisation-perf-link[aria-pressed="true"] {
+  border-color: #9e1316;
+  color: #9e1316;
+}
+
+.customisation-perf-tab:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.customisation-perf-link svg { width: 17px; height: 17px; display: block; }
 
 .customisation-perf-lane {
   display: flex;
@@ -4097,28 +4127,35 @@ body.start-mode #artboard-tabs {
   color: var(--kyza-accent-text, #b3332e);
 }
 .attributes-menu-item[hidden] { display: none !important; }
-/* AMENDS 8.2: each face stands upright — outer cutter edge at the top, centre
-   bottom-seal line at the bottom. FOP (left half) turns clockwise, BOP
-   (right half) anticlockwise. The element itself is sized to the face. */
+/* Each face has its own clipped SVG and measures inside that same surface. */
 #preview-canvas.pouch-preview-active > svg,
 body.studio-mode #preview-canvas.pouch-preview-active > svg {
-  transform: rotate(-90deg);
-  transform-origin: center center;
-  /* Must outrank body.studio-mode #preview svg { max-*: 100% }: a clamped box
-     letterboxes the face viewBox and paints the rest of the web around it. */
-  max-width: none;
-  max-height: none;
-  overflow: hidden;
+  position:absolute;
+  display:none;
+  pointer-events:none;
 }
-#preview-canvas.pouch-preview-active > svg[data-pouch-preview-face="fop"],
-body.studio-mode #preview-canvas.pouch-preview-active > svg[data-pouch-preview-face="fop"] {
-  transform: rotate(90deg);
+.pouch-preview-spread { position:absolute;inset:0;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:72px 16px 24px;box-sizing:border-box;overflow:hidden; }
+.pouch-preview-face { position:relative;min-width:0;min-height:0;overflow:hidden;border:1px solid var(--kyza-border,#665e5b);border-radius:12px;background:var(--kyza-panel-soft,#fff); }
+.pouch-preview-face-label { position:absolute;top:10px;left:12px;z-index:2;font-size:12px;letter-spacing:.08em;color:var(--kyza-text,#292729); }
+.pouch-preview-drawing { position:absolute;left:50%;top:50%;max-width:none!important;max-height:none!important;overflow:hidden;transform-origin:center center;box-shadow:none!important;border-radius:0!important;background:transparent!important; }
+.pouch-preview-drawing [data-selection-smart-zone] { pointer-events:none; }
+@media(max-width:700px){.pouch-preview-spread{padding:64px 8px 12px;gap:4px}.pouch-preview-face-label{font-size:10px}}
+
+#custom_dimensions [data-role="custom-measure"].is-selected [data-role="custom-measure-dimension"] {
+  stroke: #d71920 !important;
 }
-#preview-canvas.pouch-preview-active > svg :is([data-layer-id="measurement-guides"], [data-layer-id="annotations"]) {
-  display: none;
+#custom_dimensions [data-role="custom-measure"].is-selected [data-role="custom-measure-label"] {
+  fill: #d71920 !important;
 }
-.pouch-preview-measure-host { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: visible; }
-.pouch-preview-measure-host > svg { position: absolute; overflow: visible; transform-origin: center center; background: none !important; box-shadow: none !important; border-radius: 0 !important; }
+.custom-measure-repeat-menu { position: absolute; z-index: 20; }
+.custom-measure-repeat-menu > button,
+.custom-measure-repeat-choices button { border: 1px solid var(--kyza-border-strong); border-radius: 8px; background: var(--kyza-panel-raised); color: var(--kyza-text); cursor: pointer; padding: 5px 9px; }
+.custom-measure-repeat-choices { position: absolute; top: 100%; left: 0; display: grid; grid-template-columns: 1fr 1fr; width: 190px; max-width: calc(100vw - 24px); gap: 4px; padding: 6px; background: var(--kyza-panel-raised); border: 1px solid var(--kyza-border); border-radius: 8px; box-shadow: 0 3px 12px #0003; }
+.custom-measure-repeat-choices[hidden] { display: none; }
+.custom-measure-repeat-choices button[aria-pressed="true"] { background: var(--kyza-panel-soft); color: var(--kyza-text); border-color: var(--kyza-accent-text); }
+.custom-measure-exact-size { grid-column: 1 / -1; display: flex; align-items: end; gap: 5px; }
+.custom-measure-exact-size label { display: grid; gap: 2px; color: var(--kyza-text); font-size: 11px; white-space: nowrap; }
+.custom-measure-exact-size input { width: 72px; padding: 4px; border: 1px solid var(--kyza-border-strong); border-radius: 6px; background: var(--kyza-panel-soft); color: var(--kyza-text); }
 
 .dock-menu-item {
   border: 1px solid var(--field-border);

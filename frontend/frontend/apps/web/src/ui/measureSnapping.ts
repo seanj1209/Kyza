@@ -60,6 +60,7 @@ function insideClips(element: SVGGeometryElement, screen: Point) {
 /** Screen-pixel tolerance stays predictable at any zoom or nested transform. */
 export function findMeasureEdge(edges: SVGGeometryElement[], cursor: Point, tolerance = 8): EdgeHit | null {
   let best: EdgeHit | null = null
+  let corner: EdgeHit | null = null
   for (const element of edges) {
     if (!element.isConnected) continue
     const bounds=element.getBoundingClientRect()
@@ -69,7 +70,13 @@ export function findMeasureEdge(edges: SVGGeometryElement[], cursor: Point, tole
     if(!matrix)continue
     const segments=straightSegments(element)
     if(segments){
-      for(const segment of segments){const hit=nearestSegmentPoint(cursor,transformPoint(segment[0],matrix),transformPoint(segment[1],matrix));if(hit.distance<=tolerance&&(!best||hit.distance<best.distance)&&insideClips(element,hit.point))best={element,screen:hit.point,distance:hit.distance,segment}}
+      for(const segment of segments){
+        const start=transformPoint(segment[0],matrix),end=transformPoint(segment[1],matrix)
+        // At low zoom, a pointer near a box corner should use the exact vertex
+        // rather than a point a fraction of a millimetre along an edge.
+        for(const vertex of [start,end]){const distance=Math.hypot(cursor.x-vertex.x,cursor.y-vertex.y);if(distance<=tolerance+4&&(!corner||distance<corner.distance)&&insideClips(element,vertex))corner={element,screen:vertex,distance,segment}}
+        const hit=nearestSegmentPoint(cursor,start,end);if(hit.distance<=tolerance&&(!best||hit.distance<best.distance)&&insideClips(element,hit.point))best={element,screen:hit.point,distance:hit.distance,segment}
+      }
       continue
     }
     // Browser path geometry preserves curves; refine the closest sample in screen space.
@@ -86,5 +93,5 @@ export function findMeasureEdge(edges: SVGGeometryElement[], cursor: Point, tole
       for(const s of [position,(low+high)/2,0,length]){const d=distance(s);if(d<=tolerance&&(!best||d<best.distance)&&insideClips(element,at(s)))best={element,screen:at(s),distance:d}}
     } catch { /* Invalid or non-rendered geometry is not a measurable edge. */ }
   }
-  return best
+  return corner ?? best
 }

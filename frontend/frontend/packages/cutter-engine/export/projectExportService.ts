@@ -455,7 +455,8 @@ export const deliverProjectExportLocally = async (
       })
     } catch (error) {
       if (isPickerCancellation(error)) return { status: "cancelled" }
-      throw error
+      // If the picker could not open, use the browser download path below.
+      pickedHandle = undefined
     }
   }
   const handle = options.existingHandle ?? pickedHandle

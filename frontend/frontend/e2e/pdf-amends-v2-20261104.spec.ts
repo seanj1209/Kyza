@@ -160,17 +160,17 @@ test('copy and paste duplicates a perforation lane', async ({ page }) => {
   await expect(page.locator('#preview-canvas > svg [data-role="perf-group"]')).toHaveCount(2)
 })
 
-test('double clicking the cutter closes inspector and Flow without changing geometry', async ({ page }) => {
+test('clicking outside the cutter closes inspector and Flow without changing geometry', async ({ page }) => {
   await createManualProjectFromDashboard(page, { name: 'Close panels', packLabel: 'Plain Film', widthMm: 200, heightMm: 250 })
   await page.getByRole('button', { name: 'Base', exact: true }).click()
   await page.getByRole('button', { name: 'Expand Flow' }).click()
   await expect(page.locator('#side-panel')).toHaveClass(/is-open/)
-  await page.locator('#preview-canvas > svg').dblclick({ position: { x: 50, y: 50 } })
+  await page.locator('#preview-frame').evaluate(frame => frame.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })))
   await expect(page.locator('#side-panel')).not.toHaveClass(/is-open/)
   await expect(page.locator('#flow-assistant-dock')).toHaveAttribute('data-state', 'collapsed')
 })
 
-test('Plain Film measures have caps and the pouch preview uses the reduced scale', async ({ page }) => {
+test('Plain Film measures have caps and the pouch preview uses the enlarged scale', async ({ page }) => {
   await page.goto('/')
   const caps = await page.evaluate(async () => {
     const { getPackModule } = await import('/apps/web/src/packs/index.ts')
@@ -188,8 +188,8 @@ test('Plain Film measures have caps and the pouch preview uses the reduced scale
     const canvas = document.querySelector<HTMLElement>('#preview-canvas')!
     const viewport = resolvePouchPreviewViewport(svg, spec, { face: 'fop', showTrim: true })!
     const bounds = canvas.getBoundingClientRect()
-    const full = fitPouchPreviewElement(viewport, { width: bounds.width - 176, height: bounds.height - 176 })
+    const full = fitPouchPreviewElement(viewport, { width: bounds.width - 140, height: bounds.height - 140 })
     return Number.parseFloat(svg.style.width) / full.width
   })
-  expect(ratio).toBeCloseTo(.45, 2)
+  expect(ratio).toBeCloseTo(1, 2)
 })

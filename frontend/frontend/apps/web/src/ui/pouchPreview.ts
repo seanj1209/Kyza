@@ -144,7 +144,6 @@ export function clampPouchPreviewView(viewport: ViewBox, box: ViewBox): ViewBox 
 }
 
 type MeasureSegment = { start: number; end: number; position: number; label: string }
-const previewMeasureCleanup = new WeakMap<SVGSVGElement, () => void>()
 
 /** Read the renderer's existing sub-measure geometry, including DOY grip, notch and zip rows. */
 function readMeasureSegments(source: SVGSVGElement, id: string, axis: "x" | "y"): MeasureSegment[] {
@@ -167,24 +166,17 @@ function readMeasureSegments(source: SVGSVGElement, id: string, axis: "x" | "y")
   return segments
 }
 
-/** Preview dimensions live in a transparent sibling SVG, outside the cropped cutter face. */
-export function showPouchPreviewMeasures(source: SVGSVGElement, viewport: PouchPreviewViewport | null, spec?: FlowwrapSpec | null) {
-  previewMeasureCleanup.get(source)?.()
-  previewMeasureCleanup.delete(source)
+/** Dimensions are part of the face SVG, so zoom and rendering keep them together. */
+export function showPouchPreviewMeasures(source: SVGSVGElement, viewport: PouchPreviewViewport | null, spec?: FlowwrapSpec | null, measureSource = source) {
   source.querySelector('[data-layer-id="pouch-preview-measures"]')?.remove()
-  if (!viewport || !source.parentElement) return
-  const canvas = source.parentElement
-  const host = document.createElement("div")
-  host.className = "pouch-preview-measure-host"
-  host.setAttribute("data-export-ui", "true")
-  const overlay = document.createElementNS(NS, "svg")
+  if (!viewport) return
+  const overlay = document.createElementNS(NS, "g")
   overlay.setAttribute("data-layer-id", "pouch-preview-measures")
   overlay.setAttribute("aria-hidden", "true")
-  host.append(overlay)
-  canvas.append(host)
+  source.append(overlay)
   const upright = -POUCH_PREVIEW_ROTATION[viewport.face]
-  const colour = "#d23429"
   const dimension = (role: string, x1: number, y1: number, x2: number, y2: number, label: string, sub = false, stagger = 0) => {
+    const colour = (sub ? spec?.elementAppearance?.sub?.color : spec?.elementAppearance?.main?.color) ?? "#d23429"
     const group = document.createElementNS(NS, "g")
     group.setAttribute("data-role", role)
     group.setAttribute("aria-label", label)
@@ -275,16 +267,16 @@ export function showPouchPreviewMeasures(source: SVGSVGElement, viewport: PouchP
       dimension("pouch-preview-side-seal-last", bottomX, faceBottom - seal, bottomX, faceBottom, mm(seal), true)
     }
   } else {
-    readMeasureSegments(source, "sub_measure_width", "x").filter(withinFace)
+    readMeasureSegments(measureSource, "sub_measure_width", "x").filter(withinFace)
       .filter(segment => Math.abs(segment.end - segment.start - faceWidth) > .01)
       .forEach((segment, index) => dimension(`pouch-preview-sub-length-${index}`, segment.start, rightY(12), segment.end, rightY(12), segment.label, true, index % 2))
-    const featureRows = readMeasureSegments(source, "sub_measure_features", "x").filter(withinFace)
+    const featureRows = readMeasureSegments(measureSource, "sub_measure_features", "x").filter(withinFace)
     const distinctRows = [...new Set(featureRows.map(segment => segment.position))].sort((a, b) => a - b)
     featureRows.forEach((segment, index) => {
       const row = distinctRows.indexOf(segment.position)
       dimension(`pouch-preview-feature-${index}`, segment.start, rightY(20 + row * 7), segment.end, rightY(20 + row * 7), segment.label, true, index % 3)
     })
-    readMeasureSegments(source, "sub_measure_height", "y")
+    readMeasureSegments(measureSource, "sub_measure_height", "y")
       .filter(segment => Math.abs(segment.end - segment.start - faceHeight) > .01)
       .forEach((segment, index) => dimension(`pouch-preview-sub-width-${index}`, bottomX + (fop ? 8 : -8), segment.start, bottomX + (fop ? 8 : -8), segment.end, segment.label, true, index % 2))
   }
@@ -301,16 +293,56 @@ export function showPouchPreviewMeasures(source: SVGSVGElement, viewport: PouchP
       dimension("pouch-preview-side-seal", x, faceTop, x, faceTop + side, mm(side), true)
     }
   }
-  const sync = () => {
-    const width = Number.parseFloat(source.style.width), height = Number.parseFloat(source.style.height)
-    if (!Number.isFinite(width) || !Number.isFinite(height)) return
-    overlay.setAttribute("viewBox", source.getAttribute("viewBox") ?? `${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`)
-    overlay.style.width = `${width}px`; overlay.style.height = `${height}px`
-    overlay.style.left = `${(canvas.clientWidth - width) / 2}px`
-    overlay.style.top = `${(canvas.clientHeight - height) / 2}px`
-    overlay.style.transform = `rotate(${POUCH_PREVIEW_ROTATION[viewport.face]}deg)`
+}
+
+/** A separately clipped SVG is made for each face; dimensions stay on that SVG. */
+export function renderPouchPreviewSpread(source: SVGSVGElement, spec: FlowwrapSpec, showTrim: boolean, zoom: number, canvas: { width: number; height: number }) {
+  const spread = document.createElement("div")
+  spread.className = "pouch-preview-spread"
+  const margin = 44
+  for (const face of ["fop", "bop"] as const) {
+    const viewport = resolvePouchPreviewViewport(source, spec, { face, showTrim })
+    if (!viewport) continue
+    const card = document.createElement("div")
+    card.className = "pouch-preview-face"
+    card.dataset.face = face
+    const label = document.createElement("strong")
+    label.className = "pouch-preview-face-label"
+    label.textContent = face.toUpperCase()
+    const clone = source.cloneNode(true) as SVGSVGElement
+    clone.removeAttribute("id")
+    clone.classList.add("pouch-preview-drawing")
+    clone.setAttribute("data-pouch-preview-face", face)
+    clone.setAttribute("data-pouch-preview-bounds", `${viewport.faceLeft} ${viewport.faceTop} ${viewport.faceWidth} ${viewport.faceHeight}`)
+    clone.setAttribute("data-pouch-preview-rotation", String(POUCH_PREVIEW_ROTATION[face]))
+    clone.querySelectorAll('[data-layer-id="measurement-guides"], [data-layer-id="annotations"]').forEach(node => node.remove())
+    const defs = document.createElementNS(NS, "defs")
+    const clip = document.createElementNS(NS, "clipPath")
+    const clipId = `pouch-preview-clip-${face}`
+    clip.id = clipId
+    const rect = document.createElementNS(NS, "rect")
+    for (const [key, value] of Object.entries({ x: viewport.faceLeft, y: viewport.faceTop, width: viewport.faceWidth, height: viewport.faceHeight })) rect.setAttribute(key, String(value))
+    clip.append(rect)
+    defs.append(clip)
+    const drawing = document.createElementNS(NS, "g")
+    drawing.setAttribute("clip-path", `url(#${clipId})`)
+    for (const node of [...clone.childNodes]) {
+      if (node instanceof SVGDefsElement) continue
+      drawing.append(node)
+    }
+    clone.prepend(defs)
+    clone.append(drawing)
+    clone.setAttribute("viewBox", `${viewport.faceLeft - margin} ${viewport.faceTop - margin} ${viewport.faceWidth + 2 * margin} ${viewport.faceHeight + 2 * margin}`)
+    showPouchPreviewMeasures(clone, viewport, spec, source)
+    const fitted = fitPouchPreviewElement(
+      { x: 0, y: 0, width: viewport.faceWidth + 2 * margin, height: viewport.faceHeight + 2 * margin },
+      { width: Math.max(1, canvas.width / 2 - 64), height: Math.max(1, canvas.height - 120) }
+    )
+    clone.style.width = `${fitted.width * zoom}px`
+    clone.style.height = `${fitted.height * zoom}px`
+    clone.style.transform = `translate(-50%, -50%) rotate(${POUCH_PREVIEW_ROTATION[face]}deg)`
+    card.append(label, clone)
+    spread.append(card)
   }
-  source.addEventListener("canvasviewportchange", sync)
-  previewMeasureCleanup.set(source, () => { source.removeEventListener("canvasviewportchange", sync); host.remove() })
-  sync()
+  return spread
 }

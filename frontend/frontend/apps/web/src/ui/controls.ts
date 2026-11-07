@@ -3978,7 +3978,7 @@ export function initFlowwrapControls({
   zoomPresets.className = "dock-zoom-presets"
   zoomPresets.setAttribute("aria-label", "Set canvas zoom")
   zoomPresets.title = "Zoom relative to the fitted cutter — not artwork resolution"
-  const zoomValues = [20, 50, 100, 200, 400, 800, 1600, 3200, 6400]
+  const zoomValues = [10, 20, 50, 100, 200, 400, 800, 1600, 3200, 6400]
   zoomValues.forEach(value => { const option = document.createElement("option"); option.value = String(value); option.textContent = `${value}%`; zoomPresets.appendChild(option) })
   const customZoomOption = document.createElement("option")
   customZoomOption.value = "custom"

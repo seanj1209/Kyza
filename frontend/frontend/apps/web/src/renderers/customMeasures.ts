@@ -1,8 +1,25 @@
 import type { FlowwrapSpec } from "../types/flowwrap"
 import { customMeasureTarget, resolveAppearance } from "./elementAppearance"
 import { measureLength, measureName, validCustomMeasures, type CustomMeasure } from "../geometry/customMeasures"
+import { LIDDING_CANVAS_MARGIN_MM, resolveLiddingLayout } from "../constraints/lidding"
 
 const NS="http://www.w3.org/2000/svg"
+export type MeasureOffset = { x:number; y:number }
+export function customMeasureOffsets(svg:SVGSVGElement,spec:FlowwrapSpec,m:CustomMeasure):MeasureOffset[] {
+  if(m.repeatMode!=="all")return [{x:0,y:0}]
+  const mid={x:(m.start.x+m.end.x)/2,y:(m.start.y+m.end.y)/2}
+  let cells:{x:number;y:number;width:number;height:number}[]=[]
+  if(spec.lidding){
+    cells=resolveLiddingLayout(spec).cells.map(cell=>({x:LIDDING_CANVAS_MARGIN_MM+cell.slitX,y:LIDDING_CANVAS_MARGIN_MM+cell.slitY,width:cell.slitWidth,height:cell.slitHeight}))
+  }else{
+    cells=[...svg.querySelectorAll<SVGSVGElement>('svg[data-repeat-id]')].map(cell=>({x:Number(cell.getAttribute("x")),y:Number(cell.getAttribute("y")),width:Number(cell.getAttribute("width")),height:Number(cell.getAttribute("height"))})).filter(cell=>Object.values(cell).every(Number.isFinite))
+  }
+  if(cells.length<2)return [{x:0,y:0}]
+  const source=cells.find(cell=>mid.x>=cell.x&&mid.x<=cell.x+cell.width&&mid.y>=cell.y&&mid.y<=cell.y+cell.height)
+    ??cells.reduce((best,cell)=>Math.hypot(mid.x-cell.x-cell.width/2,mid.y-cell.y-cell.height/2)<Math.hypot(mid.x-best.x-best.width/2,mid.y-best.y-best.height/2)?cell:best)
+  return [{x:0,y:0},...cells.filter(cell=>cell!==source).map(cell=>({x:cell.x-source.x,y:cell.y-source.y}))]
+}
+export const offsetCustomMeasure=(m:CustomMeasure,offset:MeasureOffset):CustomMeasure=>({...m,start:{x:m.start.x+offset.x,y:m.start.y+offset.y},end:{x:m.end.x+offset.x,y:m.end.y+offset.y}})
 /** One renderer for preview and vector/PDF exports. Interaction handles are separate. */
 export function drawCustomMeasure(group:SVGGElement,m:CustomMeasure,spec:FlowwrapSpec) {
   group.replaceChildren()
@@ -30,15 +47,17 @@ export function drawCustomMeasure(group:SVGGElement,m:CustomMeasure,spec:Flowwra
 export function renderCustomMeasures(svg:SVGSVGElement,spec:FlowwrapSpec) {
   const measures=validCustomMeasures(spec);if(!measures.length)return svg
   const layer=document.createElementNS(NS,"g");layer.id="custom_dimensions";layer.setAttribute("data-layer-id","custom-measures")
-  for(const m of measures){const group=document.createElementNS(NS,"g");group.setAttribute("data-role","custom-measure");group.setAttribute("data-custom-measure-id",m.id);group.setAttribute("data-selectable-id",`custom-measure:${m.id}`);drawCustomMeasure(group,m,spec);layer.append(group)}
+  for(const m of measures)for(const [index,offset] of customMeasureOffsets(svg,spec,m).entries()){
+    const group=document.createElementNS(NS,"g");group.setAttribute("data-role","custom-measure");group.setAttribute("data-custom-measure-id",m.id);group.setAttribute("data-selectable-id",`custom-measure:${m.id}`);group.setAttribute("data-repeat-index",String(index));group.setAttribute("data-repeat-dx",String(offset.x));group.setAttribute("data-repeat-dy",String(offset.y));drawCustomMeasure(group,offsetCustomMeasure(m,offset),spec);layer.append(group)
+  }
   svg.append(layer)
   // Extend only the sheet bounds; never scale or change construction geometry.
   const vb=svg.viewBox.baseVal,old={x:vb.x,y:vb.y,width:vb.width,height:vb.height}
   let left=old.x,top=old.y,right=old.x+old.width,bottom=old.y+old.height
-  for(const m of measures){const font=resolveAppearance(customMeasureTarget(m,spec),spec.elementAppearance?.[`custom-measure:${m.id}`]).fontSize
+  for(const m of measures)for(const offset of customMeasureOffsets(svg,spec,m)){const font=resolveAppearance(customMeasureTarget(m,spec),spec.elementAppearance?.[`custom-measure:${m.id}`]).fontSize
     const pad=(measureName(m).length+4)*font
-    left=Math.min(left,m.start.x-pad,m.end.x-pad);top=Math.min(top,m.start.y-pad,m.end.y-pad)
-    right=Math.max(right,m.start.x+pad,m.end.x+pad);bottom=Math.max(bottom,m.start.y+pad,m.end.y+pad)
+    left=Math.min(left,m.start.x+offset.x-pad,m.end.x+offset.x-pad);top=Math.min(top,m.start.y+offset.y-pad,m.end.y+offset.y-pad)
+    right=Math.max(right,m.start.x+offset.x+pad,m.end.x+offset.x+pad);bottom=Math.max(bottom,m.start.y+offset.y+pad,m.end.y+offset.y+pad)
   }
   svg.setAttribute("viewBox",`${left} ${top} ${right-left} ${bottom-top}`)
   if(svg.getAttribute("width")?.endsWith("mm"))svg.setAttribute("width",`${right-left}mm`)

@@ -1,5 +1,5 @@
 /** Presentation scaling only. SVG coordinates remain millimetres. */
-export const MIN_CANVAS_ZOOM = .2
+export const MIN_CANVAS_ZOOM = .1
 export const MAX_CANVAS_ZOOM = 64
 export const REFERENCE_PPI = 600
 export const REFERENCE_PIXEL_MM = 25.4 / REFERENCE_PPI

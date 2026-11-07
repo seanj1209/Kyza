@@ -554,12 +554,13 @@ export function initCustomisationPanel({
     button.type = "button"
     button.className = "customisation-color-button"
     button.setAttribute("aria-label", "Pick colour")
-    if(row.closest(".customisation-perf-lane")){button.classList.add("customisation-perf-icon");button.appendChild(createStudioIcon("palette")!)}
-    else {
-      const icon=document.createElement("img");icon.src=ICON_COLOUR_STATIC;icon.alt="";button.appendChild(icon)
-      button.addEventListener("mouseenter",()=>{icon.src=ICON_COLOUR_HOVER})
-      button.addEventListener("mouseleave",()=>{icon.src=ICON_COLOUR_STATIC})
+    const updateButtonColour = () => {
+      const value = text.value.trim()
+      if (/^#[0-9a-f]{6}$/i.test(value)) button.style.setProperty("--picker-colour", value)
     }
+    const icon=document.createElement("img");icon.src=ICON_COLOUR_STATIC;icon.alt="";button.appendChild(icon)
+    button.addEventListener("mouseenter",()=>{icon.src=ICON_COLOUR_HOVER})
+    button.addEventListener("mouseleave",()=>{icon.src=ICON_COLOUR_STATIC})
     const popup = document.createElement("div")
     popup.className = "customisation-colour-popover"
     popup.hidden = true
@@ -587,8 +588,11 @@ export function initCustomisationPanel({
     const refreshPalette = colourPalette(popup, () => text.value, hex => {
       text.value = hex; picker.value = hex; text.dispatchEvent(new Event("change", { bubbles: true }))
     })
-    text.addEventListener("change", () => { rememberColour(text.value); refreshPalette() })
-    picker.addEventListener("change", () => { rememberColour(picker.value); refreshPalette() })
+    text.addEventListener("input", updateButtonColour)
+    picker.addEventListener("input", () => { button.style.setProperty("--picker-colour", picker.value) })
+    text.addEventListener("change", () => { rememberColour(text.value); refreshPalette(); updateButtonColour() })
+    picker.addEventListener("change", () => { rememberColour(picker.value); refreshPalette(); updateButtonColour() })
+    queueMicrotask(updateButtonColour)
     return { text, picker }
   }
 
@@ -676,6 +680,7 @@ export function initCustomisationPanel({
 
   const perfLaneList = document.createElement("div")
   perfLaneList.className = "customisation-perf-lanes"
+  let selectedPerfLane = 0
   const perfStyleHeading = document.createElement("h4")
   perfStyleHeading.className = "customisation-subheading"
   perfStyleHeading.textContent = "Style"
@@ -747,7 +752,7 @@ export function initCustomisationPanel({
   categoryPanels.get("elements")!.appendChild(generalElementsHost)
   const elementsEditor = createAppearanceEditor(generalElementsHost, "elements", () => currentSpec, next => {
     currentSpec = next; onChange(next)
-  },(target,host)=>["bbe","barcode","qr","label"].includes(target.id)?selectedEditor.showKind(target.id,host):null)
+  },(target,host)=>["bbe","barcode","qr","label"].includes(target.id)?selectedEditor.showKind(target.id,host):null,getCurrentSvg)
   const measuresEditor = createAppearanceEditor(categoryPanels.get("measures")!, "measures", () => currentSpec, next => {
     currentSpec = next; onChange(next)
   })
@@ -807,7 +812,20 @@ export function initCustomisationPanel({
     if (!currentSpec) {
       return
     }
-    const next = updater(currentSpec)
+    let next = updater(currentSpec)
+    if (next.perfs?.linked !== false && next.perfs?.lanes?.length) {
+      const first = next.perfs.lanes[0]
+      next = { ...next, perfs: { ...next.perfs, lanes: next.perfs.lanes.map((lane, index) => index === 0 ? lane : {
+        ...lane,
+        style: first.style,
+        diameter: first.diameter,
+        color: first.color,
+        fillColor: first.fillColor,
+        fillOpacity: first.fillOpacity,
+        strokeColor: first.strokeColor,
+        strokeWidth: first.strokeWidth
+      }) } }
+    }
     currentSpec = next
     onChange(next)
     const perfs = normalizePerfs(next)
@@ -819,6 +837,11 @@ export function initCustomisationPanel({
     perfCount.disabled = (perfs?.mode ?? "continuous") !== "regulated"
     perfLaneAddButton.disabled = !perfs || (perfs?.lanes.length ?? 0) >= 3
     renderPerfLanes()
+    panel.querySelectorAll<HTMLElement>(".customisation-color-wrap").forEach(wrap => {
+      const value = wrap.querySelector<HTMLInputElement>(".customisation-color-text")?.value
+      const button = wrap.querySelector<HTMLButtonElement>(".customisation-color-button")
+      if (button && value && /^#[0-9a-f]{6}$/i.test(value)) button.style.setProperty("--picker-colour", value)
+    })
     applyCustomiseSectionMode()
     refreshFocusedSection()
   }
@@ -1001,7 +1024,34 @@ export function initCustomisationPanel({
       return
     }
     perfLaneList.style.display = ""
+    const linked = perfs.linked !== false
+    selectedPerfLane = linked ? 0 : Math.min(selectedPerfLane, perfs.lanes.length - 1)
+    const tabs = document.createElement("div")
+    tabs.className = "customisation-perf-tabs"
+    perfs.lanes.forEach((_, index) => {
+      const tab = document.createElement("button")
+      tab.type = "button"
+      tab.className = "customisation-perf-tab"
+      tab.textContent = `Lane ${index + 1}`
+      tab.disabled = linked && index > 0
+      tab.setAttribute("aria-pressed", String(selectedPerfLane === index))
+      tab.addEventListener("click", () => { selectedPerfLane = index; renderPerfLanes() })
+      tabs.append(tab)
+    })
+    const link = document.createElement("button")
+    link.type = "button"
+    link.className = "customisation-perf-link"
+    link.append(createStudioIcon(linked ? "linked" : "unlinked")!)
+    link.setAttribute("aria-label", linked ? "Unlink perf lanes" : "Link perf lanes")
+    link.setAttribute("aria-pressed", String(linked))
+    link.addEventListener("click", () => {
+      selectedPerfLane = 0
+      applySpecPatch(spec => ({ ...spec, perfs: { ...spec.perfs!, linked: !linked } }))
+    })
+    tabs.append(link)
+    perfLaneList.append(tabs)
     perfs.lanes.forEach((lane, index) => {
+      if (index !== selectedPerfLane) return
       const card = document.createElement("div")
       card.className = "customisation-perf-lane"
 
@@ -1440,6 +1490,11 @@ export function initCustomisationPanel({
     perfSpacing.disabled = !perfs
     perfLaneAddButton.disabled = !perfs || (perfs?.lanes.length ?? 0) >= 3
     renderPerfLanes()
+    panel.querySelectorAll<HTMLElement>(".customisation-color-wrap").forEach(wrap => {
+      const value = wrap.querySelector<HTMLInputElement>(".customisation-color-text")?.value
+      const button = wrap.querySelector<HTMLButtonElement>(".customisation-color-button")
+      if (button && value && /^#[0-9a-f]{6}$/i.test(value)) button.style.setProperty("--picker-colour", value)
+    })
     applyCustomiseSectionMode()
     refreshFocusedSection()
   }
