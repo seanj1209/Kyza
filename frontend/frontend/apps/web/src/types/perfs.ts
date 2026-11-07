@@ -16,6 +16,8 @@ export interface PerfLane {
 }
 
 export interface PerfSpec {
+  /** Lanes share appearance unless explicitly unlinked. */
+  linked?: boolean
   mode: PerfMode
   separation: number
   originX: number

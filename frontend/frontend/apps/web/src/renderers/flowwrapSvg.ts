@@ -575,8 +575,17 @@ function renderSubMeasureGroups(
 
   const subDimX = originX - SUB_DIMENSION_OFFSET
   const boundariesY = [originY, liveOriginY]
+  // Horizontal folds divide the height in the same way vertical folds divide
+  // the width. Share one row so new labels replace, rather than overlap, the
+  // former full-height segment.
+  boundariesY.push(...(spec.foldLines ?? [])
+    .filter(line => line.orientation === "horizontal")
+    .map(line => originY + line.offset)
+    .filter(y => y > liveOriginY && y < liveOriginY + liveHeight)
+    .sort((a, b) => a - b))
   boundariesY.push(liveOriginY + liveHeight)
   boundariesY.push(originY + cutterHeight)
+  const distinctY = [...new Set(boundariesY)].sort((a, b) => a - b)
   const subHeightLayer = document.createElementNS(SVG_NS, "g")
   subHeightLayer.setAttribute("id", "sub_measure_height")
   subHeightLayer.setAttribute(
@@ -589,9 +598,9 @@ function renderSubMeasureGroups(
   )
   subHeightLayer.setAttribute("data-cap", SUB_DIMENSION_CAP.toString())
   annotationLayer.appendChild(subHeightLayer)
-  for (let i = 0; i < boundariesY.length - 1; i += 1) {
-    const startY = boundariesY[i]
-    const endY = boundariesY[i + 1]
+  for (let i = 0; i < distinctY.length - 1; i += 1) {
+    const startY = distinctY[i]
+    const endY = distinctY[i + 1]
     const length = Math.max(0, endY - startY)
     if (length <= 0) {
       continue

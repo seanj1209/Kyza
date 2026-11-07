@@ -61,9 +61,10 @@ import { initLayersPanelV2 } from "./ui/layersPanelV2"
 import { selectionStore, type CutterElement, type CutterElementType } from "./state/selectionStore"
 import { applyBaseLayerCustomisation } from "./renderers/baseLayerCustomisation"
 import { updateSubMeasuresLayer } from "./renderers/flowwrapSvg"
+import { applyElementAppearance } from "./renderers/elementAppearance"
 import { initCustomisationPanel } from "./ui/customisationPanel"
 import { attachCanvasPan } from "./ui/canvasPan"
-import { clampPouchPreviewView, fitPouchPreviewElement, POUCH_PREVIEW_ROTATION, resolvePouchPreviewViewport, showPouchPreviewMeasures, type PouchPreviewViewport } from "./ui/pouchPreview"
+import { renderPouchPreviewSpread } from "./ui/pouchPreview"
 import { attachSelectionContextActions } from "./ui/selectionContextActions"
 import { getPackModule, packModules } from "./packs"
 import { loadPreferences } from "./kyza/account/preferenceService"
@@ -1661,16 +1662,10 @@ pouchPreviewOverlay.hidden = true
 pouchPreviewOverlay.setAttribute("aria-label", "Finished pouch preview")
 const pouchPreviewTabs = document.createElement("div")
 pouchPreviewTabs.className = "pouch-preview-tabs"
-const pouchPreviewFop = document.createElement("button")
-pouchPreviewFop.type = "button"
-pouchPreviewFop.textContent = "FOP"
-const pouchPreviewBop = document.createElement("button")
-pouchPreviewBop.type = "button"
-pouchPreviewBop.textContent = "BOP"
 const pouchPreviewTrimButton = document.createElement("button")
 pouchPreviewTrimButton.type = "button"
 pouchPreviewTrimButton.textContent = "Trim"
-pouchPreviewTabs.append(pouchPreviewFop, pouchPreviewBop, pouchPreviewTrimButton)
+pouchPreviewTabs.append(pouchPreviewTrimButton)
 pouchPreviewOverlay.append(pouchPreviewTabs)
 previewFrame.appendChild(pouchPreviewOverlay)
 preview.appendChild(startOverlay)
@@ -1752,11 +1747,9 @@ let viewBoxState: { zoom: number; panX: number; panY: number } = {
 let pendingArtboardId: string | null = null
 let previewMode = false
 let pouchPreviewActive = false
+let pouchPreviewSelectionApis: Array<{ destroy: () => void }> = []
 const preSlitView = createPreSlitView(() => { if (currentSpec) render(currentSpec) })
-let pouchPreviewFace: "fop" | "bop" = "fop"
 let pouchPreviewShowTrim = true
-/** Bounds of the face shown in Pouch Preview; zoom and pan stay inside it. */
-let pouchPreviewViewport: PouchPreviewViewport | null = null
 let issueEntries: IssueEntry[] = []
 let validationCentreSummary: ValidationCentreSummary | null = null
 let validationSelectionMessage: string | null = null
@@ -2190,15 +2183,16 @@ const clearActiveTool = () => {
   return true
 }
 
-// Selectable objects handle their own double-click before this blank-canvas
-// fallback restores Pan outside the working area.
-previewFrame.addEventListener("dblclick", () => {
+// A click in the surrounding frame dismisses menus without consuming the
+// double-click used by selectable cutter elements.
+previewFrame.addEventListener("pointerdown", event => {
+  if (event.target instanceof Element && event.target.closest("#preview-canvas > svg")) return
   closeInspectorPanels()
   flowDock.collapse()
   toggleMainMenu(false)
-}, true)
+})
 previewFrame.addEventListener("dblclick", event => {
-  if (event.defaultPrevented || event.target instanceof Element && event.target.closest("[data-context-action]")) return
+  if (event.defaultPrevented || event.target instanceof Element && event.target.closest("[data-context-action], [data-selectable-id], [data-custom-measure-id]")) return
   if (clearActiveTool()) {
     event.preventDefault()
   }
@@ -4116,43 +4110,48 @@ function refreshPouchPreview() {
     return
   }
   pouchPreviewOverlay.hidden = !pouchPreviewActive
-  pouchPreviewFop.setAttribute("aria-pressed", String(pouchPreviewFace === "fop"))
-  pouchPreviewBop.setAttribute("aria-pressed", String(pouchPreviewFace === "bop"))
   pouchPreviewTrimButton.setAttribute("aria-pressed", String(pouchPreviewShowTrim))
   const source = getCurrentSvg()
   if (!source) return
-  const viewport = pouchPreviewActive && currentSpec
-    ? resolvePouchPreviewViewport(source, currentSpec, { face: pouchPreviewFace, showTrim: pouchPreviewShowTrim })
-    : null
-  previewCanvas.classList.toggle("pouch-preview-active", Boolean(viewport))
-  source.setAttribute("data-pouch-preview", String(Boolean(viewport)))
-  source.setAttribute("data-pouch-preview-face", viewport ? pouchPreviewFace : "")
-  source.setAttribute("data-preview-trim", viewport ? String(pouchPreviewShowTrim) : "")
-  source.setAttribute("data-pouch-preview-rotation", viewport ? String(POUCH_PREVIEW_ROTATION[viewport.face]) : "")
-  source.setAttribute("data-pouch-preview-bounds", viewport ? `${viewport.faceLeft} ${viewport.faceTop} ${viewport.faceWidth} ${viewport.faceHeight}` : "")
-  pouchPreviewViewport = viewport
-  if (viewport) {
-    viewBoxBase = { x: viewport.x, y: viewport.y, width: viewport.width, height: viewport.height }
-    // AMENDS 8.2: the element takes the face's exact aspect ratio, so the
-    // viewBox is never letterboxed and no other part of the web is painted.
-    const bounds = previewCanvas.getBoundingClientRect()
-    // Reserve room around the selected face for preview dimensions without
-    // widening its crop into the neighbouring face or hidden trim.
-    const fitted = fitPouchPreviewElement(viewport, { width: Math.max(1, bounds.width - 176), height: Math.max(1, bounds.height - 176) })
-    source.style.width = `${fitted.width * .45}px`
-    source.style.height = `${fitted.height * .45}px`
-    source.style.flex = "none"
-    // Centre the unturned box on the canvas (it may be taller than the canvas
-    // before its ±90° turn), so the turned face sits in the middle.
-    source.style.alignSelf = "flex-start"
-    source.style.margin = `${(bounds.height - fitted.height * .45) / 2}px ${(bounds.width - fitted.width * .45) / 2}px`
-  } else {
-    viewBoxBase = normalViewBoxBase
-    for (const property of ["width", "height", "flex", "align-self", "margin"]) source.style.removeProperty(property)
+  pouchPreviewSelectionApis.forEach(api => api.destroy())
+  pouchPreviewSelectionApis = []
+  previewCanvas.querySelector(".pouch-preview-spread")?.remove()
+  previewCanvas.classList.toggle("pouch-preview-active", pouchPreviewActive)
+  source.setAttribute("data-pouch-preview", String(pouchPreviewActive))
+  source.setAttribute("data-pouch-preview-face", pouchPreviewActive ? "both" : "")
+  source.setAttribute("data-preview-trim", pouchPreviewActive ? String(pouchPreviewShowTrim) : "")
+  viewBoxBase = normalViewBoxBase
+  if (currentSpec?.doyPouch || currentSpec?.kSealPouch) {
+    updateSubMeasuresLayer(source, currentSpec, pouchPreviewActive)
+    applyElementAppearance(source, currentSpec)
   }
-  if (currentSpec?.doyPouch || currentSpec?.kSealPouch) updateSubMeasuresLayer(source, currentSpec, Boolean(viewport))
-  showPouchPreviewMeasures(source, viewport, currentSpec)
-  applyCurrentViewBox?.()
+  if (pouchPreviewActive && currentSpec) {
+    const bounds = previewCanvas.getBoundingClientRect()
+    const spread = renderPouchPreviewSpread(source, currentSpec, pouchPreviewShowTrim, viewBoxState.zoom, bounds)
+    spread.addEventListener("wheel", event => {
+      event.preventDefault()
+      viewBoxState.zoom = clampCanvasZoom(viewBoxState.zoom * wheelZoomFactor(event.deltaY))
+      controlsApi?.setCanvasZoom?.(viewBoxState.zoom)
+      refreshPouchPreview()
+    }, { passive: false })
+    previewCanvas.append(spread)
+    const commitPreviewInteraction = (next: FlowwrapSpec) => commitActiveProjectSpec(next, "canvas-interaction", { syncControls: true, renderNext: true })
+    spread.querySelectorAll<SVGSVGElement>(".pouch-preview-drawing").forEach(face => {
+      pouchPreviewSelectionApis.push(attachSelectionInteractions(face, selectionStore, () => {
+        selectionStore.setSelectionMode(true)
+        controlsApi?.setSelectEnabled?.(true)
+      }))
+      attachSafeZoneInteractions(face, currentSpec!, commitPreviewInteraction, controlsApi?.setMeasurementActive)
+      attachAttributeBoxInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachEyeMarkInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachHangerSlotInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachWindowInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachHalfMoonCutoutInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachFoldLineInteractions(face, currentSpec!, commitPreviewInteraction, controlsApi?.setMeasurementActive)
+      attachOpeningInteractions(face, currentSpec!, commitPreviewInteraction)
+      attachTearNotchInteractions(face, currentSpec!, commitPreviewInteraction)
+    })
+  } else applyCurrentViewBox?.()
   source.dispatchEvent(new Event("canvasviewportchange"))
   requestAnimationFrame(repositionOverlays)
 }
@@ -4170,8 +4169,6 @@ function setPouchPreviewMode(enabled: boolean) {
   controlsApi?.setPouchPreviewEnabled(enabled)
   refreshPouchPreview()
 }
-pouchPreviewFop.addEventListener("click", () => { pouchPreviewFace = "fop"; viewBoxState.panX = 0; viewBoxState.panY = 0; refreshPouchPreview() })
-pouchPreviewBop.addEventListener("click", () => { pouchPreviewFace = "bop"; viewBoxState.panX = 0; viewBoxState.panY = 0; refreshPouchPreview() })
 pouchPreviewTrimButton.addEventListener("click", () => { pouchPreviewShowTrim = !pouchPreviewShowTrim; refreshPouchPreview() })
 window.addEventListener("resize", () => { if (pouchPreviewActive) refreshPouchPreview() })
 try {
@@ -4286,11 +4283,15 @@ try {
       setPouchPreviewMode(enabled)
     },
   onZoomChange: zoom => {
+    if (pouchPreviewActive) {
+      viewBoxState.zoom = clampCanvasZoom(zoom)
+      refreshPouchPreview()
+      return
+    }
     const svg = getCurrentSvg()
     if (!svg || !viewBoxBase) return
     const next = zoomViewBox(viewBoxBase, svg.viewBox.baseVal, zoom)
     viewBoxState = { zoom: clampCanvasZoom(zoom), panX: next.x - viewBoxBase.x, panY: next.y - viewBoxBase.y }
-    // One path sets the viewBox, so Pouch Preview's face clamp also applies here.
     applyCurrentViewBox?.()
     svg.dispatchEvent(new Event("canvasviewportchange"))
     saveActiveViewBoxState()
@@ -4498,16 +4499,6 @@ function render(spec: FlowwrapSpec) {
       let height = viewBoxBase.height / zoom
       let x = viewBoxBase.x + viewBoxState.panX
       let y = viewBoxBase.y + viewBoxState.panY
-      if (pouchPreviewViewport && svg.getAttribute("data-pouch-preview") === "true") {
-        // Pouch Preview never zooms or pans beyond the selected face.
-        const clamped = clampPouchPreviewView(pouchPreviewViewport, { x, y, width, height })
-        ;({ x, y, width, height } = clamped)
-        zoom = viewBoxBase.width / width
-        viewBoxState.zoom = zoom
-        viewBoxState.panX = x - viewBoxBase.x
-        viewBoxState.panY = y - viewBoxBase.y
-        svg.setAttribute("data-canvas-zoom", String(zoom))
-      }
       svg.setAttribute("viewBox", `${x} ${y} ${width} ${height}`)
       controlsApi?.setCanvasZoom?.(zoom)
     }

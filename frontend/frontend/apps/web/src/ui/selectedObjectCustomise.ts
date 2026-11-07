@@ -55,7 +55,8 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
     const r=row(c,label),wrap=document.createElement("div");wrap.className="customisation-color-wrap";r.append(wrap)
     const hex=document.createElement("input"),picker=document.createElement("input");hex.className="customisation-color-text";hex.maxLength=7;hex.setAttribute("aria-label",`${label} HEX`)
     picker.type="color";picker.className="customisation-color-native";picker.setAttribute("aria-label",`${label} picker`)
-    const button=document.createElement("button");button.type="button";button.className="customisation-color-button";button.textContent="Colours";button.setAttribute("aria-label",`${label} colours`)
+    const button=document.createElement("button");button.type="button";button.className="customisation-color-button";button.setAttribute("aria-label",`${label} colours`)
+    const icon=document.createElement("img");icon.src="/Icons/UI Icons/Colour Circle_STATIC.png";icon.alt="";button.append(icon)
     const popup=document.createElement("div");popup.className="customisation-colour-popover";popup.hidden=true
     button.addEventListener("click",()=>{popup.hidden=!popup.hidden;button.setAttribute("aria-expanded",String(!popup.hidden))})
     const more=document.createElement("button");more.type="button";more.textContent="More colours";more.addEventListener("click",()=>picker.click())
@@ -63,7 +64,7 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
     const refreshPalette=colourPalette(popup,get,colour=>{rememberColour(colour);change(colour)})
     hex.addEventListener("change",()=>{if(/^#[\da-f]{6}$/i.test(hex.value))change(hex.value);else hex.value=get()})
     picker.addEventListener("input",()=>{rememberColour(picker.value);change(picker.value);refreshPalette()})
-    syncs.push(()=>{if(document.activeElement!==hex)hex.value=get();if(document.activeElement!==picker)picker.value=get();refreshPalette()})
+    syncs.push(()=>{const value=get();if(document.activeElement!==hex)hex.value=value;if(document.activeElement!==picker)picker.value=value;if(/^#[0-9a-f]{6}$/i.test(value))button.style.setProperty("--picker-colour",value);refreshPalette()})
   }
   const select=(c:HTMLElement,label:string,options:{value:string;label:string;group?:string}[],get:()=>string,change:(v:string)=>void)=>{
     const r=row(c,label),s=document.createElement("select");s.className="customisation-select";s.setAttribute("aria-label",label);r.append(s)
@@ -105,6 +106,11 @@ export function createSelectedObjectCustomise(host:HTMLElement,getSpec:()=>Floww
       const c=card("Text")
       check(c,"Show text",()=>text()!.visible,v=>commitText({visible:v}))
       const r=row(c,"Content"),content=document.createElement("input");content.type="text";content.maxLength=2000;content.className="customisation-number";content.setAttribute("aria-label","Text content");r.append(content)
+      content.addEventListener("input",()=>{
+        const spec=getSpec(),box=currentBox();if(!spec||!box)return
+        const next={...box,textReference:textReference(box),texts:{...box.texts,[part]:{...box.texts?.[part],content:content.value.slice(0,2000)}}}
+        spec.attributeBoxes=spec.attributeBoxes!.map(item=>item.id===box.id?next:item)
+      })
       content.addEventListener("change",()=>commitText({content:content.value.slice(0,2000)}))
       content.addEventListener("keydown",event=>{if(event.key==="Enter")content.blur()})
       syncs.push(()=>{if(document.activeElement!==content)content.value=text()!.content})

@@ -2,7 +2,7 @@ import type { FlowwrapSpec } from "../types/flowwrap"
 
 export type MeasurePoint = { x:number; y:number }
 /** Endpoints live in root SVG millimetres, independent of the viewport transform. */
-export type CustomMeasure = { id:string; start:MeasurePoint; end:MeasurePoint }
+export type CustomMeasure = { id:string; start:MeasurePoint; end:MeasurePoint; repeatMode?:"mono"|"all" }
 export const measureLength = (m:CustomMeasure) => Math.hypot(m.end.x-m.start.x,m.end.y-m.start.y)
 export const measureName = (m:CustomMeasure) => String(Number(measureLength(m).toFixed(2)))
 export function validCustomMeasures(spec:FlowwrapSpec):CustomMeasure[] {

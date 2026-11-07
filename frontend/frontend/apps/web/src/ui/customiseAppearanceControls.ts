@@ -1,6 +1,7 @@
 import type { FlowwrapSpec } from "../types/flowwrap"
 import { availableAppearanceTargets, resolveAppearance, type Appearance, type AppearanceTarget } from "../renderers/elementAppearance"
 import { createStudioIcon } from "./studioIcons"
+import { createColourWheelControl } from "./colourWheelControl"
 import "./customiseConcept.css"
 
 const RECENT_KEY = "kyza.customise.recentColours"
@@ -84,7 +85,8 @@ export function decorateCustomiseTarget(section: HTMLElement, icon: string) {
 }
 
 export function createAppearanceEditor(host: HTMLElement, group: "elements" | "measures", getSpec: () => FlowwrapSpec | null, onChange: (spec: FlowwrapSpec) => void,
-  renderSpecial?: (target:AppearanceTarget,host:HTMLElement)=>(()=>void)|null) {
+  renderSpecial?: (target:AppearanceTarget,host:HTMLElement)=>(()=>void)|null,
+  getSvg?: () => SVGSVGElement | null) {
   const chips = element("div", "customise-targets"); chips.setAttribute("role", "radiogroup"); chips.setAttribute("aria-label", `Choose ${group} appearance`)
   const content = element("div", "customise-target-content")
   host.append(chips, content)
@@ -122,6 +124,50 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
     const t = currentTarget(); content.replaceChildren(); controls = []
     chips.querySelectorAll<HTMLElement>("[role=radio]").forEach(b => { const on = b.dataset.target === selected; b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1 })
     if (!t) { content.appendChild(element("p", "customisation-category-note", "Add elements in the Elements menu to customise their appearance.")); return }
+    const editableShape = ["bbe", "barcode", "qr", "windows", "safe", "zip", "grip", "tear", "halfmoon", "hanger", "text-direction"].includes(t.id)
+      || (t.id === "label" && getSpec()?.attributeBoxes?.some(box => box.kind === "label" && box.labelKey !== "custom" && box.enabled !== false))
+    if (editableShape) {
+      const editShape = element("button", "customise-shape-button", "Edit shape")
+      editShape.type = "button"
+      editShape.setAttribute("aria-label", `Edit ${t.name} shape`)
+      editShape.addEventListener("click", () => {
+        const overlay = element("div", "customise-shape-overlay")
+        const dialog = element("section", "customise-shape-dialog")
+        dialog.setAttribute("role", "dialog")
+        dialog.setAttribute("aria-modal", "true")
+        dialog.setAttribute("aria-label", `${t.name} shape`)
+        const heading = element("h2", "", `${t.name} shape`)
+        const close = element("button", "customise-shape-close", "Close")
+        close.type = "button"
+        const preview = element("div", "customise-shape-preview")
+        const source = getSvg?.()
+        const tagId = t.id === "label" ? getSpec()?.attributeBoxes?.find(box => box.kind === "label" && box.labelKey !== "custom" && box.enabled !== false)?.id : undefined
+        const selector = tagId ? `[data-role="attribute-box"][data-box-id="${CSS.escape(tagId)}"]` : t.selector
+        const shape = source?.querySelector<SVGGraphicsElement>(selector)
+        if (shape) {
+          const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg")
+          let bounds: DOMRect
+          try { bounds = shape.getBBox() } catch { bounds = new DOMRect(0, 0, 1, 1) }
+          const margin = Math.max(5, Math.max(bounds.width, bounds.height) * .15)
+          svg.setAttribute("viewBox", `${bounds.x - margin} ${bounds.y - margin} ${Math.max(1, bounds.width + margin * 2)} ${Math.max(1, bounds.height + margin * 2)}`)
+          svg.append(shape.cloneNode(true))
+          preview.append(svg)
+        } else {
+          const icon = createStudioIcon(t.icon)
+          if (icon) preview.append(icon)
+        }
+        const dismiss = () => { document.removeEventListener("keydown", onKey); overlay.remove(); editShape.focus() }
+        const onKey = (event: KeyboardEvent) => { if (event.key === "Escape") dismiss() }
+        close.addEventListener("click", dismiss)
+        overlay.addEventListener("click", event => { if (event.target === overlay) dismiss() })
+        document.addEventListener("keydown", onKey)
+        dialog.append(heading, preview, close)
+        overlay.append(dialog)
+        document.body.append(overlay)
+        close.focus()
+      })
+      content.append(editShape)
+    }
     const special=renderSpecial?.(t,content)
     if(special){controls.push(special);return}
     if (t.feature) {
@@ -144,12 +190,12 @@ export function createAppearanceEditor(host: HTMLElement, group: "elements" | "m
     if (t.caps.includes("color")) {
       const c = card("Colour"), r = row(c, "Colour"), wrap = element("div", "customisation-color-wrap")
       const hex = element("input", "customisation-color-text"); hex.type = "text"; hex.maxLength = 7; hex.setAttribute("aria-label", `${t.name} hex colour`)
-      const picker = element("input", "customise-colour-picker"); picker.type = "color"; picker.setAttribute("aria-label", `${t.name} colour picker`)
-      wrap.append(hex, picker); r.appendChild(wrap)
+      const { button, picker, sync } = createColourWheelControl(t.name)
+      wrap.append(hex, button, picker); r.appendChild(wrap)
       const palette = colourPalette(c, () => value().color, color => commit({ color }))
       const update = (color: string) => { if (validHex(color)) { rememberColour(color); commit({ color: color.toLowerCase() }); palette() } else hex.value = value().color }
       hex.addEventListener("change", () => update(hex.value.trim())); picker.addEventListener("input", () => commit({ color: picker.value })); picker.addEventListener("change", () => update(picker.value))
-      controls.push(() => { hex.value = value().color; picker.value = value().color; palette() })
+      controls.push(() => { hex.value = value().color; sync(value().color); palette() })
     }
     const numbers = (c: HTMLElement, key: "thickness" | "fontSize" | "opacity", name: string, min: number, max: number, step: number, unit: string, slider = false) => {
       const r = row(c, name), wrap = element("div", "customisation-opacity-wrap")

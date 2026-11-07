@@ -32,16 +32,13 @@ export function buildPerfCenters(
       if (spec.separation <= 0) {
         continue
       }
-      const startY =
-        spec.sealEdge === "bottom"
-          ? cutterOriginY + cutterHeight - radius
-          : cutterOriginY + radius
-      const endY =
-        spec.sealEdge === "bottom"
-          ? cutterOriginY + radius
-          : cutterOriginY + cutterHeight - radius
-      const step = spec.sealEdge === "bottom" ? -spec.separation : spec.separation
-      for (let y = startY; step > 0 ? y <= endY : y >= endY; y += step) {
+      // Centre the complete pattern, including its outer circles, in the cutter.
+      const usable = Math.max(0, cutterHeight - laneDiameter)
+      const count = Math.floor((usable + 1e-9) / spec.separation) + 1
+      const span = (count - 1) * spec.separation
+      const firstY = cutterOriginY + (cutterHeight - span) / 2
+      for (let index = 0; index < count; index += 1) {
+        const y = firstY + index * spec.separation
         if (
           x - radius < cutterOriginX ||
           x + radius > cutterOriginX + cutterWidth ||

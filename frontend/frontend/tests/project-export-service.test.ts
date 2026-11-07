@@ -374,6 +374,31 @@ const main = async () => {
   const cancelledPresentation = getExportResultPresentation(cancelled, listExportReleaseActions()[2]!)
   assert(cancelledPresentation.state === "cancelled" && !cancelledPresentation.announceAsError, "Cancellation must not be presented as an application error.")
 
+  // JSON export: the picker gets a bare MIME type (Chrome rejects ";charset=utf-8"),
+  // and a picker that cannot open falls back to one browser download.
+  const jsonArtifact = {
+    filename: "project.kyza.json",
+    mimeType: "application/json;charset=utf-8",
+    blob: new Blob(["{}"], { type: "application/json;charset=utf-8" }),
+    prepared: { capability: { label: "JSON Project/Cutter Data", extensions: [".json"] } }
+  }
+  let jsonAcceptKeys: string[] = []
+  const strictPicker = async (pickerInput: { types: Array<{ accept: Record<string, string[]> }> }) => {
+    jsonAcceptKeys = Object.keys(pickerInput.types[0]!.accept)
+    if (jsonAcceptKeys.some(key => !/^[a-z]+\/[a-z0-9.+-]+$/.test(key))) throw new TypeError(`Invalid type: ${jsonAcceptKeys[0]}`)
+    return { createWritable: async () => ({ write: async () => {}, close: async () => {} }) } as unknown as FileSystemFileHandle
+  }
+  const jsonSaved = await deliverProjectExportLocally(jsonArtifact, { showSaveFilePicker: strictPicker })
+  assert(jsonSaved.status === "saved", "JSON export must open the native save picker.")
+  assert(JSON.stringify(jsonAcceptKeys) === JSON.stringify(["application/json"]), "The save picker must receive the bare JSON MIME type.")
+  let rejectedPickerClicks = 0
+  const pickerRejected = await deliverProjectExportLocally(jsonArtifact, {
+    showSaveFilePicker: async () => { throw new TypeError("Invalid type") },
+    document: { createElement: () => ({ href: "", download: "", click: () => { rejectedPickerClicks += 1 } }) } as unknown as Document,
+    urlApi: { createObjectURL: () => "blob:json", revokeObjectURL: () => {} }
+  })
+  assert(pickerRejected.status === "download_initiated" && rejectedPickerClicks === 1, "A save picker that cannot open must fall back to one browser download.")
+
   // Picker-unavailable fallback initiates one download and records that weaker truth.
   const fallbackHolder: { project: KyzaProjectV1 } = { project }
   let fallbackClicks = 0

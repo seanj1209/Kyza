@@ -351,11 +351,42 @@ export function splitPaperStripSegmentsAtFolds<T extends { start: number; end: n
   })
 }
 
+export function mergeContiguousPreSlitSegments(
+  segments: readonly PaperStripHorizontalSegment[]
+): PaperStripHorizontalSegment[] {
+  const merged: PaperStripHorizontalSegment[] = []
+  for (const segment of [...segments].sort((a, b) => a.start - b.start || a.end - b.end)) {
+    const previous = merged.at(-1)
+    if (previous?.kind === "solid" && segment.kind === "solid" && Math.abs(previous.end - segment.start) < .001) {
+      merged[merged.length - 1] = { ...previous, end: segment.end, value: segment.end - previous.start }
+    } else {
+      merged.push(segment)
+    }
+  }
+  return merged
+}
+
 function renderSubPaperStripMeasurements(
   layer: SVGGElement,
   layout: ResolvedPaperStripLayout,
   preSlit = false
 ) {
+  if (preSlit) {
+    const rows = new Map<number, PaperStripHorizontalSegment[]>()
+    layout.instances.forEach(instance => {
+      const y = instance.cutterRect.y + instance.cutterRect.height + DIMENSION_OFFSET
+      const row = rows.get(y) ?? []
+      row.push(...getPaperStripHorizontalSegments(instance))
+      rows.set(y, row)
+    })
+    rows.forEach((segments, y) => {
+      mergeContiguousPreSlitSegments(segments).forEach(segment => {
+        if (segment.value <= 0) return
+        dimensionLineWithCaps(layer, segment.start, y, segment.end, y, formatMm(segment.value), { x: 0, y: 0 }, 0, segment.role)
+      })
+    })
+    return
+  }
   layout.instances.forEach(instance => {
     const subTopY = instance.cutterRect.y + instance.cutterRect.height + DIMENSION_OFFSET
     const cutterRight = instance.cutterRect.x + instance.cutterRect.width

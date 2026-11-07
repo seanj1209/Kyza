@@ -81,9 +81,8 @@ export function getSafeZoneFit(spec: FlowwrapSpec, zoneId: string): SafeZoneFitR
   const x = enclosing(xs,zone.x+zone.width/2), y = enclosing(ys,zone.y+zone.height/2)
   if (!x || !y) return {enabled:false,reason:"Move the zone centre inside a seal/fold panel, not onto its boundary."}
   const boundaries = [...x,...y]
-  const sealCount = boundaries.filter(b=>b.kind==="seal").length
   const foldCount = boundaries.filter(b=>b.kind==="fold").length
-  if (!((sealCount===3 && foldCount===1)||(sealCount===2 && foldCount===2))) return {enabled:false,reason:"Fit needs 3 seals + 1 fold, or 2 seals + 2 folds."}
+  if (!foldCount || boundaries.some(b=>b.kind==="open")) return {enabled:false,reason:"Fit needs a panel bounded by seals and at least one fold."}
   const width = x[1].position-x[0].position-2*clearance, height = y[1].position-y[0].position-2*clearance
   if (width<1 || height<1) return {enabled:false,reason:"This panel is too small for the current clearance."}
   return {enabled:true,clearance,zone:{...zone,x:x[0].position+clearance,y:y[0].position+clearance,width,height,rotation:0}}
